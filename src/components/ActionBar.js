@@ -396,7 +396,6 @@ class ActionBarItem extends Component {
           onPress={() => this.openOrClosePanel('close')}
           isShow={isActive}
           opacity={fadeAnim}
-          // zIndex={-5}
         />
         {this.renderActivityPanel()}
         <View style={{ flex: 1,}}>
@@ -449,9 +448,6 @@ class ActionBarItem extends Component {
             </Touchable>
           </View>
         </View>
-        
-        {/* 遮罩 */}
-        
       </React.Fragment>
     );
   }

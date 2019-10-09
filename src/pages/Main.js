@@ -5,6 +5,7 @@ import {
   View,
   KeyboardAvoidingView
 } from 'react-native';
+import Touchable from '../components/Touchable';
 
 export default class App extends Component { 
   render() {

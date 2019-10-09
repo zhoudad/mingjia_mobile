@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-} from 'react-native';
+import { View, Text,Image } from 'react-native';
 import {
     createAppContainer,
     createSwitchNavigator,
@@ -32,7 +29,7 @@ const TabNav = createBottomTabNavigator(
     }, {
     tabBarOptions: {
         //当前选中的tab bar的文本颜色和图标颜色
-        activeTintColor: '#ffe1e1',
+        activeTintColor: '#EA4C4C',
         //当前未选中的tab bar的文本颜色和图标颜色
         inactiveTintColor: '#ddd',
         //是否显示tab bar的图标，默认是false
@@ -56,7 +53,7 @@ const TabNav = createBottomTabNavigator(
         //tab bar的文本样式
         labelStyle: {
             fontSize: 11,
-            margin: 1
+            margin: 1,
         },
         //tab 页指示符的样式 (tab页下面的一条线).
         indicatorStyle: { height: 0 },
