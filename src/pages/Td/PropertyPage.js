@@ -73,9 +73,6 @@ class PropertyPage extends Component {
 						</Text>
 						<Text style={{ color: '#ea4c4c', fontSize: 32*unitWidth,fontWeight: "bold",marginTop:24*unitWidth}}>58600 元/㎡</Text>
 						<View style={{flexDirection:'row',marginTop:8*unitWidth}}>
-							{/* {TipicTag("在售", true)}
-							{TipicTag("住宅", false)}
-							{tTipicTag("装修交付", false)} */}
 							<TipicTag text={"在售"} isStress={true}/>
 							<TipicTag text={"住宅"} />
 							<TipicTag text={"装修交付"} />

@@ -7,7 +7,8 @@ export default class BasicInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      headerIndex: 0
+      headerIndex: 0,
+      isAttention: false
     };
   }
   _activeDot(index) {
@@ -16,6 +17,21 @@ export default class BasicInfo extends Component {
         <View style={styles.active}></View>
       )
     }
+  }
+  _reviewItem() {
+    return (
+      <TouchableOpacity activeOpacity={1} style={styles.reviewItem}>
+        <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 * unitWidth }}>
+            <Image style={{ width: 69 * unitWidth, height: 60 * unitWidth, borderRadius: 30 * unitWidth }} />
+            <Text style={{ color: '#303133', fontSize: 28 * unitWidth, marginStart: 20 * unitWidth }}>房大师</Text>
+          </View>
+          <Text numberOfLines={2} style={{ color: '#303133', fontSize: 24 * unitWidth, }}>
+            各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
+          </Text>
+        </View>
+      </TouchableOpacity>
+    )
   }
   _randerModel() {
     return (
@@ -42,8 +58,10 @@ export default class BasicInfo extends Component {
     )
   }
   render() {
+    const {navigation} = this.props
     return (
-      <ScrollView>
+      <View>
+        <ScrollView contentContainerStyle={{ marginBottom: 30 * unitWidth }}>
         <StatusBar
           animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
           hidden={false}  //是否隐藏状态栏。
@@ -58,7 +76,7 @@ export default class BasicInfo extends Component {
               // source={{ uri: 'https://facebook.github.io/react-native/img/tiny_logo.png' }}
               source={require('../../assets/images/panda.jpg')}
             >
-              <TouchableOpacity activeOpacity={1} style={styles.goBack}>
+              <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
                 <Image source={require('../../assets/images/nav_icon_back2.png')} />
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={1} style={styles.play}>
@@ -75,7 +93,7 @@ export default class BasicInfo extends Component {
           >
             <Image
               style={{ width: 44 * unitWidth, height: 44 * unitWidth }}
-              source={require(`../../assets/images/house_video.png`)} />
+              source={this.state.headerIndex == 0 ? require(`../../assets/images/house_video_s.png`) : require(`../../assets/images/house_video_n.png`)} />
             <View style={{ flexDirection: 'row', alignItems: 'center', }}>
               {this._activeDot(0)}
               <Text
@@ -85,44 +103,31 @@ export default class BasicInfo extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={1}
-            style={{ flex: 1, alignItems: 'center' }}
-            onPress={() => this.setState({ headerIndex: 1 })}
-          >
-            <Image
-              style={{ width: 44 * unitWidth, height: 44 * unitWidth }}
-              source={require('../../assets/images/house_quanjing.png')} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-              {this._activeDot(1)}
-              <Text style={{ color: this.state.headerIndex == 1 ? '#EA4C4C' : '#666666' }}>全景</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
             style={{
               flex: 1,
               alignItems: 'center'
             }}
-            onPress={() => this.setState({ headerIndex: 2 })}
+            onPress={() => this.setState({ headerIndex: 1 })}
           >
             <Image
               style={{ width: 44 * unitWidth, height: 44 * unitWidth }}
-              source={require('../../assets/images/house_3d.png')} />
+              source={this.state.headerIndex == 1 ? require('../../assets/images/house_3d_s.png') : require('../../assets/images/house_3d_n.png')} />
             <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-              {this._activeDot(2)}
-              <Text style={{ color: this.state.headerIndex == 2 ? '#EA4C4C' : '#666666' }}>三维</Text>
+              {this._activeDot(1)}
+              <Text style={{ color: this.state.headerIndex == 1 ? '#EA4C4C' : '#666666' }}>三维</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={1}
             style={{ flex: 1, alignItems: 'center' }}
-            onPress={() => this.setState({ headerIndex: 3 })}
+            onPress={() => this.setState({ headerIndex: 2 })}
           >
             <Image
               style={{ width: 44 * unitWidth, height: 44 * unitWidth }}
-              source={require('../../assets/images/house_tupian.png')} />
+              source={this.state.headerIndex == 2 ? require('../../assets/images/house_quanjing_s.png') : require('../../assets/images/house_quanjing_n.png')} />
             <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-              {this._activeDot(3)}
-              <Text style={{ color: this.state.headerIndex == 3 ? '#EA4C4C' : '#666666' }}>图片</Text>
+              {this._activeDot(2)}
+              <Text style={{ color: this.state.headerIndex == 2 ? '#EA4C4C' : '#666666' }}>图片</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -184,7 +189,7 @@ export default class BasicInfo extends Component {
         </View>
         <View style={styles.tD}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-            <Text style={{ color: '#303133', fontSize: 28 * unitWidth }}>沙盘图</Text>
+            <Text style={{ color: '#303133', fontSize: 28 * unitWidth }}>小区三维</Text>
             <Text style={{ color: '#A8ABB3', fontSize: 24 * unitWidth }}>详情查看</Text>
           </View>
           <ImageBackground
@@ -192,12 +197,48 @@ export default class BasicInfo extends Component {
             source={require('../../assets/images/panda.jpg')}>
             <TouchableOpacity activeOpacity={1} style={{ width: 102 * unitWidth, height: 102 * unitWidth, borderRadius: 54 * unitWidth }}>
               <Image
-                style={{ width: 65 * unitWidth, height: 68 * unitWidth }}
+                style={{ width: 102 * unitWidth, height: 102 * unitWidth }}
                 source={require('../../assets/images/3d_play_s.png')} />
             </TouchableOpacity>
           </ImageBackground>
         </View>
+        <View style={styles.review}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+            <Text style={{ color: '#303133', fontSize: 28 * unitWidth }}>用户点评（15）</Text>
+            <Text style={{ color: '#A8ABB3', fontSize: 24 * unitWidth }}>查看更多</Text>
+          </View>
+          <View>
+            {this._reviewItem()}
+            {this._reviewItem()}
+          </View>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 * unitWidth }}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.publishBtn}>
+            <Text style={{ color: '#FFFFFF', fontSize: 24 * unitWidth }}>我来点评</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
+      <View style={{ height: 100 * unitWidth, flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{backgroundColor:'#FFFFFF', width: 262 * unitWidth, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              style={{ width: 44 * unitWidth, height: 44 * unitWidth, marginEnd: 12 * unitWidth }}
+              source={this.state.isAttention ? require('../../assets/images/tabbar_focus_s.png') : require('../../assets/images/tabbar_focus_n.png')} />
+            <Text >关注</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{ backgroundColor: '#EA4C4C', width: 488 * unitWidth, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              style={{ width: 44 * unitWidth, height: 44 * unitWidth, marginEnd: 12 * unitWidth }}
+              source={require('../../assets/images/tabbar_phone.png')} />
+            <Text style={{ fontSize: 32 * unitWidth, color: '#FFFFFF' }}>电话资讯</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 }
@@ -278,10 +319,29 @@ const styles = StyleSheet.create({
   },
   sandTable: {
     paddingHorizontal: 30 * unitWidth,
-    marginTop: 120 * unitWidth
+    marginTop: 50 * unitWidth
   },
   tD: {
     paddingHorizontal: 30 * unitWidth,
-    marginTop: 120 * unitWidth
+    marginTop: 50 * unitWidth
+  },
+  review: {
+    paddingHorizontal: 30 * unitWidth,
+    marginTop: 50 * unitWidth
+  },
+  reviewItem: {
+    marginTop: 50 * unitWidth,
+    paddingBottom: 30 * unitWidth,
+    borderBottomColor: '#E6E9F0',
+    borderBottomWidth: 2 * unitWidth
+  },
+  publishBtn: {
+    width: 360 * unitWidth,
+    height: 68 * unitWidth,
+    backgroundColor: '#EA4C4C',
+    borderRadius: 34 * unitWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 190 * unitWidth
   }
 })
