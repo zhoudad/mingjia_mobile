@@ -12,6 +12,7 @@ import SelectPage from '../pages/Select'
 import HomePage from '../pages/Home'
 import MetPage from '../pages/Me'
 import TdPage from '../pages/Td'
+import BasicInfo from '../pages/Td/BasicInfo'
 const TabNav = createBottomTabNavigator(
     {
         Home: {
@@ -92,6 +93,12 @@ const MainStack = createStackNavigator({
             header: null
         }
     },
+    BasicInfo: {
+        screen: BasicInfo,
+        navigationOptions: {
+            header: null
+        }
+    }
 }, {
     initialRouteName: 'Main',
 });
@@ -101,6 +108,6 @@ export default createAppContainer(createSwitchNavigator(
         Login: LoginStack,
     },
     {
-        initialRouteName: 'Login',
+        initialRouteName: 'Main',
     })
 );

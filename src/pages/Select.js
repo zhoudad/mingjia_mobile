@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Image,View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, ToastAndroid
+    Image,View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, ToastAndroid, TouchableOpacity
 } from 'react-native';
 import Touchable from '../components/Touchable';
 import { unitWidth, width } from '../AdapterUtil'
@@ -51,9 +51,9 @@ export default class Select extends Component {
                         ></TextInput>
                     </KeyboardAvoidingView>
                 </View>
-                <Touchable activeOpacity={0.8} style={{alignItems:'center'}}>
+                <TouchableOpacity activeOpacity={0.8} style={{alignItems:'center'}}>
                     <Text style={styles.selectButton} onPress={() => this.selected()}>进入App</Text>
-                </Touchable>
+                </TouchableOpacity>
             </ScrollView>
         );
     }

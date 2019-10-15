@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux'; // 引入connect函数
 import *as loginAction from '../actions/loginAction';// 导入action方法
 import { NavigationActions } from 'react-navigation';
 import { unitWidth, width } from '../AdapterUtil'
 import InputItme from '../components/InputItme'
-import Touchable from '../components/Touchable';
 
 const resetAction = NavigationActions.navigate({
     routeName: 'Select',
@@ -46,10 +45,10 @@ class Login extends Component {
                         />
                     </View>
                     <View style={styles.loginButton}>
-                        <Touchable activeOpacity={1} style={{ flex: 1 }} onPress={() => login()}>
+                        <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={() => login()}>
                             <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 90 * unitWidth,fontSize:16 }}
                             >同意协议并登录</Text>
-                        </Touchable>
+                        </TouchableOpacity>
                     </View>
                     <View style={{ marginTop: 40 * unitWidth, }}>
                         <Text style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
