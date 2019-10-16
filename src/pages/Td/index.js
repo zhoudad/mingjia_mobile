@@ -13,12 +13,10 @@ export default class Td extends Component {
     tabBarIcon: ({ focused }) => {
       if (focused) {
         return (
-          // <Icon name='wode' size={18} color="#ea4c4c" />
           <Image style={{ width: 56 * unitWidth, height: 56 * unitWidth }} source={require('../../assets/images/tabbar_3d.png')} />
         );
       }
       return (
-        // <Icon name='wode' size={18} />
         <Image style={{ width: 56 * unitWidth, height: 56 * unitWidth }} source={require('../../assets/images/3d_play_s.png')} />
       );
     },

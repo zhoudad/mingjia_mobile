@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, Dimensions,ScrollView } from 'react-native';
 var screenWidth = Dimensions.get('window').width;
 // import axios from 'axios'
 import CommentItem from './CommentItem'
+import px from '../../../utils/px'
 
 export default class Comment extends Component {
   constructor(props) {
@@ -121,24 +122,29 @@ export default class Comment extends Component {
   }
   render() {
     return (
-      <View style={{ paddingVertical: 10, position: 'relative', flex: 1 }}>
-        {
+      <ScrollView style={{ flex: 1 , backgroundColor:'#F2F4F7',marginTop:px(30)}}>
+        {/* {
           this.state.CommentList.map((item, index) => {
             return (
               <CommentItem item={item} key={index} toDetails={(son,item) => this.toDetails(son,item)}></CommentItem>
             )
           })
-        }
+        } */}
+        <CommentItem />
+        <CommentItem />
+        <CommentItem />
+        <CommentItem />
+        <CommentItem />
         {
-          this.PublishCom()
+          this.PublishCom()  
         }
-      </View>
+      </ScrollView>
     );
   }
 }
 const styles = StyleSheet.create({
   Publish: {
-    height: 80,
+    height: px(100),
     width: '100%',
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -146,15 +152,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'absolute',
     left: 0,
-    borderColor: '#ddd',
-    borderWidth: 1,
     bottom: 0,
   },
   PublishInput: {
+    padding:0,
     flex: 1,
-    borderColor: '#169',
-    borderWidth: 1,
-    marginStart: 15,
-    marginEnd: 15
+    backgroundColor:'#F2F4F7',
+    paddingStart:px(30)
   }
 })

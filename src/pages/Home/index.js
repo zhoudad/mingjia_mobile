@@ -75,65 +75,65 @@ export default class index extends Component {
             </View>
           </Swiper>
         </View>
-        <View style={styles.msgNotice}>
+        <TouchableOpacity style={styles.msgNotice} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
           <Image
             style={{ width: px(34), height: px(34), marginHorizontal: px(8) }}
             source={require('../../assets/images/home_icon_message.png')} />
           <Text style={{ color: '#333333', fontSize: px(24) }}>通知：广州陈家祠地铁口房价上涨</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.service}>
           <Text style={{ color: '#333333', fontSize: px(32) }}>服务专区</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Mortgage')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_fangdai.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>房贷计算</Text>
-            </View>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_yezhu.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>业主专栏</Text>
-            </View>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_xinfang.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>新房专题</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_bigui.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>碧桂园</Text>
-            </View>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_3d.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>3D体验</Text>
-            </View>
-            <View style={{ width: px(128), alignItems: 'center' }}>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('BuyHouse')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_goufang.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>购房百科</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ marginHorizontal: px(30), marginTop: px(25) }}>
           <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Text style={{ color: '#333333', fontSize: px(32) }}>评论专区</Text>
-            <Text style={{ color: '#B3B3B3', fontSize: px(24) }}>点击更多></Text>
+            <Text style={{ color: '#B3B3B3', fontSize: px(24) }} onPress={() => navigation.navigate('Message')}>点击更多></Text>
           </View>
           <View style={styles.comment}>
             <View style={styles.commentItem}>

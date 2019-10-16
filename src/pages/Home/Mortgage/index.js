@@ -10,6 +10,7 @@ export default class Mortgage extends Component {
 	}
 
 	render() {
+		const { navigation } = this.props
 		return (
 			<View style={{ flex: 1, backgroundColor: '#F2F4F7' }}>
 				<View style={styles.upperPart}>
@@ -58,7 +59,7 @@ export default class Mortgage extends Component {
 					</View>
 				</View>
 				<View style={{alignItems:'center'}}>
-				<TouchableOpacity style={styles.computeBtn}>
+				<TouchableOpacity style={styles.computeBtn} activeOpacity={1} onPress={() => navigation.navigate('computeResult')}>
 					<Text style={{color:'#FFFFFF',fontSize:px(32)}}>开始计算</Text>
 				</TouchableOpacity>
 				</View>

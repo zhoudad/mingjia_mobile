@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard,TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TextInput, Image,  } from 'react-native';
 import IntervalTime from '../../../utils/IntervalTime'
+import px from '../../../utils/px'
+import { withNavigation } from 'react-navigation';
 
-export default class CommentItem extends Component {
+class CommentItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,39 +15,33 @@ export default class CommentItem extends Component {
       nolike: false
     };
   }
-  changeExpand = () => {
-    this.setState({
-      Expand: !this.state.Expand,
-    })
-  }
-  
 
-//   IntervalTime = (oldTime) => {
-//     let now = new Date().getTime()
-//     let old = new Date(oldTime).getTime()
-//     var diffValue = parseInt(now - old),
-//       minute = 1000 * 60,
-//       hour = minute * 60,
-//       day = hour * 24,
-//       month = day * 30,
-//       year = month * 12,
+  //   IntervalTime = (oldTime) => {
+  //     let now = new Date().getTime()
+  //     let old = new Date(oldTime).getTime()
+  //     var diffValue = parseInt(now - old),
+  //       minute = 1000 * 60,
+  //       hour = minute * 60,
+  //       day = hour * 24,
+  //       month = day * 30,
+  //       year = month * 12,
 
-//       _year = diffValue / year,
-//       _month = diffValue / month,
-//       _week = diffValue / (7 * day),
-//       _day = diffValue / day,
-//       _hour = diffValue / hour,
-//       _min = diffValue / minute;
+  //       _year = diffValue / year,
+  //       _month = diffValue / month,
+  //       _week = diffValue / (7 * day),
+  //       _day = diffValue / day,
+  //       _hour = diffValue / hour,
+  //       _min = diffValue / minute;
 
-//     if (_year >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
-//     else if (_month >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
-//     else if (_week >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
-//     else if (_day >= 1) interT = parseInt(_day) + "天前";
-//     else if (_hour >= 1) interT = parseInt(_hour) + "小时前";
-//     else if (_min >= 1) interT = parseInt(_min) + "分钟前";
-//     else interT = "刚刚";
-//     return interT;
-//   }
+  //     if (_year >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
+  //     else if (_month >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
+  //     else if (_week >= 1) interT = new Date(oldTime).getFullYear() + '年' + (new Date(oldTime).getMonth() + 1) + '月' + new Date(oldTime).getDate() + '日';
+  //     else if (_day >= 1) interT = parseInt(_day) + "天前";
+  //     else if (_hour >= 1) interT = parseInt(_hour) + "小时前";
+  //     else if (_min >= 1) interT = parseInt(_min) + "分钟前";
+  //     else interT = "刚刚";
+  //     return interT;
+  //   }
 
   _onLayout = (event) => {
     let { x, y, width, height } = event.nativeEvent.layout;
@@ -64,9 +60,9 @@ export default class CommentItem extends Component {
       return (
         <View style={styles.CommentItemExpand} >
           <Text
-            style={{ flex: 1, textAlign: 'right', lineHeight: 20, color: '#222', fontSize: 15 }}
-            onPress={() => this.changeExpand()}>
-            {this.state.Expand ? '收回' : '展开'}
+            style={{ flex: 1, textAlign: 'right', color: '#A8ABB3', fontSize: px(24) }}
+            onPress={() => this.setState({ Expand: !this.state.Expand, })}>
+            {this.state.Expand ? '收回' : '展开>'}
           </Text>
         </View>
       )
@@ -87,45 +83,66 @@ export default class CommentItem extends Component {
     }
   }
   render() {
-    const {toDetails} = this.props
+    const {navigation} = this.props
     return (
-      <View style={{ flexDirection: 'row',paddingHorizontal:15,marginBottom:15 }}>
-        <View style={{ width: 65, alignItems: 'center',paddingBottom:10}}>
-          <View style={{ backgroundColor: '#ddd', width: 40, height: 40, borderRadius: 20 }}></View>
+      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('CommentDetails')}>
+        <View style={styles.CommentItem}>
+          <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row',marginTop:px(30) }}>
+            <Image
+              style={{ backgroundColor: '#EA4C4C', width: px(60), height: px(60), borderRadius: px(30) }} />
+            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
+            <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={{ marginTop: px(30), }}>
+              <Text numberOfLines={this.state.Expand ? 999 : 2} style={{ color: '#303133', fontSize: px(24) }}>
+                各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
+                各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。</Text>
+              <View>{this.shouExpandCom()}</View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30) }}>
+              <TouchableOpacity activeOpacity={1} style={styles.replyBtn}>
+                <Text style={{color:'#A8ABB3',fontSize:px(20)}}>回复TA</Text>
+              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
+                  <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_nice.png')} />
+                  <Text style={{ marginStart: px(7) }}>123</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_ugle.png')} />
+                  <Text style={{ marginStart: px(7) }}>123</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text>{this.props.item.user_id}</Text>
-          <View style={[{ marginTop: 10, overflow: 'hidden', },]}>
-            <Text
-              onPress={() => toDetails(this.props.item.son,this.props.item)}
-              onLayout={this._onLayout} numberOfLines={this.state.Expand ? null : 3}
-            >{this.props.item.com_content}</Text>
-            <View>{this.shouExpandCom()}</View>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-            <Text>{IntervalTime(this.props.item.com_time)}</Text>
-            <TouchableOpacity style={{width: 60, height: 25, borderRadius: 8, borderColor: '#ddd', borderWidth: 1, marginLeft: 10,position:'relative' }} activeOpacity={1}>
-              <Text style={{ flex: 1, textAlign: 'center', lineHeight: 23 }}>回复</Text>
-              <TextInput style={{position:'absolute',width:60,height:25,opacity:0}}></TextInput>
-            </TouchableOpacity>
-            <Text style={{ marginHorizontal: 15 }}onPress={() => this.setState({awesome:!this.state.awesome})}>赞{this.state.awesome?this.props.item.com_like+1:this.props.item.com_like}</Text>
-            <Text onPress={() => this.setState({nolike:!this.state.nolike})}>不赞同{this.state.nolike?this.props.item.com_nolike+1:this.props.item.com_nolike}</Text>
-          </View>
-          <View style={{ paddingLeft: 10, marginTop: 10, backgroundColor: '#ddd', }}>
-            {this.replyCom(this.props.item.son)}
-          </View>
-        </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
 const styles = StyleSheet.create({
   CommentItemExpand: {
-    height: 20,
-    width: 55,
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#fff'
+    height: px(30),
+    backgroundColor: '#fff',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  replyBtn: {
+    borderWidth: px(1),
+    borderColor: '#D8DCE6',
+    width: px(108),
+    height: px(44),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: px(22),
+  },
+  CommentItem: {
+    paddingHorizontal: px(30),
+    marginBottom: px(30),
+    backgroundColor:'#FFFFFF',
+    minHeight:px(334)
   }
 })
+export default withNavigation(CommentItem);

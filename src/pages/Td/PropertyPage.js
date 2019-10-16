@@ -14,46 +14,25 @@ class PropertyPage extends Component {
 		};
 	}
 
-	// _TipicTag = (text, isStress) => {
-	// 	return (
-	// 		<View
-	// 			style={{
-	// 				height: 32 * unitWidth,
-	// 				backgroundColor: isStress ? "#A1D76C" : "#F2F4F7",
-	// 				marginRight:10*unitWidth,
-	// 				justifyContent:'center',
-	// 				alignItems:'center',
-	// 			}}>
-	// 			<Text
-	// 				style={{
-	// 					color: isStress ? "#FFFFFF" : "#606266",
-	// 					fontSize: 20 * unitWidth,
-	// 					// paddingVertical:6*unitWidth,
-	// 					paddingHorizontal:14*unitWidth,
-	// 				}}>{text}</Text>
-	// 		</View>
-	// 	)
+	// Loading = (ref) => {
+	// 	if (ref) {
+	// 		this.setState({ isLoading: true })
+	// 	}
+	// 	setTimeout(() => {
+	// 		let newCityData = []
+	// 		if (ref) {
+	// 			for (let i = this.state.cityData.length - 1; i >= 0; i--) {
+	// 				newCityData.push(this.state.cityData[i])
+	// 			}
+	// 		} else {
+	// 			newCityData = this.state.cityData.concat(City)
+	// 		}
+	// 		this.setState({
+	// 			cityData: newCityData,
+	// 			isLoading: false,
+	// 		})
+	// 	}, 1500)
 	// }
-
-	Loading = (ref) => {
-		if (ref) {
-			this.setState({ isLoading: true })
-		}
-		setTimeout(() => {
-			let newCityData = []
-			if (ref) {
-				for (let i = this.state.cityData.length - 1; i >= 0; i--) {
-					newCityData.push(this.state.cityData[i])
-				}
-			} else {
-				newCityData = this.state.cityData.concat(City)
-			}
-			this.setState({
-				cityData: newCityData,
-				isLoading: false,
-			})
-		}, 1500)
-	}
 
 	_renderItem(data) {
 		const {navigation} = this.props
