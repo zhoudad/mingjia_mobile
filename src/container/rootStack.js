@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import { Button, Text, Platform, View, TextInput, TouchableOpacity,Image } from 'react-native'
 import px from '../utils/px'
-=======
-import { View, Text,Image } from 'react-native';
->>>>>>> ae4af7cc92f552875636025321b36cdadda85381
 import {
     createAppContainer,
     createSwitchNavigator,
@@ -18,7 +14,6 @@ import SelectPage from '../pages/Select'
 import HomePage from '../pages/Home'
 import MetPage from '../pages/Me'
 import TdPage from '../pages/Td'
-<<<<<<< HEAD
 import Local from '../pages/Home/Local'
 import Message from '../pages/Home/Message'
 import msgDetails from '../pages/Home/Message/msgDetails'
@@ -29,9 +24,7 @@ import HouseDetails from '../pages/Home/buyHouse/HouseDetails'
 import CommentList from '../pages/Home/CommentList'
 import CommentDetails from '../pages/Home/CommentList/CommentDetails'
 
-=======
 import BasicInfo from '../pages/Td/BasicInfo'
->>>>>>> ae4af7cc92f552875636025321b36cdadda85381
 const TabNav = createBottomTabNavigator(
     {
         Home: {
@@ -112,7 +105,6 @@ const MainStack = createStackNavigator({
             header: null
         }
     },
-<<<<<<< HEAD
     Local: {
         screen: Local,
         navigationOptions: {
@@ -285,16 +277,14 @@ const MainStack = createStackNavigator({
         })
     },
     
-=======
     BasicInfo: {
         screen: BasicInfo,
         navigationOptions: {
             header: null
         }
     }
->>>>>>> ae4af7cc92f552875636025321b36cdadda85381
 }, {
-    initialRouteName: 'CommentList',
+    initialRouteName: 'Main',
 });
 export default createAppContainer(createSwitchNavigator(
     {
