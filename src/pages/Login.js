@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux'; // 引入connect函数
 import *as loginAction from '../actions/loginAction';// 导入action方法
 import { NavigationActions } from 'react-navigation';
@@ -45,8 +45,8 @@ class Login extends Component {
                         />
                     </View>
                     <View style={styles.loginButton}>
-                        <TouchableOpacity activeOpacity={0.5} style={{ flex: 1 }} onPress={() => login()}>
-                            <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 90 * unitWidth, }}
+                        <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={() => login()}>
+                            <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 90 * unitWidth,fontSize:16 }}
                             >同意协议并登录</Text>
                         </TouchableOpacity>
                     </View>
@@ -79,6 +79,11 @@ const styles = StyleSheet.create({
         borderRadius: 45 * unitWidth,
         backgroundColor: '#ea4c4c',
         marginTop: 130 * unitWidth,
+        shadowColor:'#EA4C4C',
+        shadowOpacity:0.5,
+        shadowOffset:{w:0,h:4},
+        // shadowRadius:25*unitWidth,
+        // elevation: 25*unitWidth,
     },
 })
 export default connect(

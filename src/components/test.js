@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * 
  * 皓天
@@ -350,6 +351,360 @@ const styles = StyleSheet.create({
     color: "#333333",
     fontSize: 16
   }
+=======
+import React, { Component } from "react";
+import {
+    View,
+    Text,
+    TouchableHighlight,
+    Image,
+    ScrollView,
+    Animated,
+    Easing,
+    StyleSheet
+} from "react-native";
+import Touchable from './Touchable';
+import PropTypes from "prop-types";
+import { unitWidth, width } from '../AdapterUtil'
+
+class ActionBar extends Component {
+    constructor(props, context) {
+        super(props, context);
+
+        var selectIndex = new Array(this.props.data.length);
+        for (var i = 0; i < selectIndex.length; i++) {
+            selectIndex[i] = 0;
+        }
+        this.state = {
+            activityIndex: -1,
+            selectIndex: selectIndex,
+            rotationAnims: props.data.map(() => new Animated.Value(0))
+        };
+
+        this.defaultConfig = {
+            bgColor: "grey",//背景颜色
+            tintColor: "#green",//颜色
+            activityTintColor: "yellow",
+            arrowImg: require("../assets/images/nav_arrow_down1.png"),
+            checkImage: require("../assets/images/nav_right.png")
+        };
+    }
+
+    renderChcek(index, title) {
+        var activityIndex = this.state.activityIndex;
+        if (this.state.selectIndex[activityIndex] == index) {
+            var checkImage = this.props.checkImage
+                ? this.props.checkImage
+                : this.defaultConfig.checkImage;
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingHorizontal: 15,
+                        flexDirection: "row",
+                        height:90*unitWidth,
+                    }}
+                >
+                    <Text
+                        style={[
+                            styles.item_text_style,
+                            this.props.optionTextStyle,
+                            {
+                                color: this.props.activityTintColor
+                                    ? this.props.activityTintColor
+                                    : this.defaultConfig.activityTintColor
+                            }
+                        ]}
+                    >
+                        {title}
+                    </Text>
+                    <Image
+                        source={checkImage}
+                        style={{
+                            width:24*unitWidth,
+                            height:16*unitWidth,
+                            tintColor: this.props.activityTintColor ? this.props.activityTintColor : this.defaultConfig.activityTintColor
+                        }}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        paddingHorizontal: 15,
+                        flexDirection: "row"
+                    }}
+                >
+                    <Text
+                        style={[
+                            styles.item_text_style,
+                            this.props.optionTextStyle,
+                            {
+                                color: this.props.tintColor
+                                    ? this.props.tintColor
+                                    : this.defaultConfig.tintColor
+                            }
+                        ]}
+                    >
+                        {title}
+                    </Text>
+                </View>
+            );
+        }
+    }
+
+    renderActivityPanel() {
+        if (this.state.activityIndex >= 0) {
+            var currentTitles = this.props.data[this.state.activityIndex];
+
+            var heightStyle = {};
+            if (
+                this.props.maxHeight &&
+                this.props.maxHeight < currentTitles.length * 44
+            ) {
+                heightStyle.height = this.props.maxHeight;
+            }
+
+            return (
+                <View
+                    style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 40,
+                        bottom: 0,
+                    }}
+                >
+                    <Touchable
+                        onPress={() => this.openOrClosePanel(this.state.activityIndex)}
+                        activeOpacity={1}
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0
+                        }} 
+                        >
+                        <View style={{ opacity: 0.4, backgroundColor: "black", flex: 1 }} />
+                    </Touchable>
+
+                    <ScrollView
+                        style={[
+                            {
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                backgroundColor: "white",
+                                borderBottomColor:'#ddd',
+                                borderBottomWidth:1
+                            },
+                            heightStyle
+                        ]}
+                    >
+                        {currentTitles.map((title, index) => (
+                            <Touchable
+                                key={index}
+                                activeOpacity={1}
+                                style={{ flex: 1, height: 90*unitWidth }}
+                                onPress={this.itemOnPress.bind(this, index)}
+                            >
+                                {this.renderChcek(index, title)}
+                                <View
+                                    style={{
+                                        backgroundColor: "red ",
+                                        height: 1,
+                                        marginLeft: 15
+                                    }}
+                                />
+                            </Touchable>
+                        ))}
+                    </ScrollView>
+                </View>
+            );
+        } else {
+            return null;
+        }
+    }
+
+    openOrClosePanel(index) {
+        this.props.bannerAction ? this.props.bannerAction() : null;
+
+        if (this.state.activityIndex == index) {
+            this.closePanel(index);
+            this.setState({
+                activityIndex: -1
+            });
+        } else {
+            if (this.state.activityIndex > -1) {
+                this.closePanel(this.state.activityIndex);
+            }
+            this.openPanel(index);
+            this.setState({
+                activityIndex: index
+            });
+        }
+    }
+
+    openPanel(index) {
+        Animated.timing(this.state.rotationAnims[index], {
+            toValue: 0.5,
+            duration: 300,
+            easing: Easing.linear
+        }).start();
+    }
+
+    closePanel(index) {
+        Animated.timing(this.state.rotationAnims[index], {
+            toValue: 0,
+            duration: 300,
+            easing: Easing.linear
+        }).start();
+    }
+
+    split(data) {
+        return data.length > 6 ? data.substring(0, 6) + '...' : data
+    }
+
+    itemOnPress(index) {
+        if (this.state.activityIndex > -1) {
+            var selectIndex = this.state.selectIndex;
+            selectIndex[this.state.activityIndex] = index;
+            this.setState({
+                selectIndex: selectIndex
+            });
+            if (this.props.handler) {
+                this.props.handler(this.state.activityIndex, index);
+            }
+        }
+        this.openOrClosePanel(this.state.activityIndex);
+    }
+    renderDropDownArrow(index) {
+        var icon = this.props.arrowImg
+            ? this.props.arrowImg
+            : this.defaultConfig.arrowImg;
+        return (
+            <Animated.Image
+                source={icon}
+                style={{
+                    width: 24*unitWidth,
+                    height: 24*unitWidth,
+                    marginLeft: 8,
+                    tintColor:
+                        index === this.state.activityIndex
+                            ? this.props.activityTintColor
+                                ? this.props.activityTintColor
+                                : this.defaultConfig.activityTintColor
+                            : this.props.tintColor
+                                ? this.props.tintColor
+                                : this.defaultConfig.tintColor,
+                    transform: [
+                        {
+                            rotateZ: this.state.rotationAnims[index].interpolate({
+                                inputRange: [0, 1],
+                                outputRange: ["0deg", "360deg"]
+                            })
+                        }
+                    ]
+                }}
+            />
+        );
+    }
+
+    render() {
+        return (
+            <View style={{ flexDirection: "column", flex: 1 }}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        backgroundColor: this.props.bgColor
+                            ? this.props.bgColor
+                            : this.defaultConfig.bgColor,
+                        borderBottomColor:'#ddd',
+                        borderBottomWidth:1
+                    }}
+                >
+                    {this.props.data.map((rows, index) => (
+                        <Touchable
+                            activeOpacity={1}
+                            onPress={this.openOrClosePanel.bind(this, index)}
+                            key={index}
+                            style={{
+                                flex: 1,
+                                height: 48,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                // backgroundColor:'red'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <Text
+                                    style={[
+                                        styles.title_style,
+                                        this.props.titleStyle,
+                                        {
+                                            color:
+                                                index === this.state.activityIndex
+                                                    ? this.props.activityTintColor
+                                                        ? this.props.activityTintColor
+                                                        : this.defaultConfig.activityTintColor
+                                                    : this.props.tintColor
+                                                        ? this.props.tintColor
+                                                        : this.defaultConfig.tintColor
+                                        }
+                                    ]}
+                                >
+                                    {/* {rows[this.state.selectIndex[index]]} */}
+                                    {this.split(rows[this.state.selectIndex[index]])}
+                                </Text>
+                                {this.renderDropDownArrow(index)}
+                            </View>
+                        </Touchable>
+                    ))}
+                </View>
+                {this.props.children}
+
+                {this.renderActivityPanel()}
+            </View>
+        );
+    }
+}
+
+ActionBar.propTypes = {
+    bgColor: PropTypes.string,
+    tintColor: PropTypes.string,
+    activityTintColor: PropTypes.string,
+    arrowImg: PropTypes.number,
+    checkImage: PropTypes.number,
+    data: PropTypes.array,
+    bannerAction: PropTypes.func,
+    optionTextStyle: PropTypes.object,
+    titleStyle: PropTypes.object,
+    maxHeight: PropTypes.number
+};
+
+const styles = StyleSheet.create({
+    title_style: {
+        fontSize: 16
+    },
+    item_text_style: {
+        color: "#333333",
+        fontSize: 16
+    }
+>>>>>>> ae4af7cc92f552875636025321b36cdadda85381
 });
 
 export default ActionBar;

@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import { View, Text, StyleSheet } from 'react-native';
+=======
+import { View, Text, Image } from 'react-native';
+>>>>>>> ae4af7cc92f552875636025321b36cdadda85381
 import Icon from '../../components/Icon'
+import { unitWidth } from '../../AdapterUtil'
 
 export default class index extends Component {
   static navigationOptions = {
@@ -8,11 +13,21 @@ export default class index extends Component {
     tabBarIcon: ({ focused }) => {
       if (focused) {
         return (
+<<<<<<< HEAD
           <Icon name='wode' size={18} color="#ea4c4c" />
         );
       }
       return (
         <Icon name='wode' size={18} />
+=======
+          // <Icon name='wode' size={18} color="#ea4c4c"/>
+          <Image style={{width:56*unitWidth,height:56*unitWidth}} source={require('../../assets/images/tabbar_mine_s.png')}/>
+        );
+      }
+      return (
+        // <Icon name='wode' size={18}/>
+        <Image style={{width:56*unitWidth,height:56*unitWidth}} source={require('../../assets/images/tabbar_mine_n.png')}/>
+>>>>>>> ae4af7cc92f552875636025321b36cdadda85381
       );
     },
   };

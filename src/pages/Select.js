@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-    View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, ToastAndroid
+    Image,View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, ToastAndroid, TouchableOpacity
 } from 'react-native';
+import Touchable from '../components/Touchable';
 import { unitWidth, width } from '../AdapterUtil'
 export default class Select extends Component {
     constructor(props) {
@@ -33,6 +34,9 @@ export default class Select extends Component {
         return (
             <ScrollView style={styles.selectPage}>
                 <View style={styles.logo}>
+                    <Image 
+                    style={{width:180*unitWidth,height:125*unitWidth,}}
+                    source={require('../assets/images/login_bg.png')}></Image>
                 </View>
                 <View style={styles.selectTit}>
                     <Text style={{ textAlign: 'center', fontSize: 24*unitWidth, }}>请选择开发商并输入相应的识别码 </Text>
@@ -61,9 +65,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20 * unitWidth,
     },
     logo: {
-        backgroundColor: '#ddd',
         marginTop: 280 * unitWidth,
-        height: 120 * unitWidth,
+        height: 125 * unitWidth,
+        justifyContent:'center',
+        flexDirection:'row'
     },
     selectTit: {
         alignItems: 'center',
@@ -79,25 +84,29 @@ const styles = StyleSheet.create({
     },
     selectInput: {
         width: 480 * unitWidth,
-        height: 75 * unitWidth,
+        height: 80 * unitWidth,
         borderRadius: 2,
-        borderColor: '#ccc',
+        borderColor: '#E1E4E6',
         borderWidth: 1,
         marginTop: 45 * unitWidth,
         fontSize:28 * unitWidth,
         backgroundColor: '#f5f7fa',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize:28*unitWidth,
+        color:'#A8ABB3'
     },
     selectButton: {
         color: '#fff',
         width: 540 * unitWidth,
         height: 90 * unitWidth,
-        // fontSize: 20,
+        shadowColor:'#EA4C4C',
+        shadowOpacity:0.5,
+        shadowOffset:{w:0,h:4},
         textAlign: 'center',
         lineHeight: 90 * unitWidth,
         backgroundColor: '#ea4c4c',
         borderRadius: 45 * unitWidth,
-        // height: 60,
         marginTop: 200 * unitWidth,
+        fontSize:32* unitWidth,
     }
 })
