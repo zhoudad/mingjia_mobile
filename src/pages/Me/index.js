@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from '../../components/Icon'
 
 export default class index extends Component {
@@ -8,11 +8,11 @@ export default class index extends Component {
     tabBarIcon: ({ focused }) => {
       if (focused) {
         return (
-          <Icon name='wode' size={18} color="#ea4c4c"/>
+          <Icon name='wode' size={18} color="#ea4c4c" />
         );
       }
       return (
-        <Icon name='wode' size={18}/>
+        <Icon name='wode' size={18} />
       );
     },
   };
@@ -24,9 +24,46 @@ export default class index extends Component {
 
   render() {
     return (
-      <View>
-        <Text> index </Text>
+      <View style={styles.background}>
+        <View>
+          <View style={styles.greenBox}></View>
+        </View>
+        <View style={styles.redBox}>
+          <View style={styles.new}></View>
+        </View>
       </View>
     );
   }
 }
+
+let styles = StyleSheet.create({
+  background: {
+    backgroundColor: "blue",
+    height: "100%"
+  },
+  greenBox: {
+    backgroundColor: "green",
+    width: 100,
+    height: 100,
+    // zIndex: 2
+  },
+  redBox: {
+    height: 300,
+    width: 300,
+    backgroundColor: "red",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 1,
+  },
+  new:{
+    height: 350,
+    width: 350,
+    backgroundColor: "yellow",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 3,
+  }
+});
+

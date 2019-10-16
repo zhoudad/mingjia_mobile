@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-} from 'react-native';
+import { Button, Text, Platform, View, TextInput, TouchableOpacity,Image } from 'react-native'
+import px from '../utils/px'
 import {
     createAppContainer,
     createSwitchNavigator,
     createStackNavigator,
     createBottomTabNavigator
 } from 'react-navigation'
+const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
 
 import LoginPage from '../pages/Login'
 import SelectPage from '../pages/Select'
 import HomePage from '../pages/Home'
 import MetPage from '../pages/Me'
 import TdPage from '../pages/Td'
+import Local from '../pages/Home/Local'
+import Message from '../pages/Home/Message'
+import msgDetails from '../pages/Home/Message/msgDetails'
+import Mortgage from '../pages/Home/Mortgage'
+import computeResult from '../pages/Home/Mortgage/computeResult'
+import BuyHouse from '../pages/Home/buyHouse'
+import HouseDetails from '../pages/Home/buyHouse/HouseDetails'
+import CommentList from '../pages/Home/CommentList'
+import CommentDetails from '../pages/Home/CommentList/CommentDetails'
+
 const TabNav = createBottomTabNavigator(
     {
         Home: {
@@ -95,8 +104,180 @@ const MainStack = createStackNavigator({
             header: null
         }
     },
+    Local: {
+        screen: Local,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Message: {
+        screen: Message,
+        headerLayoutPreset: "center",
+        navigationOptions :({navigation}) => ({
+            title: '消息通知',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerRight: (
+                <Text 
+                style={{ fontSize: px(32), textAlign: 'center', marginEnd:px(30),color: '#EA4C4C', }}
+                onPress={() => {
+                    navigation.state.params.msManagement()
+                    navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
+                  }}
+                >管理</Text>
+            ),
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    msgDetails:{
+        screen: msgDetails,
+        navigationOptions :({navigation}) =>({
+            title: '消息详情',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerTitleContainerStyle: {
+                left: TITLE_OFFSET,
+                right: TITLE_OFFSET,
+              },
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    Mortgage:{
+        screen: Mortgage,
+        navigationOptions :({navigation}) =>({
+            title: '房贷计算器',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerTitleContainerStyle: {
+                left: TITLE_OFFSET,
+                right: TITLE_OFFSET,
+              },
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    computeResult:{
+        screen: computeResult,
+        navigationOptions :({navigation}) =>({
+            title: '房贷计算器',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerTitleContainerStyle: {
+                left: TITLE_OFFSET,
+                right: TITLE_OFFSET,
+              },
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    BuyHouse:{
+        screen: BuyHouse,
+        navigationOptions :({navigation}) =>({
+            title: '购房知识库',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerTitleContainerStyle: {
+                left: TITLE_OFFSET,
+                right: TITLE_OFFSET,
+              },
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    HouseDetails:{
+        screen: HouseDetails,
+        navigationOptions :({navigation}) =>({
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            )
+        })
+    },
+    CommentList:{
+        screen: CommentList,
+        navigationOptions :({navigation}) =>({
+            title: '评论专区',
+            headerTitleStyle: {
+                textAlign: 'center',
+                flex: 1,
+                fontSize: px(36),
+                color:'#333333'
+            },
+            headerTitleContainerStyle: {
+                left: TITLE_OFFSET,
+                right: TITLE_OFFSET,
+              },
+            headerLeft:(
+                <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+                    <Image 
+                    style={{ width: px(56), height: px(56), marginStart: px(3) }}
+                    source={require('../assets/images/nav_icon_back.png')}/>
+                </TouchableOpacity>
+            ),
+            headerRight: (
+                <Text 
+                style={{ fontSize: px(32), textAlign: 'center', marginEnd:px(30),color: '#EA4C4C', }}
+                // onPress={() => {
+                //     navigation.state.params.msManagement()
+                //     navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
+                //   }}
+                >我也发布</Text>
+            ),
+        })
+    },
+    
 }, {
-    initialRouteName: 'Main',
+    initialRouteName: 'CommentList',
 });
 export default createAppContainer(createSwitchNavigator(
     {
@@ -104,6 +285,6 @@ export default createAppContainer(createSwitchNavigator(
         Login: LoginStack,
     },
     {
-        initialRouteName: 'Login',
+        initialRouteName: 'Main',
     })
 );

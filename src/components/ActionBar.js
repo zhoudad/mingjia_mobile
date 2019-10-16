@@ -179,6 +179,7 @@ class ActionBarItem extends Component {
           top: 38,
           bottom: 0,
           // zIndex: -3,
+          zIndex: 30,
         }}
       >
         <Animated.View
@@ -392,18 +393,14 @@ class ActionBarItem extends Component {
 
     return (
       <React.Fragment>
-        <Couverture
-          onPress={() => this.openOrClosePanel('close')}
-          isShow={isActive}
-          opacity={fadeAnim}
-          // zIndex={-5}
-        />
-        {this.renderActivityPanel()}
+       
+       
         <View style={{ flex: 1,}}>
           <View
             style={{
               flexDirection: 'row',
               height: 40,
+              zIndex: 30,
             }}
           >
             <Touchable
@@ -449,9 +446,14 @@ class ActionBarItem extends Component {
             </Touchable>
           </View>
         </View>
-        
+        {this.renderActivityPanel()}
         {/* 遮罩 */}
-        
+        <Couverture
+          onPress={() => this.openOrClosePanel('close')}
+          isShow={isActive}
+          opacity={fadeAnim}
+          zIndex={5}
+        />
       </React.Fragment>
     );
   }
