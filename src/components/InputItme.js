@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { unitWidth, width } from '../AdapterUtil'
+import Touchable from './Touchable'
 
 export default class InputItme extends Component {
   constructor(props) {
@@ -39,7 +40,9 @@ export default class InputItme extends Component {
           returnKeyType={'done'}
           underlineColorAndroid='transparent'
         ></TextInput>
-        {this.VerificationItem(VerificationCode)}
+        <Touchable activeOpacity={1}>
+          {this.VerificationItem(VerificationCode)}
+        </Touchable>
       </View>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, ScrollView,ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, ScrollView,ImageBackground,TouchableHighlight } from 'react-native';
 import Icon from '../../components/Icon'
 // import { unitWidth } from '../../AdapterUtil'
 import px from '../../utils/px'
@@ -62,6 +62,7 @@ export default class index extends Component {
   }
 
   render() {
+    const { navigation } = this.props
     return (
       <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#F9F9F9', }}>
         <StatusBar
@@ -73,47 +74,60 @@ export default class index extends Component {
         />
         <View style={{ paddingTop: px(110), height: px(380), }}>
           <View style={styles.header}>
-            <View style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
+            <TouchableHighlight 
+            onPress={() => navigation.navigate('Info')}
+            style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
               <Image
                 style={{ width: px(108), height: px(108), }}
                 source={require('../../assets/images/mine_use.png')} />
-            </View>
+            </TouchableHighlight>
             <View style={{ flex: 1, justifyContent: 'space-around' }}>
-              <Text style={{ color: '#323232', fontSize: px(32) }}>点击登录</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ color: '#323232', fontSize: px(32) }}>周大大</Text>
+              <TouchableOpacity 
+              activeOpacity={1}
+               onPress={() => navigation.navigate('Info')}
+              style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: '#323232', fontSize: px(24) }}>编辑个人资料</Text>
                 <Image
                   style={{ width: px(40), height: px(40), }}
                   source={require('../../assets/images/mine_icon_editor.png')} />
-              </View>
+              </TouchableOpacity>
             </View>
-            <View>
+            <TouchableHighlight onPress={() => navigation.navigate('Setting')}>
               <Image
                 style={{ width: px(56), height: px(56), }}
                 source={require('../../assets/images/mine_install.png')} />
-            </View>
+            </TouchableHighlight>
           </View>
         </View>
         <View style={styles.entrance}>
-          <TouchableOpacity activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('Footprint')}
+          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_zuji.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>我的足迹</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('Attention')}
+          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_guanzhu.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>我的关注</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('callRecords')}
+          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_lianxi.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>联系记录</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('Message')}
+          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_message.png')} />

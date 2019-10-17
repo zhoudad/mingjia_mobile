@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { unitWidth, width } from '../AdapterUtil'
+import px from '../utils/px'
 
 export default class TipicTag extends Component {
     constructor(props) {
@@ -12,28 +13,32 @@ export default class TipicTag extends Component {
     static propTypes = {
         text: PropTypes.string,
         isStress: PropTypes.bool,
+        newStyle:PropTypes.object
     };
     static defaultProps = {
         text: '标签',
         isStress: false,
+        newStyle:null
     };
     render() {
-        const {text,isStress} = this.props
+        const {text,isStress,newStyle} = this.props
         return (
             <View
-                style={{
-                    height: 32 * unitWidth,
-                    backgroundColor: isStress ? "#A1D76C" : "#F2F4F7",
-                    marginRight: 10 * unitWidth,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
+                style={[
+                    {
+                        height: px(32),
+                        backgroundColor: isStress ? "#A1D76C" : "#F2F4F7",
+                        marginRight: px(10),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    },newStyle
+                ]}>
                 <Text
                     style={{
                         color: isStress ? "#FFFFFF" : "#606266",
-                        fontSize: 20 * unitWidth,
+                        fontSize: px(20),
                         // paddingVertical:6*unitWidth,
-                        paddingHorizontal: 14 * unitWidth,
+                        paddingHorizontal: px(14),
                     }}>{text}</Text>
             </View>
         );

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Icon from '../../components/Icon'
 import ActionBar from '../../components/test'
-import { unitWidth, width } from '../../AdapterUtil'
+import px from '../../utils/px'
 import CustomTabBar from '../../components/CustomTabBar'
 import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import PropertyPage from './PropertyPage'
+import HousetypePage from './HousetypePage'
 
 export default class Td extends Component {
   static navigationOptions = {
@@ -13,11 +13,11 @@ export default class Td extends Component {
     tabBarIcon: ({ focused }) => {
       if (focused) {
         return (
-          <Image style={{ width: 56 * unitWidth, height: 56 * unitWidth }} source={require('../../assets/images/tabbar_3d.png')} />
+          <Image style={{ width: px(56), height: px(56) }} source={require('../../assets/images/tabbar_3d.png')} />
         );
       }
       return (
-        <Image style={{ width: 56 * unitWidth, height: 56 * unitWidth }} source={require('../../assets/images/3d_play_s.png')} />
+        <Image style={{ width: px(56), height: px(56) }} source={require('../../assets/images/3d_play_s.png')} />
       );
     },
   };
@@ -56,25 +56,19 @@ export default class Td extends Component {
           </ActionBar>
         </View>
         <View style={styles.header}>
-          <Text style={{ marginRight: 20 * unitWidth, color: '#303133', fontSize: 32 * unitWidth }}>新房</Text>
+          <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32) }}>新房</Text>
           <TouchableOpacity style={styles.search}>
             <Image
-              style={{ width: 22 * unitWidth, height: 22 * unitWidth }}
+              style={{ width: px(22), height: px(22) }}
               source={require('../../assets/images/search_icon.png')} />
-            <Text style={{ paddingStart: 8, color: "#606466", fontSize: 24 * unitWidth }}>搜索你想要的内容</Text>
+            <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.9}>
             <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
               <Image
-                style={{ width: 40 * unitWidth, height: 40 * unitWidth }}
+                style={{ width: px(40), height: px(40) }}
                 source={require('../../assets/images/nav_horizontal.png')} />
-              <Text style={{ paddingStart: 8, color: '#303133', fontSize: 32 * unitWidth }}>游客</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.9}>
-            <View style={{ flexDirection: 'row', paddingStart: 12 }}>
-              <Icon name='wode' size={18} />
-              <Text style={{ paddingStart: 8, }}>游客</Text>
+              <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32) }}>游客</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -82,8 +76,8 @@ export default class Td extends Component {
         <ScrollableTabView
           renderTabBar={() => (<CustomTabBar
             backgroundColor={'#FFF'}
-            tabUnderlineDefaultWidth={20} // default containerWidth / (numberOfTabs * 4)
-            tabUnderlineScaleX={3} // default 3
+            tabUnderlineDefaultWidth={px(55)} 
+            tabUnderlineScaleX={3} 
             activeColor={"#303133"}
             inactiveColor={"#A8ABB3"}
           />)}>
@@ -91,7 +85,7 @@ export default class Td extends Component {
             <PropertyPage />
           </View>
           <View tabLabel='户型' style={{ flex: 1, backgroundColor: '#fff' }}>
-
+            <HousetypePage />
           </View>
         </ScrollableTabView>
       </View>
@@ -101,32 +95,32 @@ export default class Td extends Component {
 }
 const styles = StyleSheet.create({
   header: {
-    height: 90 * unitWidth,
+    height: px(90),
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
-    paddingHorizontal: 15 * unitWidth,
+    paddingHorizontal: px(15),
     backgroundColor: '#fff',
     // zIndex: 99,
     position: 'relative',
-    top: -90 * unitWidth,
+    top: px(-90),
   },
   search: {
     backgroundColor: '#F5F8FA',
-    borderRadius: 30 * unitWidth,
+    borderRadius: px(30),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    width: 480 * unitWidth,
-    height: 60 * unitWidth,
+    flex:1,
+    height: px(60),
   },
   drop: {
     flexDirection: 'row',
     position: 'relative',
     zIndex: 6,
-    height: 90 * unitWidth,
-    top: 90 * unitWidth,
+    height: px(90),
+    top: px(90),
   }
 })

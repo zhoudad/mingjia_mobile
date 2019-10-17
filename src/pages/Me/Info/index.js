@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, Animated, Dimensions, Modal, TouchableHighlight, } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Animated, Dimensions, Modal, TouchableHighlight,StatusBar } from 'react-native';
 import px from '../../../utils/px'
 import Couverture from '../../../components/Couverture';
 
@@ -14,6 +14,7 @@ export default class Info extends Component {
       sureVisible: false,
     };
   }
+  
   openPanel = () => {
     const { rotationAnim, fadeAnim } = this.state;
     this.isShowCouver = true;

@@ -11,6 +11,7 @@ const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
 
 import LoginPage from '../pages/Login'
 import SelectPage from '../pages/Select'
+//Home
 import HomePage from '../pages/Home'
 import MetPage from '../pages/Me'
 import TdPage from '../pages/Td'
@@ -21,10 +22,18 @@ import Mortgage from '../pages/Home/Mortgage'
 import computeResult from '../pages/Home/Mortgage/computeResult'
 import BuyHouse from '../pages/Home/buyHouse'
 import HouseDetails from '../pages/Home/buyHouse/HouseDetails'
-import CommentList from '../pages/Home/CommentList'
-import BasicInfo from '../pages/Td/BasicInfo'
 import Developer from '../pages/Home/Developer'
 import Experience from '../pages/Home/Experience'
+import CommentList from '../pages/Home/CommentList'
+import CommentDetails from '../pages/Home/CommentList/CommentDetails'
+//3D
+import P_BasicInfo from '../pages/Td/PropertyPage/P_BasicInfo'
+import P_DetailsInfo from '../pages/Td/PropertyPage/P_DetailsInfo'
+import P_Album from '../pages/Td/PropertyPage/P_Album'
+import Review from '../pages/Td/PropertyPage/Review'
+import ReviewDetails from '../pages/Td/PropertyPage/ReviewDetails'
+import H_BasicInfo from '../pages/Td/HousetypePage/H_BasicInfo'
+//Me
 import Me from '../pages/Me'
 import Info from '../pages/Me/Info';
 import NickName from '../pages/Me/Info/NickName'
@@ -292,6 +301,29 @@ const MainStack = createStackNavigator({
       ),
     })
   },
+  CommentDetails:{
+    screen: CommentDetails,
+    navigationOptions: ({ navigation }) => ({
+      title: '评论详情',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('../assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
+  },
   Developer: {
     screen: Developer,
     navigationOptions: ({ navigation }) => ({
@@ -338,8 +370,8 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  BasicInfo: {
-    screen: BasicInfo,
+  P_BasicInfo: {
+    screen: P_BasicInfo,
     navigationOptions: {
       header: null
     }
@@ -366,6 +398,104 @@ const MainStack = createStackNavigator({
         </TouchableOpacity>
       )
     })
+  },
+  P_DetailsInfo:{
+    screen: P_DetailsInfo,
+    navigationOptions: ({ navigation }) => ({
+      title: '信息详情',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('../assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
+  },
+  P_Album:{
+    screen: P_Album,
+    navigationOptions: ({ navigation }) => ({
+      title: '楼盘相册',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('../assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
+  },
+  Review:{
+    screen: Review,
+    navigationOptions: ({ navigation }) => ({
+      title: '楼盘点评',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('../assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
+  },
+  ReviewDetails:{
+    screen: ReviewDetails,
+    navigationOptions: ({ navigation }) => ({
+      title: '回复详情',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('../assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
+  },
+  H_BasicInfo:{
+    screen: H_BasicInfo,
+    navigationOptions: {
+      header: null
+    }
   },
   NickName: {
     screen: NickName,
@@ -545,7 +675,8 @@ const MainStack = createStackNavigator({
         </TouchableOpacity>
       ),
     })
-  }
+  },
+
 }, {
   initialRouteName: 'Main',
 });
@@ -555,6 +686,6 @@ export default createAppContainer(createSwitchNavigator(
     Login: LoginStack,
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Login',
   })
 );

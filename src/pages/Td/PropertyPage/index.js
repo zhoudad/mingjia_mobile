@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { unitWidth, width } from '../../AdapterUtil'
-import TipicTag from '../../components/TipicTag'
+import px from '../../../utils/px'
+import TipicTag from '../../../components/TipicTag'
 import { withNavigation } from 'react-navigation';
 import { View, Text, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 
@@ -40,18 +40,18 @@ class PropertyPage extends Component {
 			<TouchableOpacity 
 			style={styles.item} 
 			activeOpacity={1} 
-			onPress={() => navigation.navigate('BasicInfo')}>
+			onPress={() => navigation.navigate('P_BasicInfo')}>
 				<View style={styles.itemContent}>
-					<View style={{ width: 200 * unitWidth, height: 200 * unitWidth, backgroundColor: '#ddd' }}></View>
-					<View style={{flex:1, marginStart: 30 * unitWidth,height: 200 * unitWidth, }}>
-						<Text style={{ color: '#333333', fontWeight: "bold", fontSize: 28*unitWidth }}>广州珠江新城</Text>
-						<Text style={{ fontSize: 24 * unitWidth, color: '#B3B3B3',marginTop:9*unitWidth }}>
-							<Text style={{ paddingEnd: 35 * unitWidth }}>萧山</Text>
-							<Text style={{ paddingEnd: 35 * unitWidth }}>钱江世界城</Text>
-							<Text style={{ paddingEnd: 35 * unitWidth }}>建面积</Text>
+					<View style={{ width: px(200), height: px(200), backgroundColor: '#ddd' }}></View>
+					<View style={{flex:1, marginStart: px(200),height: px(200), }}>
+						<Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28) }}>广州珠江新城</Text>
+						<Text style={{ fontSize: px(24), color: '#B3B3B3',marginTop:px(9) }}>
+							<Text style={{ paddingEnd: px(35) }}>萧山</Text>
+							<Text style={{ paddingEnd: px(35) }}>钱江世界城</Text>
+							<Text style={{ paddingEnd: px(35) }}>建面积</Text>
 						</Text>
-						<Text style={{ color: '#ea4c4c', fontSize: 32*unitWidth,fontWeight: "bold",marginTop:24*unitWidth}}>58600 元/㎡</Text>
-						<View style={{flexDirection:'row',marginTop:8*unitWidth}}>
+						<Text style={{ color: '#ea4c4c', fontSize: px(32),fontWeight: "bold",marginTop:px(24)}}>58600 元/㎡</Text>
+						<View style={{flexDirection:'row',marginTop:px(8)}}>
 							<TipicTag text={"在售"} isStress={true}/>
 							<TipicTag text={"住宅"} />
 							<TipicTag text={"装修交付"} />
@@ -105,16 +105,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	item: {
-		height: 270 * unitWidth,
-		paddingHorizontal: 30 * unitWidth,
-		paddingTop: 40 * unitWidth,
+		height: px(270),
+		paddingHorizontal: px(30),
+		paddingTop: px(40),
 	},
 	itemContent:{
 		borderBottomColor:'#E6E9F0',
 		borderBottomWidth:1,
 		flexDirection: 'row',
 		alignItems:'center',
-		paddingBottom:30*unitWidth
+		paddingBottom:px(30)
 	},
 	Text: {
 		color: '#fff'

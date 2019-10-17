@@ -123,21 +123,12 @@ export default class Comment extends Component {
   render() {
     return (
       <ScrollView style={{ flex: 1 , backgroundColor:'#F2F4F7',marginTop:px(30)}}>
-        {/* {
-          this.state.CommentList.map((item, index) => {
-            return (
-              <CommentItem item={item} key={index} toDetails={(son,item) => this.toDetails(son,item)}></CommentItem>
-            )
-          })
-        } */}
         <CommentItem />
         <CommentItem />
         <CommentItem />
         <CommentItem />
         <CommentItem />
-        {
-          this.PublishCom()  
-        }
+        { this.PublishCom() }
       </ScrollView>
     );
   }
