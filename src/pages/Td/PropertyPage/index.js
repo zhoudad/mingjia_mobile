@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import px from '../../../utils/px'
 import TipicTag from '../../../components/TipicTag'
 import { withNavigation } from 'react-navigation';
-import { View, Text, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text,Image , FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 const City = ['北京', '上海', '深圳', '武汉', '广州', '杭州', '重庆', '天津', '香港', '福建', '郑州', '四川',]
 class PropertyPage extends Component {
@@ -42,10 +42,14 @@ class PropertyPage extends Component {
 			activeOpacity={1} 
 			onPress={() => navigation.navigate('P_BasicInfo')}>
 				<View style={styles.itemContent}>
-					<View style={{ width: px(200), height: px(200), backgroundColor: '#ddd' }}></View>
-					<View style={{flex:1, marginStart: px(200),height: px(200), }}>
-						<Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28) }}>广州珠江新城</Text>
-						<Text style={{ fontSize: px(24), color: '#B3B3B3',marginTop:px(9) }}>
+					<View style={{ width: px(200), height: px(200), }}>
+						<Image 
+						style={{width: px(200), height: px(200),borderRadius:px(10)}}
+						source={require('../../../assets/images/panda.jpg')}/>
+					</View>
+					<View style={{flex:1, marginStart: px(30),height: px(200), }}>
+						<Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28),fontFamily:'PingFang-SC-Bold',fontWeight:'bold' }}>广州珠江新城</Text>
+						<Text style={{ fontSize: px(24), color: '#B3B3B3',marginTop:px(9),fontFamily:'PingFang-SC-Medium' }}>
 							<Text style={{ paddingEnd: px(35) }}>萧山</Text>
 							<Text style={{ paddingEnd: px(35) }}>钱江世界城</Text>
 							<Text style={{ paddingEnd: px(35) }}>建面积</Text>

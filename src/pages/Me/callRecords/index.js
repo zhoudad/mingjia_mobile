@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import px from '../../../utils/px';
+const CallModule = NativeModules.RNCallBridgeModule
+CallModule.call('17681888036')
+
+const dic = await CallModule.passCallTime()
 
 export default class callRecords extends Component {
   constructor(props) {

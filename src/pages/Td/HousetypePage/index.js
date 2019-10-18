@@ -59,7 +59,7 @@ class HousetypePage extends Component {
             <Image style={{ width: px(218), height: px(128),borderRadius:px(10) }} source={require('../../../assets/images/panda.jpg')} />
           </View>
           <View style={{ marginTop: px(20) }}>
-            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(24) }}>3室2厅2卫89m</Text>
+            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(24),fontFamily:'PingFang-SC-Medium' }}>3室2厅2卫89m</Text>
             <Text style={{ color: '#ea4c4c', fontSize: px(26), fontWeight: "bold",}}>58600 元/㎡</Text>
             <View style={{ flexDirection: 'row', marginTop: px(8) }}>
               <TipicTag text={"主推"} isStress={true} />
@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
   tit: {
     color: '#303133',
     fontSize: px(28),
-    fontWeight:'bold'
+    fontWeight:'bold',
+    fontFamily:'PingFang-SC-Bold',
   }
 })
 export default withNavigation(HousetypePage);

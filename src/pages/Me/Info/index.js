@@ -67,18 +67,18 @@ export default class Info extends Component {
           <View style={{ position: 'absolute', left: px(30), right: px(30), bottom: px(20) }}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10) }}>
+              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10),marginTop: px(10), }}>
               <Text style={{ color: '#333333', fontSize: px(32) }}>从手机选择</Text>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), marginBottom: px(20) }}>
+              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
               <Text style={{ color: '#333333', fontSize: px(32) }}>拍照</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.closePanel()}
               activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10) }}>
+              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10),marginTop: px(20), }}>
               <Text style={{ color: '#333333', fontSize: px(32) }}>取消</Text>
             </TouchableOpacity>
           </View>
@@ -88,6 +88,7 @@ export default class Info extends Component {
   }
 
   render() {
+    const { navigation } = this.props
     return (
       <View style={{ flex: 1, backgroundColor: '#F2F4F7' }}>
         <View style={{ height: px(140), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
@@ -103,7 +104,7 @@ export default class Info extends Component {
         <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>昵称</Text>
           <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-            <Text>佳佳</Text>
+            <Text onPress={() => navigation.navigate('NickName') }>佳佳</Text>
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>

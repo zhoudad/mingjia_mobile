@@ -11,7 +11,7 @@ export default class msgDetails extends Component {
 
     render() {
         return (
-            <ScrollView style={{ paddingHorizontal: px(30),paddingBottom:px(80) }}>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: px(30),paddingBottom:px(80) }}>
                 <View style={{ height: px(130), borderBottomColor: '#E6E9F0', borderBottomWidth: px(1) }}>
                     <Text style={{ color: '#333333', fontSize: px(32), marginTop: px(50), fontWeight: 'bold' }}>1.0.0版本新功能介绍</Text>
                 </View>

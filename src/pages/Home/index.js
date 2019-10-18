@@ -137,12 +137,16 @@ export default class index extends Component {
           </View>
           <View style={styles.comment}>
             <View style={styles.commentItem}>
-              <Text>
+              <Text 
+              onPress={() => navigation.navigate('CommentDetails')}
+              style={{color:'#333333',fontSize:px(24),lineHeight:px(40)}}>
                 房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
                 </Text>
             </View>
             <View style={[styles.commentItem, { borderTopColor: '#E1E6F0', borderTopWidth: 1 }]}>
-              <Text>
+              <Text 
+              onPress={() => navigation.navigate('CommentDetails')}
+              style={{color:'#333333',fontSize:px(24),lineHeight:px(40)}}>
                 房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
                 </Text>
             </View>

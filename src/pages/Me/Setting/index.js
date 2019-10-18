@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, Image, } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, } from 'react-native';
 import px from '../../../utils/px'
 
 export default class Setting extends Component {
@@ -16,40 +16,42 @@ export default class Setting extends Component {
         <View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>推荐二维码</Text>
-            <TouchableHighlight 
+            <TouchableOpacity 
+            activeOpacity={1}
             onPress={() => navigation.navigate('QRcode')} 
-            style={{ flexDirection: 'row', alignItems: 'center' }}>
+            style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>清理缓存</Text>
-            <TouchableHighlight 
-            
-            style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity 
+             activeOpacity={1}
+            style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>检查更新</Text>
-            <TouchableHighlight style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity  activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <View style={{marginTop:px(20)}}>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>关于我们</Text>
-            <TouchableHighlight 
+            <TouchableOpacity 
+             activeOpacity={1}
             onPress={() => navigation.navigate('AboutOurs')} 
-            style={{ flexDirection: 'row', alignItems: 'center' }}>
+            style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>隐私政策</Text>
-            <TouchableHighlight style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity  activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           </View>
         </View>

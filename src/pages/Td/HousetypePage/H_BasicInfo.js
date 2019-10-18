@@ -44,6 +44,7 @@ export default class H_BasicInfo extends Component {
   }
 
   render() {
+    const {navigation} = this.props
     return (
       <View style={{flex:1}}>
         <ScrollView contentContainerStyle={{backgroundColor: '#F2F4F7',paddingBottom:px(100)}}>

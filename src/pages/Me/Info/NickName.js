@@ -25,7 +25,7 @@ export default class NickName extends Component {
           autoFocus={true}
           style={{ height: px(100),backgroundColor:'#FFFFFF',paddingHorizontal:px(30),color:'#999999',fontSize:px(28) }}
         //   defaultValue={navigation.state.params.nickname}
-        defaultValue={'请输入您的名字（字符或汉字在10个以内）'}
+        placeholder={'请输入您的名字（字符或汉字在10个以内）'}
         ></TextInput>
       </ScrollView>
     );
