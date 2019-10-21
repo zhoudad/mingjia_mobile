@@ -10,8 +10,9 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.horcrux.svg.SvgPackage;
+// import com.mingjia.maputil.UtilMapPackage;
 import com.mingjia.maputil.UtilMapPackage;
-import com.mingjia.maputil.UtilMapPackage;
+import com.mingjia.toast.MyToastReactPaket;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           packages.add(new UtilMapPackage());
+          // package.add(new MyToastReactPaket())
+          packages.add(new MyToastReactPaket());
           return packages;
         }
 

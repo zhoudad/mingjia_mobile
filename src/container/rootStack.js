@@ -697,7 +697,7 @@ const MainStack = createStackNavigator({
   },
 
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'callRecords',
 });
 export default createAppContainer(createSwitchNavigator(
   {
