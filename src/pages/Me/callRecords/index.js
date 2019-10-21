@@ -2,12 +2,6 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, NativeModules } from 'react-native';
 import px from '../../../utils/px';
 
-// const CallModule = NativeModules.RNCallBridgeModule
-// CallModule.call('17681888036')
-const ToastExample = NativeModules.ToastExample
-// const dic = await CallModule.passCallTime()
-// ToastExample.show("Awesome", ToastExample.SHORT);
-
 export default class callRecords extends Component {
   constructor(props) {
     super(props);
