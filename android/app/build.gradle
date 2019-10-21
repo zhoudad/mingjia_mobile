@@ -183,6 +183,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':react-native-svg')
+    implementation project(':RCTWeChat') 
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

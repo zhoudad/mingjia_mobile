@@ -84,6 +84,8 @@ const TabNav = createBottomTabNavigator(
       borderTopWidth: 0.2,
       paddingTop: 1,
       borderTopColor: '#ccc',
+      height:px(100),
+      paddingTop:px(10)
     },
     //tab bar的文本样式
     labelStyle: {
@@ -705,6 +707,6 @@ export default createAppContainer(createSwitchNavigator(
     Login: LoginStack,
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Login',
   })
 );
