@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Geolocation } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Dimensions, PermissionsAndroid, ToastAndroid} from 'react-native';
 import px from '../../utils/px'
+import Geolocation from '@react-native-community/geolocation';
 
 export default class Local extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      position: '杭州市',
+      position: '上海',
       key: '0b86bb00dfc1b69be7e033b1bef0e762',
       currentLongitude: '',
       currentLatitude: '',
@@ -14,13 +15,34 @@ export default class Local extends Component {
     };
   }
 
+  componentDidMount() {
+    var that = this;
+    if (Platform.OS === 'ios') {
+      this.getPositions();
+    } else {
+      async function requestLocationPermission() {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            that.getPositions();
+          } else {
+            alert("没有权限");
+          }
+        } catch (err) {
+          alert("err", err);
+        }
+      }
+      requestLocationPermission();
+    }
+  }
   goBack = () => {
     this.props.navigation.state.params.getCity({ city: this.state.position });
     this.props.navigation.goBack()
   }
   _renderArea(text) {
     return (
-      <TouchableOpacity style={styles.areaItem} activeOpacity={1} onPress={() => this.setState({position:item})}>
+      <TouchableOpacity style={styles.areaItem} activeOpacity={1} onPress={() => this.setState({position:text})}>
         <Text style={{ color: '#606266', fontSize: px(24) }}>{text}</Text>
       </TouchableOpacity>
     )
@@ -43,10 +65,10 @@ export default class Local extends Component {
           })
             .then((response) => response.json())
             .then((jsonData) => {
-              // console.log(jsonData)
+              console.log(jsonData.regeocode.addressComponent.city.substring(0,2))
               try {
                 this.setState({
-                  position: jsonData.regeocode.addressComponent.city,
+                  position: jsonData.regeocode.addressComponent.city.substring(0,2),
                 });
               } catch (e) {
 

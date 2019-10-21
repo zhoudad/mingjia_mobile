@@ -707,6 +707,6 @@ export default createAppContainer(createSwitchNavigator(
     Login: LoginStack,
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Main',
   })
 );
