@@ -58,7 +58,7 @@ export default class index extends Component {
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
           <Swiper
-            style={{ height: px(296) }}
+            style={{ height: px(296),paddingHorizontal: px(30), }}
             dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
             activeDot={<View style={{ backgroundColor: '#606266', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
             loop={true}

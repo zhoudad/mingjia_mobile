@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, TextInput, Image, ToastAndroid, Dimensions, AsyncStorage, } from 'react-native';
-import { connect } from 'react-redux'; // 引入connect函数
-import *as loginAction from '../actions/loginAction';// 导入action方法
+// import { connect } from 'react-redux'; // 引入connect函数
+// import *as loginAction from '../actions/loginAction';// 导入action方法
 import { NavigationActions } from 'react-navigation';
 import { unitWidth, width } from '../AdapterUtil'
 import * as WeChat from 'react-native-wechat';
@@ -18,7 +18,7 @@ const resetAction = NavigationActions.navigate({
   // ]
 })
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +39,7 @@ class Login extends Component {
     // 登录完成,切成功登录   
     if (nextProps.status === '登陆成功' && nextProps.isSuccess) {
       this.props.navigation.dispatch(resetAction)
-      this.sendForm()
+      // this.sendForm()
       return false;
     }
     return true;
@@ -190,11 +190,30 @@ class Login extends Component {
         }
       })
   }
+  loginIn = () => {
+    const { user_tel, user_code, ip ,ip_name} = this.state;
+    const self = this;
+    request({
+      method: 'POST',
+      url: '/userinfo',
+      data: { user_tel, user_code, ip ,ip_name,'user_ftime': (new Date()).getTime(), }
+    })
+      .then((data) => {
+        // console.log('登录成功：' + JSON.stringify(data));
+        if(res.data.status == 101 || res.data.status == 0 || res.data.status == 102){
+          saveToken(data.data);
+          navigationUtil.reset(self.props.navigation, 'Select');
+        }
+      })
+      .catch(err => {
+        Alert.alert('登录失败', err.message || err);
+      });
+  }
   onblur = (obj) => {
     let myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
     let regcode = /^\d{5}$/
-    if (obj.input == 'tel') {
-      if (this.state.sendDate != null && !this.state.sendDate.tel) {
+    if (obj.input == 'tel' && this.state.sendDate != null) {
+      if (!this.state.sendDate.tel) {
         ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
       } else {
         if (myreg.test(this.state.sendDate.tel)) {
@@ -204,8 +223,8 @@ class Login extends Component {
           ToastAndroid.show('手机号格式不正确', ToastAndroid.SHORT);
         }
       }
-    } else if (obj.input == 'code') {
-      if (this.state.sendDate != null && !this.state.sendDate.Verification) {
+    } else if (obj.input == 'code' && this.state.sendDate != null) {
+      if (this.state.sendDate == null && !this.state.sendDate.Verification) {
         ToastAndroid.show('验证码不能为空', ToastAndroid.SHORT);
       } else {
         if (regcode.test(this.state.sendDate.Verification)) {
@@ -347,7 +366,7 @@ class Login extends Component {
           </View>
           <View style={styles.form}>
             <View style={styles.item}>
-              <Text style={styles.label}>手机号：</Text>
+              <Text style={styles.label}>手机号:</Text>
               <TextInput
                 style={[styles.input]}
                 placeholderTextColor={'#ddd'}
@@ -360,7 +379,7 @@ class Login extends Component {
             </View>
             <View style={styles.item}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <Text style={styles.label}>验证码：</Text>
+                <Text style={styles.label}>验证码:</Text>
                 <TextInput
                   style={[styles.input]}
                   placeholderTextColor={'#ddd'}
@@ -381,7 +400,7 @@ class Login extends Component {
           </View>
           <BoxShadow setting={shadowOpt}>
             <View style={styles.loginButton}>
-              <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={() => login()}>
+              <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} >
                 <Text style={{ color: '#fff', textAlign: 'center', lineHeight: px(90), fontSize: px(32), fontWeight: 'bold' }}
                 >同意协议并登录</Text>
               </TouchableOpacity>
@@ -433,25 +452,25 @@ const styles = StyleSheet.create({
     fontSize: 22 * unitWidth,
   },
   label: {
-    marginHorizontal: 20 * unitWidth,
+    marginHorizontal: 10 * unitWidth,
     color: '#333333',
     fontFamily: 'PingFang-SC-Medium'
   },
   input: {
-    marginStart: 10 * unitWidth,
+    // marginStart: 10 * unitWidth,
     flex: 1,
     color: '#000000',
     fontWeight: 'bold'
   }
 })
-export default connect(
-  (state) => ({
-    status: state.loginIn.status,
-    isSuccess: state.loginIn.isSuccess,
-    user: state.loginIn.user,
-  }),
-  (dispatch) => ({
-    login: () => dispatch(loginAction.login()),
-  })
+// export default connect(
+//   (state) => ({
+//     status: state.loginIn.status,
+//     isSuccess: state.loginIn.isSuccess,
+//     user: state.loginIn.user,
+//   }),
+//   (dispatch) => ({
+//     login: () => dispatch(loginAction.login()),
+//   })
 
-)(Login)
+// )(Login)

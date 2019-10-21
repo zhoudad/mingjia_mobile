@@ -37,6 +37,8 @@ target 'mingjia' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'mingjiaTests' do
     inherit! :search_paths
     # Pods for testing

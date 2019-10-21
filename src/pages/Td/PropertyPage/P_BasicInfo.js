@@ -122,13 +122,13 @@ export default class BasicInfo extends Component {
     return (
       <View>
         <ScrollView contentContainerStyle={{ marginBottom: px(30) }}>
-          <StatusBar
+          {/* <StatusBar
             animated={true}
             hidden={false}
             backgroundColor='transparent'
             translucent={true}
             barStyle='light-content'
-          />
+          /> */}
           <View style={styles.headerImg}>
             <View style={{ height: px(422) }}>
               <ImageBackground

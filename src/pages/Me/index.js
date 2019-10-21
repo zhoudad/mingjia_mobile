@@ -65,13 +65,13 @@ export default class index extends Component {
     const { navigation } = this.props
     return (
       <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#F9F9F9', }}>
-        <StatusBar
+        {/* <StatusBar
           animated={true}
           hidden={false}
           backgroundColor='transparent'
           translucent={true}
           barStyle='light-content'
-        />
+        /> */}
         <View style={{ paddingTop: px(110), height: px(380), }}>
           <View style={styles.header}>
             <TouchableHighlight 

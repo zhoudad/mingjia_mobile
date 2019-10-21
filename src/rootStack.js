@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Text, Platform, View, TextInput, TouchableOpacity, Image } from 'react-native'
-import px from '../utils/px'
+import px from './utils/px'
 import {
   createAppContainer,
   createSwitchNavigator,
@@ -9,43 +9,41 @@ import {
 } from 'react-navigation'
 const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
 
-import LoginPage from '../pages/Login'
-import SelectPage from '../pages/Select'
+import LoginPage from './pages/Login'
+import SelectPage from './pages/Select'
 //Home
-import HomePage from '../pages/Home'
-import MetPage from '../pages/Me'
-import TdPage from '../pages/Td'
-import Local from '../pages/Home/Local'
-import Message from '../pages/Home/Message'
-import msgDetails from '../pages/Home/Message/msgDetails'
-import Mortgage from '../pages/Home/Mortgage'
-import computeResult from '../pages/Home/Mortgage/computeResult'
-import BuyHouse from '../pages/Home/buyHouse'
-import HouseDetails from '../pages/Home/buyHouse/HouseDetails'
-import Developer from '../pages/Home/Developer'
-import Experience from '../pages/Home/Experience'
-import CommentList from '../pages/Home/CommentList'
-import CommentDetails from '../pages/Home/CommentList/CommentDetails'
+import HomePage from './pages/Home'
+import MetPage from './pages/Me'
+import TdPage from './pages/Td'
+import Local from './pages/Home/Local'
+import Message from './pages/Home/Message'
+import msgDetails from './pages/Home/Message/msgDetails'
+import Mortgage from './pages/Home/Mortgage'
+import computeResult from './pages/Home/Mortgage/computeResult'
+import BuyHouse from './pages/Home/buyHouse'
+import HouseDetails from './pages/Home/buyHouse/HouseDetails'
+import Developer from './pages/Home/Developer'
+import Experience from './pages/Home/Experience'
+import CommentList from './pages/Home/CommentList'
+import CommentDetails from './pages/Home/CommentList/CommentDetails'
 //3D
-import P_BasicInfo from '../pages/Td/PropertyPage/P_BasicInfo'
-import P_DetailsInfo from '../pages/Td/PropertyPage/P_DetailsInfo'
-import P_Album from '../pages/Td/PropertyPage/P_Album'
-import Review from '../pages/Td/PropertyPage/Review'
-import ReviewDetails from '../pages/Td/PropertyPage/ReviewDetails'
-import H_BasicInfo from '../pages/Td/HousetypePage/H_BasicInfo'
+import P_BasicInfo from './pages/Td/PropertyPage/P_BasicInfo'
+import P_DetailsInfo from './pages/Td/PropertyPage/P_DetailsInfo'
+import P_Album from './pages/Td/PropertyPage/P_Album'
+import Review from './pages/Td/PropertyPage/Review'
+import ReviewDetails from './pages/Td/PropertyPage/ReviewDetails'
+import H_BasicInfo from './pages/Td/HousetypePage/H_BasicInfo'
 //Me
-import Me from '../pages/Me'
-import Info from '../pages/Me/Info';
-import NickName from '../pages/Me/Info/NickName'
-import Setting from '../pages/Me/Setting';
-import QRcode from '../pages/Me/Setting/QRcode';
-import AboutOurs from '../pages/Me/Setting/AboutOurs';
-import Footprint from '../pages/Me/Footprint'
-import Attention from '../pages/Me/Attention'
-import callRecords from '../pages/Me/callRecords'
+import Me from './pages/Me'
+import Info from './pages/Me/Info';
+import NickName from './pages/Me/Info/NickName'
+import Setting from './pages/Me/Setting';
+import QRcode from './pages/Me/Setting/QRcode';
+import AboutOurs from './pages/Me/Setting/AboutOurs';
+import Footprint from './pages/Me/Footprint'
+import Attention from './pages/Me/Attention'
+import callRecords from './pages/Me/callRecords'
 
-import Maps from '../pages/Map'
-import Crop from '../pages/crop';
 
 const TabNav = createBottomTabNavigator(
   {
@@ -123,21 +121,6 @@ const LoginStack = createStackNavigator({
   initialRouteName: 'Login',
 });
 const MainStack = createStackNavigator({
-  Map:{
-    screen: Maps,
-    navigationOptions: {
-      header: null
-    }
-  },
-  Crop:{
-    screen: Crop,
-    navigationOptions: {
-      header: null
-    }
-  },
-
-
-  
   Main: {
     screen: TabNav,
     navigationOptions: {
@@ -181,7 +164,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -204,7 +187,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -227,7 +210,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -250,7 +233,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -273,7 +256,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -285,7 +268,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -308,7 +291,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
       headerRight: (
@@ -340,7 +323,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -363,7 +346,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -386,7 +369,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -415,7 +398,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -438,7 +421,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -461,7 +444,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -484,7 +467,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -507,7 +490,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -536,7 +519,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
       headerRight: (
@@ -568,7 +551,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -591,7 +574,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       )
     })
@@ -614,7 +597,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
     })
@@ -637,7 +620,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
       headerRight: (
@@ -669,7 +652,7 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
     })
@@ -692,21 +675,23 @@ const MainStack = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
           <Image
             style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('../assets/images/nav_icon_back.png')} />
+            source={require('./assets/images/nav_icon_back.png')} />
         </TouchableOpacity>
       ),
     })
   },
 
 }, {
-  initialRouteName: 'callRecords',
+  initialRouteName: 'Main',
 });
-export default createAppContainer(createSwitchNavigator(
+export default function configAppNavigator(isLoggedIn) {
+  return createAppContainer(createSwitchNavigator(
   {
     Main: MainStack,
     Login: LoginStack,
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: isLoggedIn ? 'Main' : 'Login',
   })
 );
+}
