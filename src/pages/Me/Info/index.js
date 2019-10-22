@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Image, Animated, Dimensions, Modal, Touch
 import px from '../../../utils/px'
 import Couverture from '../../../components/Couverture';
 import { BoxShadow } from 'react-native-shadow'
+import ActionSheet from 'react-native-general-actionsheet';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default class Info extends Component {
   constructor(props) {
@@ -13,6 +15,9 @@ export default class Info extends Component {
       isShowCouver: false,
       askVisible: false,
       sureVisible: false,
+      sex:'选择性别',
+      nickName:'周大大',
+      uri:'https://facebook.github.io/react-native/img/tiny_logo.png'
     };
   }
 
@@ -55,39 +60,109 @@ export default class Info extends Component {
       }
     ).start();
   };
-  _renderUpimg(flag) {
-    this.openPanel()
-    if (flag) {
-      return (
-        <View style={{ paddingHorizontal: px(30), position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}>
-          <Couverture
-            onPress={() => this.closePanel()}
-            isShow={this.state.isShowCouver}
-            opacity={this.state.fadeAnim}
-          />
-          <View style={{ position: 'absolute', left: px(30), right: px(30), bottom: px(20) }}>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
-              <Text style={{ color: '#333333', fontSize: px(32) }}>从手机选择</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
-              <Text style={{ color: '#333333', fontSize: px(32) }}>拍照</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.closePanel()}
-              activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(20), }}>
-              <Text style={{ color: '#333333', fontSize: px(32) }}>取消</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    }
+  // _renderUpimg(flag) {
+  //   this.openPanel()
+  //   if (flag) {
+  //     return (
+  //       <View style={{ paddingHorizontal: px(30), position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}>
+  //         <Couverture
+  //           onPress={() => this.closePanel()}
+  //           isShow={this.state.isShowCouver}
+  //           opacity={this.state.fadeAnim}
+  //         />
+  //         <View style={{ position: 'absolute', left: px(30), right: px(30), bottom: px(20) }}>
+  //           <TouchableOpacity
+  //             activeOpacity={1}
+  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
+  //             <Text style={{ color: '#333333', fontSize: px(32) }}>从手机选择</Text>
+  //           </TouchableOpacity>
+  //           <TouchableOpacity
+  //             activeOpacity={1}
+  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
+  //             <Text style={{ color: '#333333', fontSize: px(32) }}>拍照</Text>
+  //           </TouchableOpacity>
+  //           <TouchableOpacity
+  //             onPress={() => this.closePanel()}
+  //             activeOpacity={1}
+  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(20), }}>
+  //             <Text style={{ color: '#333333', fontSize: px(32) }}>取消</Text>
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     )
+  //   }
+  // }
+
+  openCamera(){
+    ImagePicker.openCamera({
+      width: 476,
+      height: 476,
+      cropping: true,
+      // multiple:true
+    }).then(image => {
+      let path = image.path;
+      this.setState({
+        uri: path
+      });
+    }, err => {
+      console.log('err= ' + err);
+    }).catch(err => {
+      console.log('image catch err= ' + err);
+    });
+  }
+  openPicker() {
+      ImagePicker.openPicker({
+        width: 476,
+        height: 476,
+        cropping: true,  //是否裁剪
+        // multiple:true
+      }).then(image => {
+        let path = image.path;
+        this.setState({
+          uri: path
+        });
+        // this.uploadAvatar(path);
+      }, err => {
+        console.log('err= ' + err);
+      }).catch(err => {
+        console.log('image catch err= ' + err);
+      });
   }
 
+  changeImg(){
+    let that = this
+    ActionSheet.showActionSheetWithOptions({
+      options: [
+        '从手机选择',
+        '拍照',
+        '取消',
+      ],
+      cancelButtonIndex:2,
+    },function(index) {
+      if(index == 0){
+        that.openPicker()
+      }else if(index == 1){
+        that.openCamera()
+      }
+    })
+  }
+  selectSex(){
+    let that = this
+    ActionSheet.showActionSheetWithOptions({
+      options: [
+        '男',
+        '女',
+        '取消',
+      ],
+      cancelButtonIndex:2,
+    },function(index) {
+      if(index == 0){
+        that.setState({sex:'男'})
+      }else if(index == 1){
+        that.setState({sex:'女'})
+      }
+    })
+  }
   render() {
     const { navigation } = this.props
     const shadowOpt = {
@@ -106,24 +181,27 @@ export default class Info extends Component {
         <View style={{ height: px(140), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>头像</Text>
           <TouchableOpacity
-            onPress={() => this.setState({ isShowCouver: true })}
+            // onPress={() => this.setState({ isShowCouver: true })}
+            onPress = {() => this.changeImg()}
             style={{ flexDirection: 'row', alignItems: 'center' }}
             activeOpacity={1}>
-            <Image style={{ width: px(80), height: px(80), borderRadius: px(40) }} source={{ uri: 'https://facebook.github.io/react-native/img/tiny_logo.png' }} />
+            <Image style={{ width: px(80), height: px(80), borderRadius: px(40) }} source={{ uri: this.state.uri }} />
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>昵称</Text>
           <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-            <Text onPress={() => navigation.navigate('NickName')}>佳佳</Text>
+            <Text onPress={() => navigation.navigate('NickName')}>{this.state.nickName}</Text>
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>性别</Text>
-          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-            <Text>选择性别</Text>
+          <TouchableOpacity 
+          onPress={() => this.selectSex()}
+          style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
+            <Text>{this.state.sex}</Text>
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>
@@ -205,7 +283,7 @@ export default class Info extends Component {
             </View>
           </Modal>
         </View>
-        {this._renderUpimg(this.state.isShowCouver)}
+        {/* {this._renderUpimg(this.state.isShowCouver)} */}
       </View>
     );
   }

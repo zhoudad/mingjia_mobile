@@ -5,7 +5,7 @@ import { unitWidth, width } from '../../AdapterUtil'
 import px from '../../utils/px'
 import Swiper from 'react-native-swiper';
 
-export default class index extends Component {
+export default class Home extends Component {
   static navigationOptions = {
     tabBarLabel: '首页',
     tabBarIcon: ({ focused }) => {

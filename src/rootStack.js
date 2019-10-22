@@ -724,7 +724,7 @@ const MainStack = createStackNavigator({
   },
 
 }, {
-  initialRouteName: 'Info',
+  initialRouteName: 'P_BasicInfo',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

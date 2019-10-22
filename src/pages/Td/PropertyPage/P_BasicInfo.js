@@ -3,6 +3,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput, Dimensions, StatusBar, Modal, TouchableHighlight } from 'react-native';
 import TipicTag from '../../../components/TipicTag'
 import px from '../../../utils/px'
+import Swiper from 'react-native-swiper';
 
 const { height, width } = Dimensions.get('window')
 
@@ -16,6 +17,7 @@ export default class BasicInfo extends Component {
       // images: null,
       commentTxtLength: 0,
       images: [],
+      index: 0,
     };
   }
   _activeDot(index) {
@@ -71,15 +73,13 @@ export default class BasicInfo extends Component {
       </View>
     )
   }
-  
-  closeImg(index){
+  closeImg(index) {
     let newImages = this.state.images
-    newImages.splice(index,1)
+    newImages.splice(index, 1)
     this.setState({
-      images:newImages
+      images: newImages
     })
   }
-
   pickSingle(cropit, circular = false) {//选择，展示图片
     ImagePicker.openPicker({
       width: 300,
@@ -107,12 +107,12 @@ export default class BasicInfo extends Component {
       // Alert.alert(e.message ? e.message : e);
     });
   }
-  _render_delImage(){
+  _render_delImage() {
     return (
-      <TouchableOpacity activeOpacity={1} style={{width:px(30),height:px(30),backgroundColor:'#FFF',justifyContent:'center',alignItems:'center'}}>
-        <View style={{width:px(28),height:px(28),backgroundColor:'#EA4C4C'}}>
-          <View style={{width:px(24),height:px(4),backgroundColor:'#FFF', transform: [{rotateX:'45deg'}]}}></View>
-          <View style={{width:px(4),height:px(24),backgroundColor:'#FFF', transform: [{rotateX:'-45deg'}]}}></View>
+      <TouchableOpacity activeOpacity={1} style={{ width: px(30), height: px(30), backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ width: px(28), height: px(28), backgroundColor: '#EA4C4C' }}>
+          <View style={{ width: px(24), height: px(4), backgroundColor: '#FFF', transform: [{ rotateX: '45deg' }] }}></View>
+          <View style={{ width: px(4), height: px(24), backgroundColor: '#FFF', transform: [{ rotateX: '-45deg' }] }}></View>
         </View>
       </TouchableOpacity>
     )
@@ -131,17 +131,43 @@ export default class BasicInfo extends Component {
           /> */}
           <View style={styles.headerImg}>
             <View style={{ height: px(422) }}>
-              <ImageBackground
-                style={{ height: px(422) }}
-                source={require('../../../assets/images/panda.jpg')}
-              >
-                <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
-                  <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={styles.play}>
-                  <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
-                </TouchableOpacity>
-              </ImageBackground>
+              {/* <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
+                <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
+              </TouchableOpacity> */}
+              <Swiper style={{ height: px(422),}}
+              showsPagination={false}
+              loop={false}
+              onIndexChanged={(index) => this.setState({headerIndex:index})}
+                index={0}>
+                <View style={{ height: px(422), borderRadius: px(10) }}>
+                <ImageBackground
+                    style={{ height: px(422) }}
+                    source={require('../../../assets/images/panda.jpg')}
+                  >
+                    <TouchableOpacity activeOpacity={1} style={styles.play}>
+                      <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
+                    </TouchableOpacity>
+                  </ImageBackground>
+                </View>
+                <View style={{ height: px(422), borderRadius: px(10) }}>
+                <ImageBackground
+                    style={{ height: px(422) }}
+                    source={require('../../../assets/images/panda.jpg')}
+                  >
+                    <TouchableOpacity activeOpacity={1} style={styles.play}>
+                      <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/3d_play1.png')} />
+                    </TouchableOpacity>
+                  </ImageBackground>
+                </View>
+                <View style={{ height: px(422), borderRadius: px(10) }}>
+                  <ImageBackground
+                    style={{ height: px(422) }}
+                    source={require('../../../assets/images/panda.jpg')}
+                  >
+                  </ImageBackground>
+                </View>
+              </Swiper>
+              
             </View>
           </View>
           <View style={styles.headerTab}>
@@ -264,7 +290,7 @@ export default class BasicInfo extends Component {
           <View style={styles.review}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
               <Text style={{ color: '#303133', fontSize: px(28) }}>用户点评（15）</Text>
-              <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>查看更多</Text>
+              <Text style={{ color: '#A8ABB3', fontSize: px(24) }} onPress={() => navigation.navigate('Review')}>查看更多</Text>
             </View>
             <View>
               {this._reviewItem()}
@@ -288,7 +314,7 @@ export default class BasicInfo extends Component {
                     transparent={true}
                     visible={this.ReviewVisible}
                     onRequestClose={() => {
-                      this.setState({ ReviewVisible: false,images: [] })
+                      this.setState({ ReviewVisible: false, images: [] })
                     }}
                   >
                     <View style={{ height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -323,13 +349,13 @@ export default class BasicInfo extends Component {
                                     return (
                                       <View style={{ width: px(120), height: px(120), borderRadius: px(10), marginRight: px(20), }} key={index}>
                                         <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={{ uri: item.uri }} />
-                                        <TouchableOpacity 
-                                        onPress={() => this.closeImg(index)}
-                                        activeOpacity={1} 
-                                        style={styles.imgDel}>
-                                          <View style={{width:px(22),height:px(22),backgroundColor:'#EA4C4C',borderRadius:px(11)}}>
-                                            <View style={{width:px(16),height:px(3),backgroundColor:'#FFF', transform: [{rotateZ:'45deg'}],position:'absolute',left:'50%',top:'50%',marginTop:px(-1.5),marginLeft:px(-8)}}></View>
-                                            <View style={{width:px(3),height:px(16),backgroundColor:'#FFF', transform: [{rotateZ:'45deg'}],position:'absolute',left:'50%',top:'50%',marginTop:px(-8),marginLeft:px(-1.5)}}></View>
+                                        <TouchableOpacity
+                                          onPress={() => this.closeImg(index)}
+                                          activeOpacity={1}
+                                          style={styles.imgDel}>
+                                          <View style={{ width: px(22), height: px(22), backgroundColor: '#EA4C4C', borderRadius: px(11) }}>
+                                            <View style={{ width: px(16), height: px(3), backgroundColor: '#FFF', transform: [{ rotateZ: '45deg' }], position: 'absolute', left: '50%', top: '50%', marginTop: px(-1.5), marginLeft: px(-8) }}></View>
+                                            <View style={{ width: px(3), height: px(16), backgroundColor: '#FFF', transform: [{ rotateZ: '45deg' }], position: 'absolute', left: '50%', top: '50%', marginTop: px(-8), marginLeft: px(-1.5) }}></View>
                                           </View>
                                         </TouchableOpacity>
                                       </View>
@@ -482,15 +508,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: px(190)
   },
-  imgDel:{
-    width:px(26),
-    height:px(26),
-    backgroundColor:'#FFF',
-    justifyContent:'center',
-    alignItems:'center',
-    position:'absolute',
-    borderRadius:px(13),
-    right:px(-10),
-    marginTop:px(-10)
+  imgDel: {
+    width: px(26),
+    height: px(26),
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    borderRadius: px(13),
+    right: px(-10),
+    marginTop: px(-10)
   }
 })

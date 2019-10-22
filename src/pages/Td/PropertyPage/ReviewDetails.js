@@ -18,8 +18,8 @@ class DetailsItem extends Component {
           <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
           <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
         </View>
-        <View style={{ flex: 1, marginTop: px(30), }}>
-          <Text numberOfLines={999} style={{ color: '#303133', fontSize: px(24) }}>
+        <View style={{ flex: 1, marginTop: px(30),marginBottom:px(40) }}>
+          <Text numberOfLines={999} style={{ color: '#303133', fontSize: px(24),lineHeight:px(46)}}>
             各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
                   各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
                 </Text>
@@ -50,7 +50,7 @@ export default class ReviewDetails extends Component {
         <TouchableHighlight
           onPress={() => this.PublishComment()}
           style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ lineHeight: px(46), color: '#FFFFFF', fontSize: px(32), }}>发表评论</Text>
+          <Text style={{ lineHeight: px(46), color: '#FFFFFF', fontSize: px(32), }}>发表</Text>
         </TouchableHighlight>
       </View>
     )
@@ -69,25 +69,23 @@ export default class ReviewDetails extends Component {
               <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
               <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <View style={{ marginTop: px(30), }}>
-                <Text numberOfLines={this.state.Expand ? 999 : 2} style={{ color: '#303133', fontSize: px(24) }}>
-                  各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
+            <View style={{ marginTop: px(30)}}>
+              <Text style={{ color: '#303133', fontSize: px(24),lineHeight: px(46)}}>
+                各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
                 各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。</Text>
-                <View style={styles.ReviewItemExpand} >
-                  <Text
-                    style={{ flex: 1, textAlign: 'right', color: '#A8ABB3', fontSize: px(24) }}
-                    onPress={() => this.setState({ Expand: !this.state.Expand, })}>
-                    {this.state.Expand ? '收回' : '展开>'}
-                  </Text>
-                </View>
-              </View>
-              <View style={{ marginTop: px(30), flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_nice.png')} />
-                  <Text style={{ marginStart: px(7) }}>123</Text>
-                </TouchableOpacity>
-              </View>
+              {/* <View style={styles.ReviewItemExpand} >
+                <Text
+                  style={{ flex: 1, textAlign: 'right', color: '#A8ABB3', fontSize: px(24) }}
+                  onPress={() => this.setState({ Expand: !this.state.Expand, })}>
+                  {this.state.Expand ? '收回' : '展开>'}
+                </Text>
+              </View> */}
+            </View>
+            <View style={{ marginTop: px(30), flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',marginBottom:px(40) }}>
+              <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_nice.png')} />
+                <Text style={{ marginStart: px(7) }}>123</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -108,7 +106,7 @@ export default class ReviewDetails extends Component {
       </View>
     );
   }
-} 
+}
 const styles = StyleSheet.create({
   Publish: {
     height: px(100),
@@ -148,6 +146,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: px(30),
     marginBottom: px(30),
     backgroundColor: '#FFFFFF',
-    minHeight: px(334)
   }
 })
