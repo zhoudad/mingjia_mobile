@@ -30,6 +30,7 @@ export default class Td extends Component {
   }
 
   render() {
+   const {navigation} =  this.props
     var data = [
       ["区域", "第一项目", "第一项目", "第一项目",],
       ["价格", "第二项目", "第二项目", "第二项目"],
@@ -57,24 +58,24 @@ export default class Td extends Component {
         </View>
         <View style={styles.header}>
           <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32) }}>新房</Text>
-          <TouchableOpacity style={styles.search}>
+          <TouchableOpacity style={styles.search} activeOpacity={1}>
             <Image
               style={{ width: px(22), height: px(22) }}
               source={require('../../assets/images/search_icon.png')} />
             <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.9}>
+          <TouchableOpacity activeOpacity={0.9} onPress = {() => navigation.replace('Owner')}>
             <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
               <Image
                 style={{ width: px(40), height: px(40) }}
                 source={require('../../assets/images/nav_horizontal.png')} />
-              <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32) }}>游客</Text>
+              <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32) }}>业主</Text>
             </View>
           </TouchableOpacity>
         </View>
       <View style={{ flex: 1, position: 'relative', zIndex: 5 }}>
         <ScrollableTabView
-          renderTabBar={() => (<CustomTabBar
+            renderTabBar={() => (<CustomTabBar
             backgroundColor={'#FFF'}
             tabUnderlineDefaultWidth={px(55)} 
             tabUnderlineScaleX={3} 

@@ -30,9 +30,12 @@ import CommentDetails from './pages/Home/CommentList/CommentDetails'
 import P_BasicInfo from './pages/Td/PropertyPage/P_BasicInfo'
 import P_DetailsInfo from './pages/Td/PropertyPage/P_DetailsInfo'
 import P_Album from './pages/Td/PropertyPage/P_Album'
+import P_tD from './pages/Td/PropertyPage/P_tD'
 import Review from './pages/Td/PropertyPage/Review'
 import ReviewDetails from './pages/Td/PropertyPage/ReviewDetails'
 import H_BasicInfo from './pages/Td/HousetypePage/H_BasicInfo'
+import Owner from './pages/Td/Owner'
+import H_tD from './pages/Td/HousetypePage/H_tD'
 //Me
 import Me from './pages/Me'
 import Info from './pages/Me/Info';
@@ -43,6 +46,7 @@ import AboutOurs from './pages/Me/Setting/AboutOurs';
 import Footprint from './pages/Me/Footprint'
 import Attention from './pages/Me/Attention'
 import callRecords from './pages/Me/callRecords'
+import Notification from './pages/Me/Notification'
 
 
 const TabNav = createBottomTabNavigator(
@@ -82,8 +86,8 @@ const TabNav = createBottomTabNavigator(
       borderTopWidth: 0.2,
       paddingTop: 1,
       borderTopColor: '#ccc',
-      height:px(100),
-      paddingTop:px(10)
+      height: px(100),
+      paddingTop: px(10)
     },
     //tab bar的文本样式
     labelStyle: {
@@ -123,6 +127,12 @@ const LoginStack = createStackNavigator({
 const MainStack = createStackNavigator({
   Main: {
     screen: TabNav,
+    navigationOptions: {
+      header: null
+    }
+  },
+  Owner: {
+    screen: Owner,
     navigationOptions: {
       header: null
     }
@@ -297,15 +307,12 @@ const MainStack = createStackNavigator({
       headerRight: (
         <Text
           style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
-        // onPress={() => {
-        //     navigation.state.params.msManagement()
-        //     navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
-        //   }}
+          onPress={() => navigation.state.params.navigatePress()}
         >我也发布</Text>
       ),
     })
   },
-  CommentDetails:{
+  CommentDetails: {
     screen: CommentDetails,
     navigationOptions: ({ navigation }) => ({
       title: '评论详情',
@@ -403,7 +410,7 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  P_DetailsInfo:{
+  P_DetailsInfo: {
     screen: P_DetailsInfo,
     navigationOptions: ({ navigation }) => ({
       title: '信息详情',
@@ -426,7 +433,13 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  P_Album:{
+  P_tD: {
+    screen: P_tD,
+    navigationOptions: {
+      header: null
+    }
+  },
+  P_Album: {
     screen: P_Album,
     navigationOptions: ({ navigation }) => ({
       title: '楼盘相册',
@@ -449,7 +462,7 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  Review:{
+  Review: {
     screen: Review,
     navigationOptions: ({ navigation }) => ({
       title: '楼盘点评',
@@ -472,7 +485,7 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  ReviewDetails:{
+  ReviewDetails: {
     screen: ReviewDetails,
     navigationOptions: ({ navigation }) => ({
       title: '回复详情',
@@ -495,8 +508,14 @@ const MainStack = createStackNavigator({
       )
     })
   },
-  H_BasicInfo:{
+  H_BasicInfo: {
     screen: H_BasicInfo,
+    navigationOptions: {
+      header: null
+    }
+  },
+  H_tD: {
+    screen: H_tD,
     navigationOptions: {
       header: null
     }
@@ -625,7 +644,7 @@ const MainStack = createStackNavigator({
       ),
       headerRight: (
         <Text
-          style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30),}}
+          style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), }}
         // onPress={() => {
         //   navigation.state.params.msManagement()
         //   navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
@@ -657,7 +676,7 @@ const MainStack = createStackNavigator({
       ),
     })
   },
-  callRecords:{
+  callRecords: {
     screen: callRecords,
     navigationOptions: ({ navigation }) => ({
       title: '联系记录',
@@ -680,18 +699,41 @@ const MainStack = createStackNavigator({
       ),
     })
   },
+  Notification:{
+    screen: Notification,
+    navigationOptions: ({ navigation }) => ({
+      title: '消息通知',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('./assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      ),
+    })
+  },
 
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'Info',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(
-  {
-    Main: MainStack,
-    Login: LoginStack,
-  },
-  {
-    initialRouteName: isLoggedIn ? 'Main' : 'Login',
-  })
-);
+    {
+      Main: MainStack,
+      Login: LoginStack,
+    },
+    {
+      initialRouteName: isLoggedIn ? 'Main' : 'Login',
+    })
+  );
 }

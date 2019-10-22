@@ -100,18 +100,22 @@ class CommentItem extends Component {
                 各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。</Text>
               <View>{this.shouExpandCom()}</View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30) }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30),marginBottom:px(40) }}>
               <TouchableOpacity activeOpacity={1} style={styles.replyBtn}>
                 <Text style={{color:'#A8ABB3',fontSize:px(20)}}>回复TA</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
-                  <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_nice.png')} />
-                  <Text style={{ marginStart: px(7) }}>123</Text>
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({awesome:!this.state.awesome})} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
+                  <Image 
+                  style={{ width: px(40), height: px(40) }} 
+                  source={this.state.awesome ? require('../../../assets/images/comment_gle.png') : require('../../../assets/images/comment_gle_n.png')} />
+                  <Text style={{ marginStart: px(7) }}>{this.state.awesome?2+1:2}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image style={{ width: px(40), height: px(40) }} source={require('../../../assets/images/comment_ugle.png')} />
-                  <Text style={{ marginStart: px(7) }}>123</Text>
+                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => this.setState({nolike:!this.state.nolike})}>
+                  <Image 
+                  style={{ width: px(40), height: px(40) }} 
+                  source={this.state.nolike ? require('../../../assets/images/comment_ugle.png') : require('../../../assets/images/comment_ugle_n.png')} />
+                  <Text style={{ marginStart: px(7) }}>{this.state.nolike?1+1:1}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -142,7 +146,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: px(30),
     marginBottom: px(30),
     backgroundColor:'#FFFFFF',
-    minHeight:px(334)
   }
 })
 export default withNavigation(CommentItem);

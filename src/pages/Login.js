@@ -351,11 +351,11 @@ export default class Login extends Component {
       width: px(540),
       color: "#EA4C4C",
       border: px(25),
-      radius: px(45),
+      radius: px(0),
       opacity: 0.1,
       x: 0,
       y: px(8),
-      style: { marginTop: px(130) }
+      style: { marginTop: px(130),borderRadius:px(45) }
     }
     const { login } = this.props;
     return (

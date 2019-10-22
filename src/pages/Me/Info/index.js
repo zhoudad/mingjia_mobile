@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image, Animated, Dimensions, Modal, TouchableHighlight,StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Animated, Dimensions, Modal, TouchableHighlight, StatusBar } from 'react-native';
 import px from '../../../utils/px'
 import Couverture from '../../../components/Couverture';
+import { BoxShadow } from 'react-native-shadow'
 
 export default class Info extends Component {
   constructor(props) {
@@ -14,7 +15,7 @@ export default class Info extends Component {
       sureVisible: false,
     };
   }
-  
+
   openPanel = () => {
     const { rotationAnim, fadeAnim } = this.state;
     this.isShowCouver = true;
@@ -67,7 +68,7 @@ export default class Info extends Component {
           <View style={{ position: 'absolute', left: px(30), right: px(30), bottom: px(20) }}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10),marginTop: px(10), }}>
+              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
               <Text style={{ color: '#333333', fontSize: px(32) }}>从手机选择</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -78,7 +79,7 @@ export default class Info extends Component {
             <TouchableOpacity
               onPress={() => this.closePanel()}
               activeOpacity={1}
-              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10),marginTop: px(20), }}>
+              style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(20), }}>
               <Text style={{ color: '#333333', fontSize: px(32) }}>取消</Text>
             </TouchableOpacity>
           </View>
@@ -89,6 +90,17 @@ export default class Info extends Component {
 
   render() {
     const { navigation } = this.props
+    const shadowOpt = {
+      height: px(90),
+      width: px(540),
+      color: "#EA4C4C",
+      border: px(25),
+      radius: px(0),
+      opacity: 0.5,
+      x: 0,
+      y: px(8),
+      // style: { borderRadius: 3, }
+    }
     return (
       <View style={{ flex: 1, backgroundColor: '#F2F4F7' }}>
         <View style={{ height: px(140), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
@@ -104,7 +116,7 @@ export default class Info extends Component {
         <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>昵称</Text>
           <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-            <Text onPress={() => navigation.navigate('NickName') }>佳佳</Text>
+            <Text onPress={() => navigation.navigate('NickName')}>佳佳</Text>
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>
@@ -116,12 +128,14 @@ export default class Info extends Component {
           </TouchableOpacity>
         </View>
         <View style={{ height: px(90), justifyContent: 'center', flexDirection: 'row', marginTop: px(120) }}>
-          <TouchableOpacity
-            onPress={() => this.setState({ askVisible: true })}
-            activeOpacity={1}
-            style={{ width: px(540), height: px(90), justifyContent: 'center', alignItems: 'center', backgroundColor: '#EA4C4C', borderRadius: px(45) }}>
-            <Text style={{ color: '#FFFFFF', fontSize: px(32) }}>注销账号</Text>
-          </TouchableOpacity>
+          {/* <BoxShadow setting={shadowOpt}> */}
+            <TouchableOpacity
+              onPress={() => this.setState({ askVisible: true })}
+              activeOpacity={1}
+              style={{ width: px(540), height: px(90), justifyContent: 'center', alignItems: 'center', backgroundColor: '#EA4C4C', borderRadius: px(90) }}>
+              <Text style={{ color: '#FFFFFF', fontSize: px(32) }}>注销账号</Text>
+            </TouchableOpacity>
+          {/* </BoxShadow> */}
           <Modal
             animationType="slide"
             transparent={true}

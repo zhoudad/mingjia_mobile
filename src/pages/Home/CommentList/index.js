@@ -15,6 +15,9 @@ export default class Comment extends Component {
       com_content: ''
     };
   }
+  componentDidMount(){
+    this.props.navigation.setParams({ navigatePress: this.getFocus })
+  }
 
   getFocus = () => {
     this.setState({ focus: true }, () => {
@@ -86,8 +89,8 @@ export default class Comment extends Component {
           ></TextInput>
           <TouchableOpacity
             onPress={() => this.PublishComment()}
-            style={{ width: 80, height: 50, borderColor: '#ddd', borderWidth: 1, marginRight: 15, }}>
-            <Text style={{ textAlign: 'center', lineHeight: 50, }}>发表评论</Text>
+            style={{ width: px(200), height: px(100),backgroundColor:'#EA4C4C' }}>
+            <Text style={{ textAlign: 'center', lineHeight: px(100), color:'#FFF'}}>发表评论</Text>
           </TouchableOpacity>
         </View>
       )
@@ -122,33 +125,36 @@ export default class Comment extends Component {
   }
   render() {
     return (
-      <ScrollView style={{ flex: 1 , backgroundColor:'#F2F4F7',marginTop:px(30)}}>
-        <CommentItem />
-        <CommentItem />
-        <CommentItem />
-        <CommentItem />
-        <CommentItem />
-        { this.PublishCom() }
-      </ScrollView>
+      <View style={{flex:1}}>
+        <ScrollView style={{ flex: 1 , backgroundColor:'#F2F4F7',marginTop:px(30)}}>
+          <CommentItem />
+          <CommentItem />
+          <CommentItem />
+          <CommentItem />
+          <CommentItem />
+        </ScrollView>
+          { this.PublishCom() }
+      </View>
     );
   }
 }
 const styles = StyleSheet.create({
   Publish: {
     height: px(100),
-    width: '100%',
-    backgroundColor: '#fff',
+    width: screenWidth,
+    backgroundColor: '#FFF',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'absolute',
     left: 0,
     bottom: 0,
+    // paddingHorizontal:px(30)
   },
   PublishInput: {
     padding:0,
     flex: 1,
-    backgroundColor:'#F2F4F7',
-    paddingStart:px(30)
+    // backgroundColor:'#F2F4F7',
+    paddingLeft:px(30)
   }
 })

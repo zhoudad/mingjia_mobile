@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -13,6 +14,7 @@ import java.util.List;
 import com.horcrux.svg.SvgPackage;
 // import com.mingjia.maputil.UtilMapPackage;
 import com.theweflex.react.WeChatPackage;
+// import com.rnfs.RNFSPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,6 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           packages.add(new WeChatPackage());
+          // packages.add(new RNFSPackage());
+          // packages.add(new MainReactPackage());
           return packages;
         }
 

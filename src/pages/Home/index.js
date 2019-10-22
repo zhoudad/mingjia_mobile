@@ -22,7 +22,12 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      city:'上海'
     };
+  }
+  getCity = (city) => {
+    console.log(city)
+    this.setState({city:city.city})
   }
   _renderHousr(index) {
     if (index <= 0) {
@@ -41,9 +46,9 @@ export default class index extends Component {
     return (
       <ScrollView>
         <View style={styles.search}>
-          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Local')}>
+          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Local',{getCity:this.getCity})}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: px(32), color: '#333333' }}>杭州</Text>
+              <Text style={{ fontSize: px(32), color: '#333333' }}>{this.state.city}</Text>
               <Image
                 style={{ width: px(24), height: px(24),marginEnd:px(10) }}
                 source={require('../../assets/images/home_arrow_down.png')} />

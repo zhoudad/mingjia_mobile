@@ -17,7 +17,7 @@ class App extends Component {
   }
   componentDidMount() {
     const self = this;
-    console.log(self.checkedLogin)
+    console.log(self.state.checkedLogin)
     refreshToken()
       .then(() => self.setState({ checkedLogin: true, isLoggedIn: true }))
       .catch(err => {

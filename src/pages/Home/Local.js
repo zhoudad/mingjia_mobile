@@ -37,12 +37,13 @@ export default class Local extends Component {
     }
   }
   goBack = () => {
+    console.log('back')
     this.props.navigation.state.params.getCity({ city: this.state.position });
     this.props.navigation.goBack()
   }
-  _renderArea(text) {
+  _renderArea(text,key) {
     return (
-      <TouchableOpacity style={styles.areaItem} activeOpacity={1} onPress={() => this.setState({position:text})}>
+      <TouchableOpacity key={key} style={styles.areaItem} activeOpacity={1} onPress={() => this.setState({position:text})}>
         <Text style={{ color: '#606266', fontSize: px(24) }}>{text}</Text>
       </TouchableOpacity>
     )
@@ -65,7 +66,7 @@ export default class Local extends Component {
           })
             .then((response) => response.json())
             .then((jsonData) => {
-              console.log(jsonData.regeocode.addressComponent.city.substring(0,2))
+              // console.log(jsonData.regeocode.addressComponent.city.substring(0,2))
               try {
                 this.setState({
                   position: jsonData.regeocode.addressComponent.city.substring(0,2),
@@ -102,7 +103,7 @@ export default class Local extends Component {
     return (
       <View>
         <View style={styles.header}>
-         <TouchableOpacity activeOpacity={1} onPress={() => navigation.goBack()}>
+         <TouchableOpacity activeOpacity={1} onPress={() => this.goBack()}>
          <Image
             style={{ width: px(56), height: px(56), marginHorizontal: px(8) }}
             source={require('../../assets/images/nav_icon_back.png')} />
@@ -128,8 +129,8 @@ export default class Local extends Component {
             <Text style={{ color: '#303233', fontSize: px(28), marginBottom: px(30), marginTop: px(60) }}>服务地区</Text>
             <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'}}>
               {
-                this.state.city.map(item => {
-                 return this._renderArea(item)
+                this.state.city.map((item,key) => {
+                 return this._renderArea(item,key)
                 })
               }
             </View>
