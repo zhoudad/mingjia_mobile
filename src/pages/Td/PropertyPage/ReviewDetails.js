@@ -48,7 +48,7 @@ export default class ReviewDetails extends Component {
         // onEndEditing={() => this.setState({ focus: false })}
         ></TextInput>
         <TouchableHighlight
-          onPress={() => this.PublishComment()}
+          // onPress={() => this.PublishComment()}
           style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ lineHeight: px(46), color: '#FFFFFF', fontSize: px(32), }}>发表</Text>
         </TouchableHighlight>

@@ -15,6 +15,7 @@ import com.horcrux.svg.SvgPackage;
 // import com.mingjia.maputil.UtilMapPackage;
 import com.theweflex.react.WeChatPackage;
 // import com.rnfs.RNFSPackage;
+// import com.mingjia.MyLocationPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -32,7 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           packages.add(new WeChatPackage());
           // packages.add(new RNFSPackage());
-          // packages.add(new MainReactPackage());
+          // packages.add(new MyLocationPackage());
           return packages;
         }
 

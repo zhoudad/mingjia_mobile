@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, NativeModules } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, } from 'react-native';
 import px from '../../../utils/px';
 
 export default class callRecords extends Component {
@@ -29,7 +29,6 @@ export default class callRecords extends Component {
         {this._renderItem()}
         {this._renderItem()}
         {this._renderItem()}
-        <Text onPress={() => ToastExample.show('12313123',CustomToast.SHORT)}>弹出Toast</Text>
       </ScrollView>
     );
   }

@@ -27,7 +27,7 @@ export default class index extends Component {
 
 
   _renderTab(){
-    if(false){
+    if(true){
       return (
         <ScrollView
             showsHorizontalScrollIndicator={false}
@@ -64,7 +64,7 @@ export default class index extends Component {
   render() {
     const { navigation } = this.props
     return (
-      <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#F9F9F9', }}>
+      <ScrollView contentContainerStyle={{ backgroundColor: '#F9F9F9', }}>
         {/* <StatusBar
           animated={true}
           hidden={false}

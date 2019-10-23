@@ -163,14 +163,14 @@ export default class Td extends Component {
         heightStyle.height = this.state.maxHeight;
       }
       return (
-        <View style={{ position: "absolute", left: 0, right: 0, top: px(90), bottom: 0, width, height, zIndex: 99 }} >
+        <View style={{ position: "absolute", left: 0, right: 0, top: px(90), bottom: 0, width, height, }} >
           <TouchableOpacity
             onPress={() => this.openOrClosePanel(this.state.activityIndex)}
             activeOpacity={1}
             style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }} >
             <View style={{ opacity: 0.4, backgroundColor: "black", flex: 1 }} />
           </TouchableOpacity>
-          {
+          {/* {
             this.state.activityIndex == 0 ?
               <View style={[styles.ActivityPanel, heightStyle, { flexDirection: 'row', }]}>
                 <View style={{ flex: 1 }}>
@@ -238,7 +238,7 @@ export default class Td extends Component {
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
-          }
+          } */}
 
         </View>
       );
@@ -262,12 +262,6 @@ export default class Td extends Component {
     this.openOrClosePanel(this.state.activityIndex);
   }
 
-
-  test(){
-    return(
-      <View style={{ width: px(500), height: px(500),  position: 'absolute', top: px(200), left: px(200), backgroundColor: 'red'}}></View>
-    )
-  }
   render() {
     const { navigation } = this.props
     return (
@@ -289,7 +283,7 @@ export default class Td extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1,position:'absolute',top:px(180),left: 0,width,height:height-px(180),}}>
+        <View style={{ flex: 1, position: 'absolute', top: px(180), left: 0, width, height: height - px(180), }}>
           <ScrollableTabView
             renderTabBar={() => (<CustomTabBar
               backgroundColor={'#FFF'}
@@ -309,7 +303,7 @@ export default class Td extends Component {
         <View style={styles.drop}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
             {data.map((item, index) => (
-              <Touchable
+              <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => this.openOrClosePanel(index)}
                 key={index}
@@ -320,32 +314,16 @@ export default class Td extends Component {
                   </Text>
                   {this.renderDropDownArrow(index)}
                 </View>
-              </Touchable>
+              </TouchableOpacity>
             ))}
-            <TouchableOpacity 
-            activeOpacity={1} onPress={() => this.openOrClosePanel(3)}>
-              <Image style={{ width: px(30), height: px(25) }} 
-              source={this.state.sortActivity ? require('../../assets/images/nav_vertical_s.png') : require('../../assets/images/nav_vertical.png')} />
+            <TouchableOpacity
+              activeOpacity={1} onPress={() => this.openOrClosePanel(3)}>
+              <Image style={{ width: px(30), height: px(25) }}
+                source={this.state.sortActivity ? require('../../assets/images/nav_vertical_s.png') : require('../../assets/images/nav_vertical.png')} />
             </TouchableOpacity>
           </View>
           {this.renderActivityPanel()}
         </View>
-
-        {/* <ScrollView style={{ flex: 1 }}>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View><View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-          <View style={{ height: px(200), marginVertical: px(20), backgroundColor: 'green' }}></View>
-
-        </ScrollView>
-        {this.test()} */}
-
       </View >
     );
   }
