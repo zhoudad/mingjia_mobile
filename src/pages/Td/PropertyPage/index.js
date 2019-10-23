@@ -54,7 +54,7 @@ class PropertyPage extends Component {
 							<Text style={{ paddingEnd: px(35) }}>钱江世界城</Text>
 							<Text style={{ paddingEnd: px(35) }}>建面积</Text>
 						</Text>
-						<Text style={{ color: '#ea4c4c', fontSize: px(32),fontWeight: "bold",marginTop:px(24)}}>58600 元/㎡</Text>
+						<Text style={{ color: '#ea4c4c', fontSize: px(32),fontWeight: "bold",marginTop:px(24)}}>58600 <Text style={{fontSize:px(24)}}>元/㎡</Text></Text>
 						<View style={{flexDirection:'row',marginTop:px(8)}}>
 							<TipicTag text={"在售"} isStress={true}/>
 							<TipicTag text={"住宅"} />
@@ -107,6 +107,7 @@ class PropertyPage extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingBottom:px(100)
 	},
 	item: {
 		height: px(270),

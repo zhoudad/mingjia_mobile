@@ -12,7 +12,7 @@ export default class NickName extends Component {
 
   nameChang = (text) => {
     this.setState({ nickname: text },() => {
-    //   this.props.navigation.setParams({ newName: this.state.nickname })
+      this.props.navigation.setParams({ newName: this.state.nickname })
     })
   }
 
@@ -24,8 +24,8 @@ export default class NickName extends Component {
           onChangeText={(text) => this.nameChang(text)}
           autoFocus={true}
           style={{ height: px(100),backgroundColor:'#FFFFFF',paddingHorizontal:px(30),color:'#999999',fontSize:px(28) }}
-        //   defaultValue={navigation.state.params.nickname}
-        placeholder={'请输入您的名字（字符或汉字在10个以内）'}
+          defaultValue={navigation.state.params.nickname}
+        // placeholder={'请输入您的名字（字符或汉字在10个以内）'}
         ></TextInput>
       </ScrollView>
     );

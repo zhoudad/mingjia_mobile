@@ -174,7 +174,7 @@ export default class BasicInfo extends Component {
             <TouchableOpacity
               activeOpacity={1}
               style={{ flex: 1, alignItems: 'center' }}
-              onPress={() => this.setState({ headerIndex: 0 })}
+              // onPress={() => this.setState({ headerIndex: 0 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}
@@ -192,7 +192,7 @@ export default class BasicInfo extends Component {
                 flex: 1,
                 alignItems: 'center'
               }}
-              onPress={() => this.setState({ headerIndex: 1 })}
+              // onPress={() => this.setState({ headerIndex: 1 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}
@@ -205,7 +205,7 @@ export default class BasicInfo extends Component {
             <TouchableOpacity
               activeOpacity={1}
               style={{ flex: 1, alignItems: 'center' }}
-              onPress={() => this.setState({ headerIndex: 2 })}
+              // onPress={() => this.setState({ headerIndex: 2 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}

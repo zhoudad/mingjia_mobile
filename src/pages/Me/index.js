@@ -126,7 +126,7 @@ export default class index extends Component {
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>联系记录</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-          onPress={() => navigation.navigate('Message')}
+          onPress={() => navigation.navigate('Notification')}
           activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}

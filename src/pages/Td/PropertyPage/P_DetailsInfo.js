@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity,Image } from 'react-native';
 import TipicTag from '../../../components/TipicTag'
 import px from '../../../utils/px'
+import Communications from 'react-native-communications';
 
 export default class DetailsInfo extends Component {
   constructor(props) {
@@ -14,20 +15,20 @@ export default class DetailsInfo extends Component {
     return (
       <View style={{flex:1}}>
 
-        <ScrollView style={{ backgroundColor: '#F2F4F7' }}>
-          <View style={{ height: px(220), paddingHorizontal: px(30),backgroundColor:'#FFF'}}>
+        <ScrollView contentContainerStyle={{ backgroundColor: '#F2F4F7',paddingBottom:px(100),marginBottom:px(20)}}>
+          <View style={{ paddingVertical: px(15),backgroundColor:'#FFF',marginBottom:px(20),paddingHorizontal:px(30)}}>
             <Text style={styles.tit}>新城府</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-between',marginTop:px(30) }}>
-              <TipicTag text={"在售"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"住宅"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"项目在建"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"装修交付"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"大型社交"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"复式"} newStyle={{marginBottom: px(20),}}/>
-              <TipicTag text={"小户型"} newStyle={{marginBottom: px(20),}}/>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-between' }}>
+              <TipicTag text={"在售"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"住宅"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"项目在建"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"装修交付"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"大型社交"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"复式"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
+              <TipicTag text={"小户型"} newStyle={{borderRadius:px(5),marginVertical: px(15),}}/>
             </View>
           </View>
-          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginTop:px(20)}}>
+          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginBottom:px(20)}}>
             <Text style={styles.tit}>基本信息</Text>
             <Text style={{color:'#606266',fontSize:px(24),lineHeight:px(50),marginTop:px(15)}}>
               <Text>别名：资融创新府城</Text>{'\n'}
@@ -40,7 +41,7 @@ export default class DetailsInfo extends Component {
               <Text>售楼地址：广东省 广州市 天河区 棠下街道乐天大厦</Text>{'\n'}
             </Text>
           </View>
-          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginTop:px(20)}}>
+          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginBottom:px(20)}}>
             <Text style={styles.tit}>小区概况</Text>
             <Text style={{color:'#606266',fontSize:px(24),lineHeight:px(50),marginTop:px(15)}}>
               <Text>建筑类型：住宅</Text>{'\n'}
@@ -55,7 +56,7 @@ export default class DetailsInfo extends Component {
               <Text>工程进度：在建中</Text>{'\n'}
             </Text>
           </View>
-          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginTop:px(20)}}>
+          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginBottom:px(20)}}>
             <Text style={styles.tit}>物业信息</Text>
             <Text style={{color:'#606266',fontSize:px(24),lineHeight:px(50),marginTop:px(15)}}>
               <Text>物业费：3.2元/平米/月</Text>{'\n'}
@@ -64,7 +65,7 @@ export default class DetailsInfo extends Component {
               <Text>车位比：1 : 1.3</Text>{'\n'}
             </Text>
           </View>
-          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginTop:px(20)}}>
+          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginBottom:px(40)}}>
             <Text style={styles.tit}>预售许可证</Text>
             <Text style={{color:'#606266',fontSize:px(24),lineHeight:px(50),marginTop:px(15)}}>
               <Text>预售证号：92832363653</Text>{'\n'}
@@ -88,6 +89,7 @@ export default class DetailsInfo extends Component {
             <Text >关注</Text>
           </TouchableOpacity>
           <TouchableOpacity
+          onPress={() => Communications.phonecall('10086', true)}
             activeOpacity={1}
             style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image
@@ -106,6 +108,8 @@ const styles =  StyleSheet.create({
     color:'#303133',
     fontSize:px(32),
     fontWeight:'bold',
-    paddingTop:px(30)
+    // paddingTop:px(30)
+    paddingVertical:px(15)
+    
   }
 })

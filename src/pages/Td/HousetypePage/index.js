@@ -76,18 +76,18 @@ class HousetypePage extends Component {
         <FlatList
           data={this.state.cityData}
           renderItem={(data) => this._renderItem(data)}
-          refreshControl={
-            <RefreshControl
-              title={'loading'}
-              colors={['green']}
-              refreshing={this.state.isLoading}
-              onRefresh={() => {
-                this.Loading(true)
-              }}
-            />
-          }
-          ListFooterComponent={() => this.more()}
-          onEndReached={() => this.Loading()}
+          // refreshControl={
+          //   <RefreshControl
+          //     title={'loading'}
+          //     colors={['green']}
+          //     refreshing={this.state.isLoading}
+          //     onRefresh={() => {
+          //       this.Loading(true)
+          //     }}
+          //   />
+          // }
+          // ListFooterComponent={() => this.more()}
+          // onEndReached={() => this.Loading()}
         />
       </View>
     );
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal:px(30),
+    paddingBottom:px(100)
   },
   H_item: {
     height: px(270),

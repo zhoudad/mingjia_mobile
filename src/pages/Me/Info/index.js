@@ -16,9 +16,12 @@ export default class Info extends Component {
       askVisible: false,
       sureVisible: false,
       sex:'选择性别',
-      nickName:'周大大',
+      nickname:'周大大',
       uri:'https://facebook.github.io/react-native/img/tiny_logo.png'
     };
+  }
+  componentDidMount(){
+    this.props.navigation.setParams({ isSave: false })
   }
 
   openPanel = () => {
@@ -163,6 +166,9 @@ export default class Info extends Component {
       }
     })
   }
+  setName = (data) => {
+    this.setState(data)
+  }
   render() {
     const { navigation } = this.props
     const shadowOpt = {
@@ -181,7 +187,6 @@ export default class Info extends Component {
         <View style={{ height: px(140), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>头像</Text>
           <TouchableOpacity
-            // onPress={() => this.setState({ isShowCouver: true })}
             onPress = {() => this.changeImg()}
             style={{ flexDirection: 'row', alignItems: 'center' }}
             activeOpacity={1}>
@@ -191,8 +196,10 @@ export default class Info extends Component {
         </View>
         <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ color: '#303133', fontSize: px(28) }}>昵称</Text>
-          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-            <Text onPress={() => navigation.navigate('NickName')}>{this.state.nickName}</Text>
+          <TouchableOpacity 
+          onPress={() => this.props.navigation.navigate('NickName', { setName: this.setName, nickname: this.state.nickname })}
+          style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
+            <Text>{this.state.nickname}</Text>
             <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
         </View>
@@ -231,19 +238,21 @@ export default class Info extends Component {
                   </Text>
                 </View>
                 <View style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                  <TouchableHighlight
+                  <TouchableOpacity
+                  activeOpacity={1}
                     onPress={() => this.setState({ askVisible: false })}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}
                   >
                     <Text style={{ fontSize: px(30), color: '#999999' }}>取消</Text>
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                   <View style={{ height: px(30), width: px(2), backgroundColor: '#E6E6E6' }}></View>
-                  <TouchableHighlight
+                  <TouchableOpacity
+                  activeOpacity={1}
                     onPress={() => this.setState({ askVisible: false, sureVisible: true })}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}
                   >
                     <Text style={{ fontSize: px(30), color: '#333333' }}>确定</Text>
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

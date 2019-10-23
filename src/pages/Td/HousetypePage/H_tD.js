@@ -13,8 +13,8 @@ export default class H_tD extends Component {
     return (
       <View style={{ flex: 1 }}>
         <WebView
-          source={{ uri: 'http://192.168.10.79:8181/index.html' }}
-          style={{ marginTop: 20 }}
+          source={{ uri: 'http://192.168.31.83/' }}
+          style={{ }}
         />
       </View>
     );

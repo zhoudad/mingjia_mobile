@@ -68,7 +68,7 @@ const TabNav = createBottomTabNavigator(
     //当前选中的tab bar的文本颜色和图标颜色
     activeTintColor: '#EA4C4C',
     //当前未选中的tab bar的文本颜色和图标颜色
-    inactiveTintColor: '#ddd',
+    inactiveTintColor: '#666666',
     //是否显示tab bar的图标，默认是false
     showIcon: true,
     //showLabel - 是否显示tab bar的文本，默认是true
@@ -544,10 +544,10 @@ const MainStack = createStackNavigator({
       headerRight: (
         <Text
           style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), }}
-        // onPress={() => {
-        //     navigation.state.params.msManagement()
-        //     navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
-        //   }}
+          onPress={() => {
+            navigation.goBack()
+            navigation.state.params.setName({ nickname: navigation.state.params.newName })
+          }}
         >保存</Text>
       ),
     })
@@ -699,7 +699,7 @@ const MainStack = createStackNavigator({
       ),
     })
   },
-  Notification:{
+  Notification: {
     screen: Notification,
     navigationOptions: ({ navigation }) => ({
       title: '消息通知',
@@ -724,7 +724,7 @@ const MainStack = createStackNavigator({
   },
 
 }, {
-  initialRouteName: 'P_BasicInfo',
+  initialRouteName: 'Main',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

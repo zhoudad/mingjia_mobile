@@ -5,7 +5,7 @@ import {
   ScrollView,
   Animated,
   StyleSheet,
-  Platform ,
+  Platform,
   Dimensions, BackHandler
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -183,12 +183,7 @@ class ActionBarItem extends Component {
         }}
       >
         <Animated.View
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: -(maxHeight + 50),
-            width,
+          style={{  position: 'absolute', left: 0, right: 0, top: -(maxHeight + 50),  width,
             // zIndex: -3,
             transform: [
               {
@@ -200,7 +195,7 @@ class ActionBarItem extends Component {
             ]
           }}
         >
-          <View style={{ height: maxHeight,flexDirection:'row' }}>
+          <View style={{ height: maxHeight, flexDirection: 'row' }}>
             <View style={{ flex: 1 }}>
               <ScrollView
                 style={{
@@ -217,58 +212,10 @@ class ActionBarItem extends Component {
                 </View>
               </ScrollView>
             </View>
-            <View style={{ flex: 1 }}>
-              <ScrollView
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: '#fff',
-                }}
-              >
-                {items.map(item => (
-                <Touchable
-                  key={item.id}
-                  style={{ flex: 1, height: 39,borderBottomColor: '#ddd',borderBottomWidth: 1,borderLeftColor:'#ddd',borderLeftWidth:1 }}
-                  onPress={() => this.itemOnPress(item)}
-                >
-                  {this.renderChcek(item, themeColor)}
-                </Touchable>
-              ))}
-              </ScrollView>
-            </View>
-            <View style={{ flex: 1 ,}}>
-              <ScrollView
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: '#fff',
-                }}
-              >
-                {items.map(item => (
-                <Touchable
-                  key={item.id}
-                  style={{ flex: 1, height: 39,borderBottomColor: '#ddd',borderBottomWidth: 1,borderLeftColor:'#ddd',borderLeftWidth:1 }}
-                  onPress={() => this.itemOnPress(item)}
-                >
-                  {this.renderChcek(item, themeColor)}
-                </Touchable>
-              ))}
-              </ScrollView>
-            </View>
+            
+            
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
-          >
+          <View style={{ flex: 1,  flexDirection: 'row', justifyContent: 'space-between' }} >
             <Touchable style={styles.cancel_button} onPress={() => this.handleSubmit('cancel')}>
               <View style={styles.button_text_view}>
                 <Text style={styles.cancel_button_text}>重置</Text>
@@ -399,7 +346,7 @@ class ActionBarItem extends Component {
           opacity={fadeAnim}
         />
         {this.renderActivityPanel()}
-        <View style={{ flex: 1,}}>
+        <View style={{ flex: 1, }}>
           <View
             style={{
               flexDirection: 'row',

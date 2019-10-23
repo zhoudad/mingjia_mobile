@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput } from 'react-native';
 import Icon from '../../components/Icon'
 import { unitWidth, width } from '../../AdapterUtil'
 import px from '../../utils/px'
@@ -58,7 +58,8 @@ export default class Home extends Component {
             <Image
               style={{ width: px(40), height: px(40), marginHorizontal: px(10) }}
               source={require('../../assets/images/search_icon.png')} />
-            <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text>
+            {/* <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text> */}
+            <TextInput style={{flex:1,color: '#909399', fontSize: px(28),padding:0}} placeholder={"请输入楼盘、户型、地址名称"}></TextInput>
           </View>
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
@@ -69,13 +70,13 @@ export default class Home extends Component {
             loop={true}
             paginationStyle={{ bottom: px(25), }}
             index={0}>
-            <View style={{ height: px(296), borderRadius: px(10) }} key={index}>
+            <View style={{ height: px(296), borderRadius: px(10) }} >
               <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
             </View>
-            <View style={{ height: px(296), borderRadius: px(10) }} key={index}>
+            <View style={{ height: px(296), borderRadius: px(10) }} >
               <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
             </View>
-            <View style={{ height: px(296), borderRadius: px(10) }} key={index}>
+            <View style={{ height: px(296), borderRadius: px(10) }} >
               <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
             </View>
           </Swiper>
