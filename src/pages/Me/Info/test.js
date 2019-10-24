@@ -72,76 +72,86 @@
 
 import React, { Component } from 'react';
 import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    View
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  Button
 } from 'react-native';
+import Video from 'react-native-video';
+import px from '../../../utils/px'
 
 export default class AwesomeProject extends Component {
-    constructor(props) {
-        super(props); //必须有这句代码 父组件向子组件传递属性, 比如styles属性等
-        this.state = {
-            bigButtonPointerEvents: null //状态机变量控制大按钮是否工作
-        };
-        this.onBigButtonPressed = this.onBigButtonPressed.bind(this);
-        this.onSmallButtonPressed = this.onSmallButtonPressed.bind(this);
-    }
+  constructor(props) {
+    super(props); //必须有这句代码 父组件向子组件传递属性, 比如styles属性等
+    this.player = null
+    this.state = {
+      bigButtonPointerEvents: null, //状态机变量控制大按钮是否工作,
+      rate: 1,
+      volume: 1,
+      muted: false,
+      resizeMode: 'contain',
+      duration: 0.0,
+      slideValue: 0.00,
+      currentTime: 0,
+      controls: false,
+      paused: false,
+      ignoreSilentSwitch: null,
+      isBuffering: false,
+      flag: true,
+    };
+  }
 
-    onBigButtonPressed() {
-        console.log('Big button pressed');
-    }
 
-    onSmallButtonPressed() {
-        if (this.state.bigButtonPointerEvents === null) {
-            console.log('big button will not responde');
-            this.setState({bigButtonPointerEvents: 'none'});//改变状态机变量
-            return;
-        }
-        console.log('big button will responde');
-        this.setState({bigButtonPointerEvents: 'box-none'});//改变状态机变量
-    }
 
-    render() {
-        return (
-            //根View
-            <View style={styles.container}
-                  pointerEvents='box-none'>
-                <Text style={styles.sButtonStyle}
-                      onPress={this.onSmallButtonPressed}>
-                    SmallButton
-                </Text>
-                <View style={styles.bButtonStyle}
-                      pointerEvents={this.state.bigButtonPointerEvents}>
-                    <Text style={{flex:1,fontSize: 20}}
-                          onPress={this.onBigButtonPressed}
-                          >
-                        BigButton
-                    </Text>
-                </View>
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={{flex:1}}>
+        <Video
+          ref={ref => this.player = ref}
+          // source={require('../../../assets/test.mp4')}
+          source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
+          style={{ flex:1 }}
+          rate={this.state.rate}//播放速率
+          paused={this.state.paused}//暂停
+          volume={this.state.volume}//调节音量
+          muted={this.state.muted}//控制音频是否静音
+          ignoreSilentSwitch={this.state.ignoreSilentSwitch}
+          //resizeMode={this.state.resizeMode}//视频尺寸设置
+          resizeMode="contain"
+          //onLoad={this.onLoad}//加载媒体并准备播放时调用的回调函数。
+          //onBuffer={this.onBuffer}
+          //onProgress={this.onProgress}//视频播放过程中每个间隔进度单位调用的回调函数
+          //onEnd={(data) => this.onEnd(data)}//视频播放结束时的回调函数
+          repeat={true}//确定在到达结尾时是否重复播放视频。
+          controls={this.state.controls}
+        />
+        <View style={{paddingVertical:px(50)}}>
+          <Button title={'暂停'} onPress={() => this.setState({paused:!this.state.paused})}></Button>
+        </View>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {   //根View样式
-        flex: 1
-    },
-    sButtonStyle: {      // 小按钮的样式
-        fontSize: 20,
-        left: 130,
-        top: 50,
-        width: 150,
-        height: 35,
-        backgroundColor: 'green'
-    },
-    bButtonStyle: {     //大按钮的样式
-        left: 130,
-        top: 50,
-        width: 150,
-        height: 70,
-        backgroundColor: 'grey',
-        alignItems: 'center',
-    }
+  container: {   //根View样式
+    flex: 1
+  },
+  sButtonStyle: {      // 小按钮的样式
+    fontSize: 20,
+    left: 130,
+    top: 50,
+    width: 150,
+    height: 35,
+    backgroundColor: 'green'
+  },
+  bButtonStyle: {     //大按钮的样式
+    left: 130,
+    top: 50,
+    width: 150,
+    height: 70,
+    backgroundColor: 'grey',
+    alignItems: 'center',
+  }
 });
