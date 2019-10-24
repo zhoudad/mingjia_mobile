@@ -14,7 +14,8 @@ class DetailsItem extends Component {
       <View style={styles.ReviewItem}>
         <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row', marginTop: px(30) }}>
           <Image
-            style={{ backgroundColor: '#EA4C4C', width: px(60), height: px(60), borderRadius: px(30) }} />
+           source={{uri:'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg'}}
+            style={{ width: px(60), height: px(60), borderRadius: px(30) }} />
           <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
           <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
         </View>
@@ -65,7 +66,8 @@ export default class ReviewDetails extends Component {
           <View style={styles.ReviewItem}>
             <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row', marginTop: px(30) }}>
               <Image
-                style={{ backgroundColor: '#EA4C4C', width: px(60), height: px(60), borderRadius: px(30) }} />
+               source={{uri:'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg'}}
+                style={{ width: px(60), height: px(60), borderRadius: px(30) }} />
               <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
               <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
             </View>

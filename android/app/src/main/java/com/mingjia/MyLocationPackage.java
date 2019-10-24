@@ -1,24 +1,24 @@
-// package com.mingjia;//自己包的位置
+package com.mingjia;
 
-// import com.facebook.react.ReactPackage;
-// import com.facebook.react.bridge.NativeModule;
-// import com.facebook.react.bridge.ReactApplicationContext;
-// import com.facebook.react.uimanager.ViewManager;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
 
-// import java.util.Arrays;
-// import java.util.Collections;
-// import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 
-// public class MyLocationPackage implements ReactPackage {
-//     @Override
-//     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-//         return Collections.emptyList();
-//     }
+public class MyLocationPackage implements ReactPackage {
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
 
-//     @Override
-//     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-//         return Arrays.<NativeModule>asList(new MyLocationModule(reactContext));
-//     }
-// }
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        return Arrays.<NativeModule>asList(new MyLocationModule(reactContext));
+    }
+}

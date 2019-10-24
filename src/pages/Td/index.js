@@ -9,9 +9,9 @@ import HousetypePage from './HousetypePage'
 import ActionBar from '../../components/test'
 const { width, height } = Dimensions.get('window');
 const data = [
-  ["区域", "第一项目", "第一项目", "第一项目",],
-  ["价格", "第二项目", "第二项目", "第二项目"],
-  ["户型", "第二项目", "第二项目", "第二项目"],
+  ["区域", "第一项目", "第一项目", "第一项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
+  ["价格", "第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
+  ["户型", "第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
 
 ]
 export default class Td extends Component {
@@ -159,18 +159,18 @@ export default class Td extends Component {
     if (this.state.activityIndex >= 0) {
       var currentTitles = data[this.state.activityIndex] ? data[this.state.activityIndex] : [];
       var heightStyle = {};
-      if (this.state.maxHeight && this.state.maxHeight < currentTitles.length * px(45)) {
+      if (this.state.maxHeight && this.state.maxHeight < currentTitles.length * px(90)) {
         heightStyle.height = this.state.maxHeight;
       }
       return (
-        <View style={{ position: "absolute", left: 0, right: 0, top: px(90), bottom: 0, width, height, }} >
+        <View style={{ position: "absolute",top: px(90), width, height:height-px(90), }} pointerEvents={'box-only'}>
           <TouchableOpacity
             onPress={() => this.openOrClosePanel(this.state.activityIndex)}
             activeOpacity={1}
             style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }} >
             <View style={{ opacity: 0.4, backgroundColor: "black", flex: 1 }} />
           </TouchableOpacity>
-          {/* {
+          {
             this.state.activityIndex == 0 ?
               <View style={[styles.ActivityPanel, heightStyle, { flexDirection: 'row', }]}>
                 <View style={{ flex: 1 }}>
@@ -238,7 +238,7 @@ export default class Td extends Component {
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
-          } */}
+          }
 
         </View>
       );
@@ -283,7 +283,7 @@ export default class Td extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1, position: 'absolute', top: px(180), left: 0, width, height: height - px(180), }}>
+        <View style={{ position: 'absolute', top: px(180), left: 0, width, height: height - px(180), }}>
           <ScrollableTabView
             renderTabBar={() => (<CustomTabBar
               backgroundColor={'#FFF'}
@@ -299,6 +299,7 @@ export default class Td extends Component {
               <HousetypePage />
             </View>
           </ScrollableTabView>
+         
         </View>
         <View style={styles.drop}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -361,6 +362,7 @@ const styles = StyleSheet.create({
     top: px(90),
     left: 0,
     zIndex: 19,
+    backgroundColor:'#FFF'
     // elevation: 1,
   },
   ActivityPanel: {

@@ -36,6 +36,7 @@ import ReviewDetails from './pages/Td/PropertyPage/ReviewDetails'
 import H_BasicInfo from './pages/Td/HousetypePage/H_BasicInfo'
 import Owner from './pages/Td/Owner'
 import H_tD from './pages/Td/HousetypePage/H_tD'
+import H_Album from './pages/Td/HousetypePage/H_Album'
 //Me
 import Me from './pages/Me'
 import Info from './pages/Me/Info';
@@ -519,6 +520,29 @@ const MainStack = createStackNavigator({
     navigationOptions: {
       header: null
     }
+  },
+  H_Album:{
+    screen: H_Album,
+    navigationOptions: ({ navigation }) => ({
+      title: '户型相册',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('./assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      )
+    })
   },
   NickName: {
     screen: NickName,

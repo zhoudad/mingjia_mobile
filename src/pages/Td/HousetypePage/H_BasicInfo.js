@@ -1,15 +1,69 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput, Dimensions, StatusBar, Modal, TouchableHighlight } from 'react-native';
 import px from '../../../utils/px'
+import Swiper from 'react-native-swiper';
+// import ActionSheet from 'react-native-general-actionsheet';
+import Communications from 'react-native-communications';
+import { BoxShadow } from 'react-native-shadow'
 const { height, width } = Dimensions.get('window')
 
 export default class H_BasicInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      headerIndex:0,
-      ReviewVisible: false
+      headerIndex: 0,
+      ReviewVisible: false,
+      callVisible: false,
+      tel: ''
     };
+  }
+  callProperty() {
+    let thef = this
+    if (!this.state.tel) {
+      this.setState({ callVisible: true }, () => {
+        thef.timer = setTimeout(
+          () => { thef.setState({ callVisible: false }) },
+          1000
+        )
+      })
+    } else {
+      Communications.phonecall(tel, true)
+    }
+  }
+  Toast() {
+    const frame_right = require('../../../assets/images/frame_right.png')
+    const shadowOpt = {
+      height: px(280),
+      width: px(280),
+      x: px(-12),
+      y: px(-1),
+      border: px(75),
+      radius: px(26),
+      opacity: 0.4,
+      color: "#EAEAEA",
+      // style:{}
+    }
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.callVisible}
+        onRequestClose={() => {
+          // this.setState({ askVisible: false })
+        }}
+      >
+        <View style={{ height, justifyContent: 'center', alignItems: 'center', }}>
+          <BoxShadow setting={shadowOpt}>
+            <View style={{ height: px(280), width: px(280), backgroundColor: 'white', borderRadius: px(10) }}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: px(333), paddingHorizontal: px(45), }}>
+                <Image style={{ width: px(96), height: px(96) }} source={frame_right} />
+                <Text style={{ color: '#999999', fontSize: px(24), lineHeight: px(36), textAlign: 'center' }}>暂无售楼电话号码 请等待</Text>
+              </View>
+            </View>
+          </BoxShadow>
+        </View>
+      </Modal>
+    )
   }
   _activeDot(index) {
     if (this.state.headerIndex == index) {
@@ -26,13 +80,14 @@ export default class H_BasicInfo extends Component {
     )
   }
   _reviewItem() {
+    const { navigation } = this.props
     return (
-      <TouchableOpacity activeOpacity={1} style={styles.reviewItem}>
+      <TouchableOpacity activeOpacity={1} style={styles.reviewItem} onPress={() => navigation.navigate('ReviewDetails')}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: px(30) }}>
-            <Image 
-            source={require('../../../assets/images/home_yezhu.png')}
-            style={{ width: px(69), height: px(60), borderRadius: px(30) }} />
+            <Image
+              source={require('../../../assets/images/home_yezhu.png')}
+              style={{ width: px(69), height: px(60), borderRadius: px(30) }} />
             <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>房大师</Text>
           </View>
           <Text numberOfLines={2} style={{ color: '#303133', fontSize: px(24), }}>
@@ -44,17 +99,19 @@ export default class H_BasicInfo extends Component {
   }
 
   render() {
-    const {navigation} = this.props
+    const { navigation } = this.props
     return (
-      <View style={{flex:1}}>
-        <ScrollView contentContainerStyle={{backgroundColor: '#F2F4F7',paddingBottom:px(100)}}>
-          <StatusBar
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={{ backgroundColor: '#F2F4F7', paddingBottom: px(100) }}
+          showsVerticalScrollIndicator={false}>
+          {/* <StatusBar
             animated={true}
             hidden={false}
             backgroundColor='transparent'
             translucent={true}
             barStyle='light-content'
-          />
+          /> */}
           <View style={styles.headerImg}>
             <View style={{ height: px(422) }}>
               <ImageBackground
@@ -64,9 +121,41 @@ export default class H_BasicInfo extends Component {
                 <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
                   <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={styles.play}>
-                  <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
-                </TouchableOpacity>
+                <Swiper style={{ height: px(422), }}
+                  showsPagination={false}
+                  loop={false}
+                  onIndexChanged={(index) => this.setState({ headerIndex: index })}
+                  index={0}>
+                  <View style={{ height: px(422), borderRadius: px(10) }}>
+                    <ImageBackground
+                      style={{ height: px(422) }}
+                      source={require('../../../assets/images/panda.jpg')}
+                    >
+                      <TouchableOpacity activeOpacity={1} style={styles.play}>
+                        <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </View>
+                  <View style={{ height: px(422), borderRadius: px(10) }}>
+                    <ImageBackground
+                      style={{ height: px(422) }}
+                      source={require('../../../assets/images/panda.jpg')}
+                    >
+                      <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => navigation.navigate('H_tD')}>
+                        <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/3d_play1.png')} />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </View>
+                  <View style={{ height: px(422), borderRadius: px(10) }}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('H_Album')}>
+                      <ImageBackground
+                        style={{ height: px(422) }}
+                        source={require('../../../assets/images/panda.jpg')}
+                      >
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  </View>
+                </Swiper>
               </ImageBackground>
             </View>
           </View>
@@ -74,7 +163,7 @@ export default class H_BasicInfo extends Component {
             <TouchableOpacity
               activeOpacity={1}
               style={{ flex: 1, alignItems: 'center' }}
-              onPress={() => this.setState({ headerIndex: 0 })}
+            // onPress={() => this.setState({ headerIndex: 0 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}
@@ -92,7 +181,7 @@ export default class H_BasicInfo extends Component {
                 flex: 1,
                 alignItems: 'center'
               }}
-              onPress={() => this.setState({ headerIndex: 1 })}
+            // onPress={() => this.setState({ headerIndex: 1 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}
@@ -105,7 +194,7 @@ export default class H_BasicInfo extends Component {
             <TouchableOpacity
               activeOpacity={1}
               style={{ flex: 1, alignItems: 'center' }}
-              onPress={() => this.setState({ headerIndex: 2 })}
+            // onPress={() => this.setState({ headerIndex: 2 })}
             >
               <Image
                 style={{ width: px(44), height: px(44) }}
@@ -116,28 +205,28 @@ export default class H_BasicInfo extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={{paddingHorizontal:px(30),backgroundColor:'#FFF',marginTop:px(15)}}>
-              <Text style={styles.tit}>户型信息</Text>
-              <Text style={{color:'#303133',fontSize:px(24),lineHeight:px(50)}}>
-                <Text>3室2厅2卫</Text>
-                <Text>27888元/㎡</Text>
-                <Text>89㎡</Text>{'\n'}
-                <Text>物业类型：住宅</Text><Text>朝向：南 </Text>{'\n'}
-                <Text>户型分布：3#，2#</Text>{'\n'}
-              </Text>
+          <View style={{ paddingHorizontal: px(30), backgroundColor: '#FFF', marginTop: px(15) }}>
+            <Text style={styles.tit}>户型信息</Text>
+            <Text style={{ color: '#303133', fontSize: px(24), lineHeight: px(50) }}>
+              <Text>3室2厅2卫</Text>
+              <Text>27888元/㎡</Text>
+              <Text>89㎡</Text>{'\n'}
+              <Text>物业类型：住宅</Text><Text>朝向：南 </Text>{'\n'}
+              <Text>户型分布：3#，2#</Text>{'\n'}
+            </Text>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ color: '#303133', fontSize: px(28) }}>所属楼盘</Text>
+            <Text style={{ color: '#303133', fontSize: px(28) }} >所属楼盘</Text>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-              <Text style={{ color: '#303133', fontSize: px(28) }}>3#</Text>
+              <Text style={{ color: '#303133', fontSize: px(28) }} onPress={() => navigation.navigate('P_BasicInfo')}>3#</Text>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
             </TouchableOpacity>
           </View>
-          <View style={{backgroundColor:'#FFF',marginVertical:px(20),}}>
+          <View style={{ backgroundColor: '#FFF', marginVertical: px(20), }}>
             <View style={styles.review}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                <Text style={{ color: '#303133', fontSize: px(28),fontWeight:'bold' }}>用户点评（15）</Text>
-                <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>查看更多</Text>
+                <Text style={{ color: '#303133', fontSize: px(28), fontWeight: 'bold' }}>用户点评（15）</Text>
+                <Text style={{ color: '#A8ABB3', fontSize: px(24) }} onPress={() => navigation.navigate('Review')}>查看更多</Text>
               </View>
               <View>
                 {this._reviewItem()}
@@ -203,16 +292,17 @@ export default class H_BasicInfo extends Component {
             </View>
           </View>
         </ScrollView>
-        <View style={{ height: px(100),width:'100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
+        <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
           <TouchableOpacity
             activeOpacity={1}
-            style={{ backgroundColor: '#FFFFFF',flex:1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image
               style={{ width: px(44), height: px(44), marginEnd: px(12) }}
               source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
             <Text >关注</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => this.callProperty()}
             activeOpacity={1}
             style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image
@@ -221,6 +311,7 @@ export default class H_BasicInfo extends Component {
             <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
           </TouchableOpacity>
         </View>
+        {this.Toast()}
       </View>
     );
   }
@@ -231,10 +322,11 @@ const styles = StyleSheet.create({
   },
   goBack: {
     position: 'absolute',
-    top: px(60),
+    top: px(30),
     left: px(30),
     width: px(48),
-    height: px(48)
+    height: px(48),
+    zIndex: 999,
   },
   play: {
     width: px(80),
@@ -242,8 +334,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginStart: -px(80),
-    marginTop: -px(80),
+    marginStart: -px(40),
+    marginTop: -px(40),
   },
   headerTab: {
     height: px(98),
@@ -251,7 +343,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomColor: '#E6E9F0',
     borderBottomWidth: px(2),
-    backgroundColor:'#FFF'
+    backgroundColor: '#FFF'
   },
   active: {
     width: px(8),
@@ -261,17 +353,17 @@ const styles = StyleSheet.create({
     marginEnd: px(9),
     marginStart: px(-9),
   },
-  tit:{
-    color:'#303133',
-    fontSize:px(32),
-    fontWeight:'bold',
-    paddingTop:px(30),
+  tit: {
+    color: '#303133',
+    fontSize: px(32),
+    fontWeight: 'bold',
+    paddingTop: px(30),
     paddingBottom: px(20),
   },
   review: {
     paddingHorizontal: px(30),
-    backgroundColor:'#FFF',
-    paddingTop:px(40), 
+    backgroundColor: '#FFF',
+    paddingTop: px(40),
   },
   reviewItem: {
     marginTop: px(40),
@@ -286,7 +378,7 @@ const styles = StyleSheet.create({
     borderRadius: px(34),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom:px(40),
-    marginTop:px(40)
+    marginBottom: px(40),
+    marginTop: px(40)
   }
 })
