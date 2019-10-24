@@ -1,22 +1,58 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput, Dimensions, StatusBar, Modal, TouchableHighlight } from 'react-native';
+import {
+  View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput, Dimensions,
+  StatusBar, Modal, TouchableHighlight, ToastAndroid
+} from 'react-native';
 import px from '../../../utils/px'
 import Swiper from 'react-native-swiper';
-// import ActionSheet from 'react-native-general-actionsheet';
+import Slider from '@react-native-community/slider';
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow'
+import Video from 'react-native-video';
 const { height, width } = Dimensions.get('window')
 
 export default class H_BasicInfo extends Component {
   constructor(props) {
     super(props);
+    this.player = null
     this.state = {
       headerIndex: 0,
       ReviewVisible: false,
       callVisible: false,
-      tel: ''
+      tel: '10086',
+      duration: 0.0,
+      slideValue: 0.00,
+      currentTime: 0.00,
+      paused: true,
+      isFullScreen: false,
+      videoHeight: px(422),
+      videoWidth: width
     };
   }
+
+  //格式化音乐播放的时间为0：00
+  formatMediaTime(duration) {
+    let min = Math.floor(duration / 60);
+    let second = parseInt(duration) - min * 60;
+    min = min >= 10 ? min : "0" + min;
+    second = second >= 10 ? second : "0" + second;
+    return min + ":" + second;
+  }
+  //设置进度条和播放时间的变化
+  onProgress = (data) => {
+    let sliderValue = parseInt(this.state.currentTime);
+    this.setState({
+      slideValue: sliderValue,
+      currentTime: data.currentTime
+    });
+  }
+  //设置总时长
+  onLoad = (data) => {
+    console.log(data)
+    this.setState({ duration: data.duration });
+  }
+
+
   callProperty() {
     let thef = this
     if (!this.state.tel) {
@@ -27,7 +63,7 @@ export default class H_BasicInfo extends Component {
         )
       })
     } else {
-      Communications.phonecall(tel, true)
+      Communications.phonecall(this.state.tel, true)
     }
   }
   Toast() {
@@ -98,113 +134,169 @@ export default class H_BasicInfo extends Component {
     )
   }
 
+  _onLayout = (event) => {
+    //获取根View的宽高
+    let {width, height} = event.nativeEvent.layout;
+    console.log('通过onLayout得到的宽度：' + width);
+    console.log('通过onLayout得到的高度：' + height);
+    
+    // 一般设备横屏下都是宽大于高，这里可以用这个来判断横竖屏
+    let isLandscape = (width > height);
+    if (isLandscape){
+      this.setState({
+        videoWidth: width,
+        videoHeight: height,
+        isFullScreen: true,
+      })
+    } else {
+      this.setState({
+        videoWidth: width,
+        videoHeight: px(422),
+        isFullScreen: false,
+      })
+    }
+    // Orientation.unlockAllOrientations();
+  };
+
   render() {
     const { navigation } = this.props
+    let videoStr = {}
+    if (width > height) {
+
+    }
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView
-          contentContainerStyle={{ backgroundColor: '#F2F4F7', paddingBottom: px(100) }}
-          showsVerticalScrollIndicator={false}>
-          {/* <StatusBar
-            animated={true}
-            hidden={false}
-            backgroundColor='transparent'
-            translucent={true}
-            barStyle='light-content'
-          /> */}
-          <View style={styles.headerImg}>
-            <View style={{ height: px(422) }}>
-              <ImageBackground
-                style={{ height: px(422) }}
-                source={require('../../../assets/images/panda.jpg')}
-              >
-                <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
-                  <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
-                </TouchableOpacity>
-                <Swiper style={{ height: px(422), }}
-                  showsPagination={false}
-                  loop={false}
-                  onIndexChanged={(index) => this.setState({ headerIndex: index })}
-                  index={0}>
-                  <View style={{ height: px(422), borderRadius: px(10) }}>
-                    <ImageBackground
-                      style={{ height: px(422) }}
-                      source={require('../../../assets/images/panda.jpg')}
-                    >
-                      <TouchableOpacity activeOpacity={1} style={styles.play}>
+      <View style={{ flex: 1 }} onLayout={this._onLayout}>
+        <View style={styles.headerImg}>
+          <View style={{ height: px(422) }}>
+            <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
+              <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
+            </TouchableOpacity>
+            <Swiper style={{ height: px(422), }}
+              removeClippedSubviews={false}
+              showsPagination={false}
+              loop={false}
+              onIndexChanged={(index) => this.setState({ headerIndex: index })}
+              index={0}>
+              <View style={[{ height: px(422), borderRadius: px(10) },]}>
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })}>
+                  {
+                    this.state.paused ?
+                      <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
                         <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
                       </TouchableOpacity>
-                    </ImageBackground>
-                  </View>
-                  <View style={{ height: px(422), borderRadius: px(10) }}>
-                    <ImageBackground
-                      style={{ height: px(422) }}
-                      source={require('../../../assets/images/panda.jpg')}
-                    >
-                      <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => navigation.navigate('H_tD')}>
-                        <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/3d_play1.png')} />
-                      </TouchableOpacity>
-                    </ImageBackground>
-                  </View>
-                  <View style={{ height: px(422), borderRadius: px(10) }}>
-                    <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('H_Album')}>
-                      <ImageBackground
-                        style={{ height: px(422) }}
-                        source={require('../../../assets/images/panda.jpg')}
-                      >
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </View>
-                </Swiper>
-              </ImageBackground>
+                      : null
+                  }
+                  <Video
+                    playInBackground={false}
+                    ref={ref => this.player = ref}
+                    // poster={'https://baconmockup.com/300/200/'}
+                    // source={require('../../../assets/test.mp4')}
+                    source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
+                    style={{ height:this.state.videoHeight,width:this.state.videoWidth }}
+                    rate={1}//播放速率
+                    paused={this.state.paused}// true代表暂停，默认为false
+                    resizeMode="cover"
+                    onLoad={this.onLoad}//加载媒体并准备播放时调用的回调函数。
+                    onProgress={this.onProgress}
+                    onEnd={(data) => () => {
+                      this.player.seek(0)
+                      this.setState({ paused: true })
+                    }}//视频播放结束时的回调函数。
+                    onError={() => {
+                      ToastAndroid.show("加载视频失败", ToastAndroid.SHORT);
+
+                    }}
+                  />
+                </TouchableOpacity>
+                <View style={styles.controls}>
+                  <Text>{this.formatMediaTime(this.state.currentTime)}</Text>
+                  <Slider
+                    style={styles.slider}
+                    minimumValue={0}
+                    thumbTintColor="#EA4C4C"
+                    value={this.state.slideValue}
+                    maximumValue={this.state.duration}
+                    minimumTrackTintColor="#EA4C4C"
+                    maximumTrackTintColor="#000000"
+                    onValueChange={value => this.setState({ currentTime: value, })}
+                  />
+                  <Text>{this.formatMediaTime(this.state.duration)}</Text>
+                  {/* <TouchableOpacity activeOpacity={1} onPress={() => this.player.presentFullscreenPlayer()}>
+                    <Image style={{ width: px(28), height: px(28), marginStart: px(15) }} source={require('../../../assets/images/full_screen.png')} />
+                  </TouchableOpacity> */}
+                </View>
+              </View>
+              <View style={{ height: px(422), borderRadius: px(10) }}>
+                <ImageBackground
+                  style={{ height: px(422) }}
+                  source={require('../../../assets/images/panda.jpg')}
+                >
+                  <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => navigation.navigate('H_tD')}>
+                    <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/3d_play1.png')} />
+                  </TouchableOpacity>
+                </ImageBackground>
+              </View>
+              <View style={{ height: px(422), borderRadius: px(10) }}>
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('H_Album')}>
+                  <ImageBackground
+                    style={{ height: px(422) }}
+                    source={require('../../../assets/images/panda.jpg')}
+                  >
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+            </Swiper>
+          </View>
+        </View>
+        <View style={styles.headerTab}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{ flex: 1, alignItems: 'center' }}
+          // onPress={() => this.setState({ headerIndex: 0 })}
+          >
+            <Image
+              style={{ width: px(44), height: px(44) }}
+              source={this.state.headerIndex == 0 ? require(`../../../assets/images/house_video_s.png`) : require(`../../../assets/images/house_video_n.png`)} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+              {this._activeDot(0)}
+              <Text
+                style={{ color: this.state.headerIndex == 0 ? '#EA4C4C' : '#666666' }}
+              >视频</Text>
             </View>
-          </View>
-          <View style={styles.headerTab}>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{ flex: 1, alignItems: 'center' }}
-            // onPress={() => this.setState({ headerIndex: 0 })}
-            >
-              <Image
-                style={{ width: px(44), height: px(44) }}
-                source={this.state.headerIndex == 0 ? require(`../../../assets/images/house_video_s.png`) : require(`../../../assets/images/house_video_n.png`)} />
-              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                {this._activeDot(0)}
-                <Text
-                  style={{ color: this.state.headerIndex == 0 ? '#EA4C4C' : '#666666' }}
-                >视频</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{
-                flex: 1,
-                alignItems: 'center'
-              }}
-            // onPress={() => this.setState({ headerIndex: 1 })}
-            >
-              <Image
-                style={{ width: px(44), height: px(44) }}
-                source={this.state.headerIndex == 1 ? require('../../../assets/images/house_3d_s.png') : require('../../../assets/images/house_3d_n.png')} />
-              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                {this._activeDot(1)}
-                <Text style={{ color: this.state.headerIndex == 1 ? '#EA4C4C' : '#666666' }}>三维</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{ flex: 1, alignItems: 'center' }}
-            // onPress={() => this.setState({ headerIndex: 2 })}
-            >
-              <Image
-                style={{ width: px(44), height: px(44) }}
-                source={this.state.headerIndex == 2 ? require('../../../assets/images/house_quanjing_s.png') : require('../../../assets/images/house_quanjing_n.png')} />
-              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                {this._activeDot(2)}
-                <Text style={{ color: this.state.headerIndex == 2 ? '#EA4C4C' : '#666666' }}>图片</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              flex: 1,
+              alignItems: 'center'
+            }}
+          // onPress={() => this.setState({ headerIndex: 1 })}
+          >
+            <Image
+              style={{ width: px(44), height: px(44) }}
+              source={this.state.headerIndex == 1 ? require('../../../assets/images/house_3d_s.png') : require('../../../assets/images/house_3d_n.png')} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+              {this._activeDot(1)}
+              <Text style={{ color: this.state.headerIndex == 1 ? '#EA4C4C' : '#666666' }}>三维</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{ flex: 1, alignItems: 'center' }}
+          // onPress={() => this.setState({ headerIndex: 2 })}
+          >
+            <Image
+              style={{ width: px(44), height: px(44) }}
+              source={this.state.headerIndex == 2 ? require('../../../assets/images/house_quanjing_s.png') : require('../../../assets/images/house_quanjing_n.png')} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+              {this._activeDot(2)}
+              <Text style={{ color: this.state.headerIndex == 2 ? '#EA4C4C' : '#666666' }}>图片</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          contentContainerStyle={{ backgroundColor: '#F2F4F7', }}
+          showsVerticalScrollIndicator={false}>
           <View style={{ paddingHorizontal: px(30), backgroundColor: '#FFF', marginTop: px(15) }}>
             <Text style={styles.tit}>户型信息</Text>
             <Text style={{ color: '#303133', fontSize: px(24), lineHeight: px(50) }}>
@@ -292,7 +384,7 @@ export default class H_BasicInfo extends Component {
             </View>
           </View>
         </ScrollView>
-        <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
+        <View style={{ height: px(100), width: '100%', flexDirection: 'row',  }}>
           <TouchableOpacity
             activeOpacity={1}
             style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -318,7 +410,7 @@ export default class H_BasicInfo extends Component {
 }
 const styles = StyleSheet.create({
   headerImg: {
-    flex: 1,
+    // flex: 1,
   },
   goBack: {
     position: 'absolute',
@@ -336,13 +428,14 @@ const styles = StyleSheet.create({
     left: '50%',
     marginStart: -px(40),
     marginTop: -px(40),
+    zIndex: 999,
   },
   headerTab: {
     height: px(98),
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: '#E6E9F0',
-    borderBottomWidth: px(2),
+    borderBottomWidth: px(1),
     backgroundColor: '#FFF'
   },
   active: {
@@ -380,5 +473,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: px(40),
     marginTop: px(40)
+  },
+  slider: {
+    height: px(5),
+    flex: 1
+  },
+  controls: {
+    paddingHorizontal: px(30),
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: px(60),
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    zIndex: 998,
   }
 })

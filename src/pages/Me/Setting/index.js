@@ -8,6 +8,9 @@ export default class Setting extends Component {
     this.state = {
     };
   }
+  async getCacheSize() {
+    // const data = await CachM
+  }
 
   render() {
     const { navigation } = this.props

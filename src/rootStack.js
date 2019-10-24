@@ -9,6 +9,8 @@ import {
 } from 'react-navigation'
 const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
 
+import Test from './pages/Me/Info/test'
+
 import LoginPage from './pages/Login'
 import SelectPage from './pages/Select'
 //Home
@@ -126,6 +128,14 @@ const LoginStack = createStackNavigator({
   initialRouteName: 'Login',
 });
 const MainStack = createStackNavigator({
+  Test:{
+    screen: Test,
+    navigationOptions: {
+      header: null
+    }
+  },
+
+
   Main: {
     screen: TabNav,
     navigationOptions: {
