@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput } from 'react-native';
-import Icon from '../../components/Icon'
+import {
+  View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput,
+  ToastAndroid
+} from 'react-native';
 import { unitWidth, width } from '../../AdapterUtil'
 import px from '../../utils/px'
 import Swiper from 'react-native-swiper';
+import axios from 'axios'
+import { storage } from '../../utils/storage'
+import TipicTag from '../../components/TipicTag'
 
 export default class Home extends Component {
   static navigationOptions = {
@@ -22,12 +27,32 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      city:'上海'
+      city: '上海',
+      slides: [],
+      token: '',
+      account_id: ''
     };
   }
+  componentDidMount() {
+    storage.load({
+      key: 'accessToken',
+    }).then((token) => {
+      this.setState({ token })
+    })
+    storage.load({
+      key: 'Id',
+    }).then((data) => {
+      this.setState({ account_id: data.account_id })
+    })
+    axios({
+      url: `http://218.108.34.222:8080/slide?account_id=${2}`
+    }).then(res => {
+      this.state.slides = res.data.result
+      console.log(this.state.slides.length)
+    })
+  }
   getCity = (city) => {
-    console.log(city)
-    this.setState({city:city.city})
+    this.setState({ city: city.city })
   }
   _renderHousr(index) {
     if (index <= 0) {
@@ -37,20 +62,59 @@ export default class Home extends Component {
         </View>
       )
     } else {
-
+      return (
+        <View>
+          {this._renderItem()}
+          {this._renderItem()}
+          {this._renderItem()}
+          {this._renderItem()}
+        </View>
+      )
     }
+  }
+
+  _renderItem(data) {
+    const { navigation } = this.props
+    return (
+      <TouchableOpacity
+        style={styles.item}
+        activeOpacity={1}
+        onPress={() => navigation.navigate('P_BasicInfo')}>
+        <View style={styles.itemContent}>
+          <View style={{ width: px(200), height: px(200), }}>
+            <Image
+              style={{ width: px(200), height: px(200), borderRadius: px(10) }}
+              source={require('../../assets/images/panda.jpg')} />
+          </View>
+          <View style={{ flex: 1, marginStart: px(30), height: px(200), }}>
+            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28), fontFamily: 'PingFang-SC-Bold', fontWeight: 'bold' }}>广州珠江新城</Text>
+            <Text style={{ fontSize: px(24), color: '#B3B3B3', marginTop: px(9), fontFamily: 'PingFang-SC-Medium' }}>
+              <Text style={{ paddingEnd: px(35) }}>萧山</Text>
+              <Text style={{ paddingEnd: px(35) }}>钱江世界城</Text>
+              <Text style={{ paddingEnd: px(35) }}>建面积</Text>
+            </Text>
+            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>58600 <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
+            <View style={{ flexDirection: 'row', marginTop: px(8) }}>
+              <TipicTag text={"在售"} isStress={true} />
+              <TipicTag text={"住宅"} />
+              <TipicTag text={"装修交付"} />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   render() {
     const { navigation } = this.props
     return (
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.search}>
-          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Local',{getCity:this.getCity})}>
+          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Local', { getCity: this.getCity })}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
               <Text style={{ fontSize: px(32), color: '#333333' }}>{this.state.city}</Text>
               <Image
-                style={{ width: px(24), height: px(24),marginEnd:px(10) }}
+                style={{ width: px(24), height: px(24), marginEnd: px(10) }}
                 source={require('../../assets/images/home_arrow_down.png')} />
             </View>
           </TouchableOpacity>
@@ -59,27 +123,31 @@ export default class Home extends Component {
               style={{ width: px(40), height: px(40), marginHorizontal: px(10) }}
               source={require('../../assets/images/search_icon.png')} />
             {/* <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text> */}
-            <TextInput style={{flex:1,color: '#909399', fontSize: px(28),padding:0}} placeholder={"请输入楼盘、户型、地址名称"}></TextInput>
+            <TextInput style={{ flex: 1, color: '#909399', fontSize: px(28), padding: 0 }} placeholder={"请输入楼盘、户型、地址名称"}></TextInput>
           </View>
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
-          <Swiper
-            style={{ height: px(296),paddingHorizontal: px(30), }}
-            dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
-            activeDot={<View style={{ backgroundColor: '#606266', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
-            loop={true}
-            paginationStyle={{ bottom: px(25), }}
-            index={0}>
-            <View style={{ height: px(296), borderRadius: px(10) }} >
-              <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
-            </View>
-            <View style={{ height: px(296), borderRadius: px(10) }} >
-              <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
-            </View>
-            <View style={{ height: px(296), borderRadius: px(10) }} >
-              <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571116087393&di=06eee4a01a254d6a84df02010ba876fb&imgtype=0&src=http%3A%2F%2Fqiniuimg.qingmang.mobi%2Fimage%2Forion%2Fbfabf2536bb332d84b73ea39e11aa8cf_1200_800.jpeg' }} ></Image>
-            </View>
-          </Swiper>
+
+          {
+            this.state.slides == [] ? null :
+              <Swiper
+                style={{ height: px(296), paddingHorizontal: px(30), }}
+                dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
+                activeDot={<View style={{ backgroundColor: '#606266', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
+                loop={true}
+                paginationStyle={{ bottom: px(25), }}
+                index={0}>
+                {
+                  this.state.slides.map((item, index) => {
+                    return (
+                      <View key={index} style={{ height: px(296), borderRadius: px(10) }} >
+                        <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: `http://218.108.34.222/:8080/uploads/${item.slide_file}` }} ></Image>
+                      </View>
+                    )
+                  })
+                }
+              </Swiper>
+          }
         </View>
         <TouchableOpacity style={styles.msgNotice} activeOpacity={1} onPress={() => navigation.navigate('Message')}>
           <Image
@@ -113,7 +181,7 @@ export default class Home extends Component {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
-            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Developer')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_bigui.png')}
@@ -143,24 +211,24 @@ export default class Home extends Component {
           </View>
           <View style={styles.comment}>
             <View style={styles.commentItem}>
-              <Text 
-              onPress={() => navigation.navigate('CommentDetails')}
-              style={{color:'#333333',fontSize:px(24),lineHeight:px(40)}}>
+              <Text
+                onPress={() => navigation.navigate('CommentDetails')}
+                style={{ color: '#333333', fontSize: px(24), lineHeight: px(40) }}>
                 房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
                 </Text>
             </View>
             <View style={[styles.commentItem, { borderTopColor: '#E1E6F0', borderTopWidth: 1 }]}>
-              <Text 
-              onPress={() => navigation.navigate('CommentDetails')}
-              style={{color:'#333333',fontSize:px(24),lineHeight:px(40)}}>
+              <Text
+                onPress={() => navigation.navigate('CommentDetails')}
+                style={{ color: '#333333', fontSize: px(24), lineHeight: px(40) }}>
                 房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
                 </Text>
             </View>
           </View>
         </View>
         <View style={{ marginHorizontal: px(30), marginTop: px(20), }}>
-          <Text style={{ color: '#333333', fontSize: px(32) }}>新房专区</Text>
-          {this._renderHousr(0)}
+          <Text style={{ color: '#333333', fontSize: px(32), }}>新房专区</Text>
+          {this._renderHousr(1)}
         </View>
       </ScrollView>
     );
@@ -205,5 +273,16 @@ const styles = StyleSheet.create({
   commentItem: {
     flex: 1,
     justifyContent: 'center'
-  }
+  },
+  itemContent: {
+    borderBottomColor: '#E6E9F0',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: px(30)
+  },
+  item: {
+    height: px(270),
+    paddingTop: px(40),
+  },
 })

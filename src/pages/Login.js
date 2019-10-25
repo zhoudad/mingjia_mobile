@@ -5,18 +5,20 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpac
 import { NavigationActions } from 'react-navigation';
 import { unitWidth, width } from '../AdapterUtil'
 import * as WeChat from 'react-native-wechat';
-// import DeviceInfo from 'react-native-device-info';
+import DeviceInfo from 'react-native-device-info';
 import axios from 'axios'
 import px from '../utils/px'
 import { BoxShadow } from 'react-native-shadow'
 import Touchable from '../components/Touchable'
+import request from '../utils/request';
+import navigationUtil from '../utils/navigation'
 
-const resetAction = NavigationActions.navigate({
-  routeName: 'Select',
-  // actions: [
-  //   NavigationActions.navigate({ routeName: 'Select' })
-  // ]
-})
+// const resetAction = NavigationActions.navigate({
+//   routeName: 'Select',
+//   // actions: [
+//   //   NavigationActions.navigate({ routeName: 'Select' })
+//   // ]
+// })
 
 export default class Login extends Component {
   constructor(props) {
@@ -25,8 +27,13 @@ export default class Login extends Component {
       accountNumber: '请输入手机号',
       password: '请输入验证码',
       btnText: '获取验证码',
+      user_tel:'',
+      user_code:'',
+      ip:'',
+
+
       // isSendVerification: false,
-      CountdownNum: 59,
+      CountdownNum: 60,
       send: false,
       isSend: false,
       sendDate: null,
@@ -35,205 +42,125 @@ export default class Login extends Component {
       refresh_token: ''
     };
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    // 登录完成,切成功登录   
-    if (nextProps.status === '登陆成功' && nextProps.isSuccess) {
-      this.props.navigation.dispatch(resetAction)
-      // this.sendForm()
-      return false;
-    }
-    return true;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   // 登录完成,切成功登录   
+  //   if (nextProps.status === '登陆成功' && nextProps.isSuccess) {
+  //     this.props.navigation.dispatch(resetAction)
+  //     // this.sendForm()
+  //     return false;
+  //   }
+  //   return true;
+  // }
   componentDidMount() {
-    WeChat.registerApp('wx07cb98a4feb4b5b3')
-    _retrieveUserData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('userData');
-        if (value !== null) {
-          // this.props.navigation.navigate('Main')
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    }
-    _retrieveUserData()
-    _retrieveWeixinUserData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('weixinUserData');
-        if (value !== null) {
-          // this.props.navigation.navigate('Main')
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    }
-    _retrieveWeixinUserData()
+    DeviceInfo.getIpAddress().then(res => {
+      this.setState({ip:res})
+    })
+    DeviceInfo.getCarrier().then(res => {
+      this.setState({ip_name:res})
+    })
+
     axios({
-      url: 'http://192.168.10.79:8080/wechatapi'
+      url: 'http://218.108.34.222:8080/wechatapi'
     }).then(res => {
       // console.log(res)
       this.setState({
         appId: res.data.appId,
         secret: res.data.secret,
       })
-    }).catch(err => {
-      return
     })
-    // console.log(`设备名称:` + DeviceInfo.getDeviceName())
-    // console.log(`设备所处国家:` + DeviceInfo.getDeviceCountry())
-    // console.log(`设备地区:` + DeviceInfo.getDeviceLocale())
-    // console.log(`运营商名称:` + DeviceInfo.getCarrier())
-    // console.log(`设备ID:` + DeviceInfo.getDeviceId())
-    // DeviceInfo.getIPAddress().then(ip => {
-    //   // console.log(DeviceInfo.getCarrier())
-    //   let data = Object.assign({}, this.state.sendDate, {
-    //     ip: ip,
-    //     ip_name: DeviceInfo.getCarrier()
-    //   })
+
+    WeChat.registerApp('wx07cb98a4feb4b5b3')
+    // _retrieveUserData = async () => {
+    //   try {
+    //     const value = await AsyncStorage.getItem('userData');
+    //     if (value !== null) {
+    //       // this.props.navigation.navigate('Main')
+    //     }
+    //   } catch (error) {
+    //     // Error retrieving data
+    //   }
+    // }
+    // _retrieveUserData()
+    // _retrieveWeixinUserData = async () => {
+    //   try {
+    //     const value = await AsyncStorage.getItem('weixinUserData');
+    //     if (value !== null) {
+    //       // this.props.navigation.navigate('Main')
+    //     }
+    //   } catch (error) {
+    //     // Error retrieving data
+    //   }
+    // }
+    // _retrieveWeixinUserData()
+    // axios({
+    //   url: 'http://218.108.34.222:8080/wechatapi'
+    // }).then(res => {
+    //   // console.log(res)
     //   this.setState({
-    //     sendDate: data
+    //     appId: res.data.appId,
+    //     secret: res.data.secret,
     //   })
-    // });
+    // }).catch(err => {
+    //   return
+    // })
   }
-  sendVerification = () => {
-    if (this.state.send) {
-      axios({
-        method: 'post',
-        url: 'http://192.168.10.79:8080/sendcode',
-        data: {
-          'tel': `${this.state.sendDate.tel}`,
-        }
-      }).then((res) => {
-        console.log(res.data)
-      })
-      this.timer = setInterval(() => {
-        if (this.state.CountdownNum >= 0) {
-          if (this.state.CountdownNum > 10) {
+   sendVerification = async () => {
+    let myreg = /^1[3456789]\d{9}$/;
+    if (!this.state.user_tel) {
+      ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
+    } else {
+      if (myreg.test(this.state.user_tel)) {
+        this.timer = setInterval(() => {
+          if (this.state.CountdownNum >= 0) {
             this.setState({
-              CountdownNum: (this.state.CountdownNum - 1),
+              CountdownNum: this.state.CountdownNum > 10 ? --this.state.CountdownNum : '0' + --this.state.CountdownNum,
               btnText: this.state.CountdownNum,
               isSend: true
             })
           } else {
+            clearInterval(this.timer)
             this.setState({
-              CountdownNum: ('0' + (this.state.CountdownNum - 1)),
-              btnText: this.state.CountdownNum,
-              isSend: true
+              btnText: '重新发送',
+              CountdownNum: 59,
+              isSend: false
             })
           }
-        } else {
-          clearInterval(this.timer)
-          this.setState({
-            btnText: '重新发送',
-            CountdownNum: 59,
-            isSend: false
-          })
-        }
-      }, 1000)
-    } else {
-      ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
-    }
-
-  }
-  inputText = (text, input) => {
-    let data = Object.assign({}, this.state.sendDate, {
-      tel: text
-    })
-    this.setState({
-      sendDate: data
-    })
-  }
-  inputText1 = (text, input) => {
-    let data = Object.assign({}, this.state.sendDate, {
-      Verification: text
-    })
-    this.setState({
-      sendDate: data
-    })
-  }
-  sendForm = () => {
-    let _this = this
-    let userData = {
-      'user_tel': this.state.sendDate.tel,
-    }
-    _userData = async () => {
-      try {
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
-      } catch (error) {
-        // Error saving data
-      }
-    }
-    _userData()
-    axios({
-      method: 'post',
-      url: 'http://192.168.10.79:8080/userinfo',
-      data: {
-        'user_tel': this.state.sendDate.tel,
-        'user_code': this.state.sendDate.Verification,
-        'user_ftime': (new Date()).getTime(),
-        'ip': this.state.sendDate.ip,
-        'ip_name': this.state.sendDate.ip_name,
-      }
-    })
-      .then((res) => {
-        // console.log(res)
-        if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
-          async function saveToken() {
-            try {
-              await AsyncStorage.setItem('token', res.data.token)
-            } catch (error) {
-              return
-            }
+        }, 1000)
+        await axios({
+          method: 'post',
+          url: 'http://218.108.34.222:8080/sendcode',
+          data: {
+            'tel': this.state.user_tel,
           }
-          saveToken()
-          _this.props.navigation.navigate('Select')
-        }
-      })
-  }
-  loginIn = () => {
-    const { user_tel, user_code, ip ,ip_name} = this.state;
-    const self = this;
-    request({
-      method: 'POST',
-      url: '/userinfo',
-      data: { user_tel, user_code, ip ,ip_name,'user_ftime': (new Date()).getTime(), }
-    })
-      .then((data) => {
-        // console.log('登录成功：' + JSON.stringify(data));
-        if(res.data.status == 101 || res.data.status == 0 || res.data.status == 102){
-          saveToken(data.data);
-          navigationUtil.reset(self.props.navigation, 'Select');
-        }
-      })
-      .catch(err => {
-        Alert.alert('登录失败', err.message || err);
-      });
-  }
-  onblur = (obj) => {
-    let myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-    let regcode = /^\d{5}$/
-    if (obj.input == 'tel' && this.state.sendDate != null) {
-      if (!this.state.sendDate.tel) {
-        ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
+        }).then((res) => {
+          ToastAndroid.show('发送成功', ToastAndroid.SHORT);
+        })
       } else {
-        if (myreg.test(this.state.sendDate.tel)) {
-          // ToastAndroid.show('进入App', ToastAndroid.SHORT);
-          this.setState({ isSend: true })
-        } else {
-          ToastAndroid.show('手机号格式不正确', ToastAndroid.SHORT);
-        }
-      }
-    } else if (obj.input == 'code' && this.state.sendDate != null) {
-      if (this.state.sendDate == null && !this.state.sendDate.Verification) {
-        ToastAndroid.show('验证码不能为空', ToastAndroid.SHORT);
-      } else {
-        if (regcode.test(this.state.sendDate.Verification)) {
-          return
-        } else {
-          ToastAndroid.show('验证码格式不正确', ToastAndroid.SHORT);
-        }
+        ToastAndroid.show('手机号格式不正确', ToastAndroid.SHORT);
       }
     }
+  }
+  
+  loginIn = () => {
+    const { user_tel, user_code, ip, ip_name } = this.state;
+    const self = this;
+    const { navigation } = this.props;
+    axios({
+      method: 'POST',
+      url: 'http://218.108.34.222:8080/userinfo',
+      data: { user_tel, user_code, ip, ip_name, 'user_ftime': new Date().getTime(), }
+    }).then((res) => {
+        console.log(res);
+        if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
+          // saveToken(data.data);
+          navigation.navigate('Select',{Token: res.data.token})
+          // navigationUtil.reset(self.props.navigation, 'Select');
+        }
+      }).catch(err => {
+        ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+        // console.log(err)
+        // Alert.alert('登录失败', err.message || err);
+      });
   }
   // 微信登陆授权
   weixinLogin = () => {
@@ -267,7 +194,6 @@ export default class Login extends Component {
       // 用户换取access_token的code，仅在ErrCode为0时有效  
       case 0:
         //获取token值
-
         axios({
           url: 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + this.state.appId + '&secret=' + this.state.secret + '&code=' + responseCode.code + '&grant_type=authorization_code'
         })
@@ -307,7 +233,7 @@ export default class Login extends Component {
             })
       }
       axios({
-        url: 'http://192.168.10.79:8080/wechat',
+        url: 'http://218.108.34.222:8080/wechat',
         data: res.data,
         method: 'POST'
       }).then((res) => {
@@ -343,7 +269,7 @@ export default class Login extends Component {
       })
 
     }
-    ).catch(err => { })
+    )
   }
   render() {
     const shadowOpt = {
@@ -355,9 +281,9 @@ export default class Login extends Component {
       opacity: 0.1,
       x: 0,
       y: px(8),
-      style: { marginTop: px(130),borderRadius:px(45) }
+      style: { marginTop: px(130), borderRadius: px(45) }
     }
-    const { login } = this.props;
+    const { navigation } = this.props;
     return (
       <ScrollView contentContainerStyle={styles.loginScreen}>
         <KeyboardAvoidingView contentContainerStyle={{ flex: 1, alignItems: 'center' }} >
@@ -368,44 +294,44 @@ export default class Login extends Component {
             <View style={styles.item}>
               <Text style={styles.label}>手机号:</Text>
               <TextInput
-                style={[styles.input]}
-                placeholderTextColor={'#ddd'}
+                style={styles.input}
+                placeholder={'请输入手机号'}
+                placeholderTextColor={'#A8ABB3'}
                 keyboardType={'number-pad'}
                 returnKeyType={'done'}
                 underlineColorAndroid='transparent'
-                onChangeText={(text, input = { 'input': 'tel' }) => { this.inputText(text, input) }}
-                onBlur={() => this.onblur({ input: 'tel' })}
+                onChangeText={(text) => this.setState({user_tel:text})}
               ></TextInput>
             </View>
             <View style={styles.item}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                 <Text style={styles.label}>验证码:</Text>
                 <TextInput
-                  style={[styles.input]}
-                  placeholderTextColor={'#ddd'}
+                  style={styles.input}
+                  placeholder={'请输入验证码'}
+                  placeholderTextColor={'#A8ABB3'}
                   keyboardType={'number-pad'}
-                  password={true}
+                  // password={true}
                   returnKeyType={'done'}
                   underlineColorAndroid='transparent'
-                  onChangeText={(text, input = { 'input': 'code' }) => { this.inputText1(text) }}
-                  onBlur={() => this.onblur({ input: 'code' })}
+                  onChangeText={(text) => this.setState({user_code:text}) }
                 ></TextInput>
               </View>
               <Touchable style={{ paddingHorizontal: 15, }} activeOpacity={0.8} onPress={() => this.state.isSend ? false : this.sendVerification()}>
-                <Text style={{ lineHeight: 40, textAlign: 'right', color: '#ea4c4c' }} >
+                <Text style={{ lineHeight: 40, textAlign: 'right', color: '#ea4c4c',fontSize:px(24)}} >
                   {this.state.isSend ? this.state.btnText + 's' : this.state.btnText}
                 </Text>
               </Touchable>
             </View>
           </View>
-          <BoxShadow setting={shadowOpt}>
+          {/* <BoxShadow setting={shadowOpt}> */}
             <View style={styles.loginButton}>
-              <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} >
+              <TouchableOpacity activeOpacity={1} style={{ flex: 1, }} onPress={() => this.loginIn()}>
                 <Text style={{ color: '#fff', textAlign: 'center', lineHeight: px(90), fontSize: px(32), fontWeight: 'bold' }}
                 >同意协议并登录</Text>
               </TouchableOpacity>
             </View>
-          </BoxShadow>
+          {/* </BoxShadow> */}
           <View style={{ marginTop: 40 * unitWidth, }}>
             <Text style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
           </View>
@@ -440,6 +366,7 @@ const styles = StyleSheet.create({
     width: 540 * unitWidth,
     borderRadius: 45 * unitWidth,
     backgroundColor: '#ea4c4c',
+    marginTop: px(130),
   },
   item: {
     width: 540 * unitWidth,
@@ -454,13 +381,15 @@ const styles = StyleSheet.create({
   label: {
     marginHorizontal: 10 * unitWidth,
     color: '#333333',
-    fontFamily: 'PingFang-SC-Medium'
+    fontFamily: 'PingFang-SC-Medium',
+    fontSize:px(24)
   },
   input: {
     // marginStart: 10 * unitWidth,
     flex: 1,
     color: '#000000',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: px(28)
   }
 })
 // export default connect(

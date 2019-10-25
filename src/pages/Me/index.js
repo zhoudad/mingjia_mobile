@@ -64,7 +64,7 @@ export default class index extends Component {
   render() {
     const { navigation } = this.props
     return (
-      <ScrollView contentContainerStyle={{ backgroundColor: '#F9F9F9', }}>
+      <ScrollView contentContainerStyle={{ backgroundColor: '#F9F9F9', }} showsVerticalScrollIndicator={false}>
         {/* <StatusBar
           animated={true}
           hidden={false}
@@ -162,7 +162,7 @@ export default class index extends Component {
             <Text style={{ color: '#303233', fontSize: px(28) }}>问卷调查</Text>
             <Image style={{ width: px(48), height: px(48), }} source={require('../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={styles.option} onPress={() => navigation.navigate('Select')}>
+          <TouchableOpacity activeOpacity={1} style={styles.option} onPress={() => navigation.navigate('meSelect')}>
             <Text style={{ color: '#303233', fontSize: px(28) }}>进入 APP</Text>
             <Image style={{ width: px(48), height: px(48), }} source={require('../../assets/images/common_arrow.png')} />
           </TouchableOpacity>

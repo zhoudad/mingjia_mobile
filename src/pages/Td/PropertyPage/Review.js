@@ -33,8 +33,10 @@ export default class Review extends Component {
   }
   render() {
     return (
-      <View style={{ flex: 1 ,paddingBottom: px(120)}}>
-        <ScrollView style={{ flex: 1, backgroundColor: '#F2F4F7', marginTop: px(30),  }}>
+      <View style={{ flex: 1, paddingBottom: px(120) }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1, backgroundColor: '#F2F4F7', marginTop: px(30), }}>
           <ReviewItem />
           <ReviewItem />
           <ReviewItem />

@@ -2,7 +2,7 @@ import { saveToken, storage } from './storage';
 
 const qs = require('qs');
 
-const BASE_URL = 'http://127.0.0.1:8080';
+const BASE_URL = 'http://192.168.10.79:8080';
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=utf-8'
 };

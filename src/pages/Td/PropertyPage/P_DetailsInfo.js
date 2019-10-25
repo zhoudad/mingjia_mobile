@@ -15,7 +15,9 @@ export default class DetailsInfo extends Component {
     return (
       <View style={{flex:1}}>
 
-        <ScrollView contentContainerStyle={{ backgroundColor: '#F2F4F7',paddingBottom:px(100),marginBottom:px(20)}}>
+        <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ backgroundColor: '#F2F4F7',paddingBottom:px(100),marginBottom:px(20)}}>
           <View style={{ paddingVertical: px(15),backgroundColor:'#FFF',marginBottom:px(20),paddingHorizontal:px(30)}}>
             <Text style={styles.tit}>新城府</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-between' }}>

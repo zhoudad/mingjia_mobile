@@ -50,6 +50,7 @@ import Footprint from './pages/Me/Footprint'
 import Attention from './pages/Me/Attention'
 import callRecords from './pages/Me/callRecords'
 import Notification from './pages/Me/Notification'
+import meSelect from './pages/Me/meSelect'
 
 
 const TabNav = createBottomTabNavigator(
@@ -175,7 +176,7 @@ const MainStack = createStackNavigator({
         <Text
           style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
           onPress={() => {
-            console.log(navigation.state.params.mode)
+            console.log(navigation.state)
             navigation.state.params.msManagement()
             navigation.setParams({ mode: navigation.state.params.mode == 'edit' ? '' : 'edit' })
           }}
@@ -318,7 +319,10 @@ const MainStack = createStackNavigator({
       headerRight: (
         <Text
           style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
-          onPress={() => navigation.state.params.navigatePress()}
+          onPress={() => {
+            console.log( navigation.state.params)
+            navigation.state.params.navigatePress()
+          }}
         >我也发布</Text>
       ),
     })
@@ -756,6 +760,12 @@ const MainStack = createStackNavigator({
       ),
     })
   },
+  meSelect:{
+    screen: meSelect,
+    navigationOptions: {
+      header: null
+    }
+  }
 
 }, {
   initialRouteName: 'Main',

@@ -5,6 +5,9 @@ import Couverture from '../../../components/Couverture';
 import { BoxShadow } from 'react-native-shadow'
 import ActionSheet from 'react-native-general-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
+import {removeTokens} from '../../../utils/storage'
+// import {NavigationActions} from 'react-navigation'
+import configAppNavigator from '../../../rootStack'
 
 export default class Info extends Component {
   constructor(props) {
@@ -247,8 +250,12 @@ export default class Info extends Component {
                   </TouchableOpacity>
                   <View style={{ height: px(30), width: px(2), backgroundColor: '#E6E6E6' }}></View>
                   <TouchableOpacity
+
                   activeOpacity={1}
-                    onPress={() => this.setState({ askVisible: false, sureVisible: true })}
+                    onPress={() => {
+                      this.setState({ askVisible: false, sureVisible: true })
+                      removeTokens()
+                    }}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}
                   >
                     <Text style={{ fontSize: px(30), color: '#333333' }}>确定</Text>
@@ -282,7 +289,11 @@ export default class Info extends Component {
                   </TouchableHighlight>
                   <View style={{ height: px(30), width: px(2), backgroundColor: '#E6E6E6' }}></View>
                   <TouchableHighlight
-                    onPress={() => this.setState({ sureVisible: false })}
+                    onPress={() => {
+                      this.setState({ sureVisible: false })
+                      configAppNavigator(false)
+                      // navigation.reset([NavigationActions.navigate({ routeName: 'login' })], 0);
+                    }}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}
                   >
                     <Text style={{ fontSize: px(30), color: '#333333' }}>确定</Text>

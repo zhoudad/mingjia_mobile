@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import configAppNavigator from './rootStack';
 import { refreshToken } from './utils/request';
+import { storage } from './utils/storage'
 
 const height = Dimensions.get('window').height;
 const paddingTop = StatusBar.currentHeight;
@@ -17,23 +18,23 @@ class App extends Component {
   }
   componentDidMount() {
     const self = this;
-    console.log(self.state.checkedLogin)
-    refreshToken()
-      .then(() => self.setState({ checkedLogin: true, isLoggedIn: true }))
-      .catch(err => {
-        console.log(err);
-        self.setState({
-          checkedLogin: true,
-          isLoggedIn: false
-        });
+    storage.load({
+      key: 'accessToken',
+    }).then(() => {
+      self.setState({ checkedLogin: true, isLoggedIn: true })
+    }).catch(err => {
+      self.setState({
+        checkedLogin: true,
+        isLoggedIn: false
       });
+    });
   }
   render() {
     const { checkedLogin, isLoggedIn } = this.state;
     if (!checkedLogin) {
       return null;
     }
-    const AppNavigator = configAppNavigator(true);
+    const AppNavigator = configAppNavigator(isLoggedIn);
     return (
       <View style={styles.container}>
         <AppNavigator />
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     // height,
     // paddingTop,
-    flex:1
+    flex: 1
   }
 });
 

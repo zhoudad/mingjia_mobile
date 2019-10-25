@@ -77,7 +77,7 @@ export default class ReviewDetails extends Component {
           <View style={{ height: px(100), paddingStart: px(30), backgroundColor: '#fff', justifyContent: 'center', }}>
             <Text style={{ color: '#303133', fontWeight: 'bold', fontSize: px(32) }}>全部回复</Text>
           </View>
-          <ScrollView style={{ flex: 1, marginTop: px(1) }}>
+          <ScrollView style={{ flex: 1, marginTop: px(1) }} showsVerticalScrollIndicator={false}>
             <CommentItem />
             <CommentItem />
             <CommentItem />

@@ -16,6 +16,7 @@ export default class Message extends Component {
 
   componentDidMount() {
     this.props.navigation.setParams({ msManagement: this.msManagement, mode: 'edit' })
+    console.log(this.props.navigation.state)
   }
   msManagement = () => {
     this.setState({ Management: !this.state.Management })

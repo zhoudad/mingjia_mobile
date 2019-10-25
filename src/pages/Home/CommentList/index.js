@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, Dimensions,ScrollView } from 'react-native';
-var screenWidth = Dimensions.get('window').width;
-// import axios from 'axios'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, Dimensions, ScrollView } from 'react-native';
+import storage from '../../../utils/storage'
+import axios from 'axios'
 import CommentItem from './CommentItem'
 import px from '../../../utils/px'
+var screenWidth = Dimensions.get('window').width;
 
 export default class Comment extends Component {
   constructor(props) {
@@ -12,11 +13,33 @@ export default class Comment extends Component {
       CommentList: [],
       focus: false,
       keyBoardHeight: '',
-      com_content: ''
+      com_content: '',
+      account_id:''
     };
   }
-  componentDidMount(){
+  componentDidMount() {
+    // storage.load({
+    //   key: 'accessToken',
+    // }).then((token) => {
+    //   this.setState({ token })
+    // })
+    // storage.load({
+    //   key: 'Id',
+    // }).then((data) => {
+    //   this.setState({ account_id: data.account_id })
+    // })
     this.props.navigation.setParams({ navigatePress: this.getFocus })
+    axios({
+      url: 'http://218.108.34.222:8080/comment',
+      method: 'post',
+      data:{
+        
+      }
+    }).then((res) => {
+      that.setState({
+        CommentList: res.data.result
+      })
+    })
   }
 
   getFocus = () => {
@@ -89,8 +112,8 @@ export default class Comment extends Component {
           ></TextInput>
           <TouchableOpacity
             onPress={() => this.PublishComment()}
-            style={{ width: px(200), height: px(100),backgroundColor:'#EA4C4C' }}>
-            <Text style={{ textAlign: 'center', lineHeight: px(100), color:'#FFF'}}>发表评论</Text>
+            style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C' }}>
+            <Text style={{ textAlign: 'center', lineHeight: px(100), color: '#FFF' ,fontSize:px(32)}}>发表评论</Text>
           </TouchableOpacity>
         </View>
       )
@@ -98,42 +121,42 @@ export default class Comment extends Component {
       return null
     }
   }
-//   componentDidMount() {
-//     this.props.navigation.setParams({ navigatePress: this.getFocus })
-//     that = this
-//     axios({
-//       url: 'http://192.168.10.79:8080/comment',
-//       method: 'GET'
-//     }).then((res) => {
-//       that.setState({
-//         CommentList: res.data.result
-//       })
-//     }).catch((err) => {
-//       console.log(err)
-//     }
-//     )
-//   }
+  // componentDidMount() {
+  //   this.props.navigation.setParams({ navigatePress: this.getFocus })
+  //   that = this
+  //   axios({
+  //     url: 'http://192.168.10.79:8080/comment',
+  //     method: 'GET'
+  //   }).then((res) => {
+  //     that.setState({
+  //       CommentList: res.data.result
+  //     })
+  //   }).catch((err) => {
+  //     console.log(err)
+  //   }
+  //   )
+  // }
   changeExpand = () => {
     this.setState({
       Expand: !this.state.Expand
     })
   }
-  toDetails = (son,item) => {
-    if(son){
-      this.props.navigation.navigate('CommentDetails',{son,item})
+  toDetails = (son, item) => {
+    if (son) {
+      this.props.navigation.navigate('CommentDetails', { son, item })
     }
   }
   render() {
     return (
-      <View style={{flex:1}}>
-        <ScrollView style={{ flex: 1 , backgroundColor:'#F2F4F7',marginTop:px(30)}}>
+      <View style={{ flex: 1 }}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: '#F2F4F7', marginTop: px(30) }}>
           <CommentItem />
           <CommentItem />
           <CommentItem />
           <CommentItem />
           <CommentItem />
         </ScrollView>
-          { this.PublishCom() }
+        {this.PublishCom()}
       </View>
     );
   }
@@ -152,9 +175,10 @@ const styles = StyleSheet.create({
     // paddingHorizontal:px(30)
   },
   PublishInput: {
-    padding:0,
+    padding: 0,
     flex: 1,
     // backgroundColor:'#F2F4F7',
-    paddingLeft:px(30)
+    paddingLeft: px(30),
+    fontSize:px(28)
   }
 })
