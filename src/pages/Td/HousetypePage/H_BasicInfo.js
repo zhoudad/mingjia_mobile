@@ -189,7 +189,7 @@ export default class H_BasicInfo extends Component {
                   <Video
                     playInBackground={false}
                     ref={ref => this.player = ref}
-                    // poster={'https://baconmockup.com/300/200/'}
+                    poster={'https://baconmockup.com/300/200/'}
                     // source={require('../../../assets/test.mp4')}
                     source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
                     style={{ height:this.state.videoHeight,width:this.state.videoWidth }}
