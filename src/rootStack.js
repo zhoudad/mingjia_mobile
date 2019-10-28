@@ -180,7 +180,8 @@ const MainStack = createStackNavigator({
             navigation.state.params.msManagement()
             navigation.setParams({ mode: navigation.state.params.mode == 'edit' ? '' : 'edit' })
           }}
-        >{'管理'}</Text>
+        // >{navigation.state.params.mode == 'edit' ? '管理' : '完成'}</Text>
+        >{'管理' }</Text>
       ),
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
@@ -320,7 +321,6 @@ const MainStack = createStackNavigator({
         <Text
           style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
           onPress={() => {
-            console.log( navigation.state.params)
             navigation.state.params.navigatePress()
           }}
         >我也发布</Text>

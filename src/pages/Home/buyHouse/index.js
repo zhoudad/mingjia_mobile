@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import px from '../../../utils/px'
+import Axios from 'axios';
 
 export default class BuyHouse extends Component {
   constructor(props) {
@@ -90,6 +91,16 @@ export default class BuyHouse extends Component {
     console.log(key)
     this.setState({
       index:key
+    })
+  }
+  componentDidMount(){
+    this.getdata()
+  }
+  getdata(){
+    Axios({
+      url:`http://218.108.34.222:8080/know`,
+    }).then(res => {
+      console.log(res)
     })
   }
 

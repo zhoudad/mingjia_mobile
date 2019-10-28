@@ -11,6 +11,7 @@ import Swiper from 'react-native-swiper';
 import ActionSheet from 'react-native-general-actionsheet';
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow'
+import axios from 'axios'
 const MyLocation = NativeModules.MyLocation
 
 const { height, width } = Dimensions.get('window')
@@ -28,8 +29,24 @@ export default class BasicInfo extends Component {
       modelItemHeight: 0,
       modelEx: false,
       callVisible: false,
-      tel: ''
+      tel: '',
+      data:{}
     };
+  }
+  componentDidMount(){
+    this.getdata()
+  }
+  getdata(){
+    const id = this.props.navigation.state.params.id
+    axios({
+      method:'post',
+      url:`http://218.108.34.222:8080/visitor_once`,
+      data:{
+        houses_id:id
+      }
+    }).then(res => {
+      this.setState({data:res.data.result['0']})
+    })
   }
   callProperty() {
     let thef = this
@@ -222,19 +239,14 @@ export default class BasicInfo extends Component {
     )
   }
   render() {
+    const id =  this.props.navigation.state.params.id
     const { navigation } = this.props
+    const {data} = this.state
     const modelListSty = {}
     modelListSty.height = this.state.modelItemHeight
     return (
       <View>
         <ScrollView contentContainerStyle={{ marginBottom: px(30) }} showsVerticalScrollIndicator={false}>
-          {/* <StatusBar
-            animated={true}
-            hidden={false}
-            backgroundColor='transparent'
-            translucent={true}
-            barStyle='light-content'
-          /> */}
           <View style={styles.headerImg}>
             <View style={{ height: px(422) }}>
               <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => navigation.goBack()}>
@@ -326,8 +338,8 @@ export default class BasicInfo extends Component {
           </View>
           <View style={styles.info}>
             <View style={{ borderBottomWidth: px(2), borderBottomColor: '#E6E9F0' }}>
-              <Text style={{ marginTop: px(30), color: '#333333', fontSize: px(44) }}>新府城</Text>
-              <Text style={{ marginTop: px(20), color: '#A8ABB3', fontSize: px(24) }}>别名：VTANOV融创新府城</Text>
+              <Text style={{ marginTop: px(30), color: '#333333', fontSize: px(44) }}>{data.houses_name}</Text>
+              <Text style={{ marginTop: px(20), color: '#A8ABB3', fontSize: px(24) }}>别名：{data.houses_alias}</Text>
               <View style={{ marginVertical: px(40), flexDirection: 'row' }}>
                 <TipicTag text={"新房"} />
                 <TipicTag text={"别墅"} />
@@ -337,21 +349,21 @@ export default class BasicInfo extends Component {
             </View>
             <View>
               <View style={{ flexDirection: 'row', marginVertical: px(50) }}>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>住宅： 28800元/㎡</Text>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>开盘： 2019-05-07</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>住宅： {data.houses_price}元/㎡</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>开盘： {data.houses_new}</Text>
               </View>
               <View style={{ flexDirection: 'row', marginBottom: px(50) }}>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>户型： 4室  2室</Text>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>建面： 34-144㎡</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>户型： {data.houses_type}</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>建面： {data.survey_area}㎡</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                <Text style={{ color: '#303133', fontSize: px(24) }}>地址： 广东省广州市天河区棠下街道乐天大厦</Text>
+                <Text style={{ color: '#303133', fontSize: px(24) }}>地址： {data.houses_sell}</Text>
                 <TouchableOpacity activeOpacity={1} style={{ felx: 1 }} onPress={() => this.location()}>
                   <Image style={{ width: px(44), height: px(44), marginStart: px(24) }} source={require('../../../assets/images/loupan_ditu.png')} />
                 </TouchableOpacity>
               </View>
               <View style={{ height: px(68), justifyContent: 'center', alignItems: 'center', marginTop: px(76) }}>
-                <TouchableOpacity activeOpacity={1} style={styles.detailsBtn} onPress={() => navigation.navigate('P_DetailsInfo')}>
+                <TouchableOpacity activeOpacity={1} style={styles.detailsBtn} onPress={() => navigation.navigate('P_DetailsInfo',{id})}>
                   <Text style={{ color: '#FFFFFF' }}>信息详情</Text>
                 </TouchableOpacity>
               </View>

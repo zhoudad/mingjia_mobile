@@ -12,9 +12,11 @@ export default class Comment extends Component {
     this.state = {
       CommentList: [],
       focus: false,
-      keyBoardHeight: '',
-      com_content: '',
-      account_id:''
+      com_content: '',//评论内容
+      account_id:'',
+      toRep:false,
+      rep_content:'',//回复内容
+      rep_id:''
     };
   }
   componentDidMount() {
@@ -30,13 +32,11 @@ export default class Comment extends Component {
     // })
     this.props.navigation.setParams({ navigatePress: this.getFocus })
     axios({
-      url: 'http://218.108.34.222:8080/comment',
-      method: 'post',
-      data:{
-        
-      }
+      url: `http://218.108.34.222:8080/comment?account_id=${2}`,
+      method: 'GET'
     }).then((res) => {
-      that.setState({
+      console.log(res)
+      this.setState({
         CommentList: res.data.result
       })
     })
@@ -47,11 +47,42 @@ export default class Comment extends Component {
       this.refs.PublishInput.focus();
     })
   }
-  CommentCont = (text) => {
-    this.setState({ com_content: text })
+  getRepId = (id) =>{
+    console.log(id)
+    this.setState({rep_id:id,toRep:true},() => {
+      this.refs.repInput.focus();
+    })
   }
+
+  repCom = () => {
+    if (this.state.toRep) {
+      return (
+        <View style={styles.Publish}>
+          <TextInput
+            placeholder={'请输入内容回复内容'}
+            ref={'repInput'}
+            style={styles.PublishInput}
+            onChangeText={(text) => this.setState({ rep_content: text })}
+            onEndEditing={() => this.setState({ toRep: false })}
+          ></TextInput>
+          <TouchableOpacity
+            onPress={() => {
+              Keyboard.dismiss()
+              this.setState({
+                toRep: false
+              })
+            }}
+            style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C' }}>
+            <Text style={{ textAlign: 'center', lineHeight: px(100), color: '#FFF' ,fontSize:px(32)}}>发表回复</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return null
+    }
+  }
+
   PublishComment = () => {
-    // console.log(this.CommentCont())
     Keyboard.dismiss()
     let com_time = new Date()
     let com_content = this.state.com_content
@@ -62,52 +93,15 @@ export default class Comment extends Component {
     })
   }
 
-  renderCommentInput() {
-    if (this.state.focus) {
-      return (
-        <View style={{
-          backgroundColor: '#ddd', position: 'absolute',
-          ...Platform.select({
-            android: {
-              bottom: 0,
-            },
-            ios: {
-              bottom: this.state.keyboardOffset,
-            }
-          })
-          , left: 0, right: 0, flexDirection: 'row', alignItems: 'center'
-        }}>
-          <TextInput
-            ref={"PublishInput"}
-            style={{
-              marginStart: 15, marginEnd: 10, marginTop: 4,
-              marginBottom: 4, height: 40, width: screenWidth - 70, backgroundColor: 'white',
-              paddingLeft: 14, borderWidth: 1, borderRadius: 22, borderColor: '#CCCCCC'
-            }}
-            placeholder={"inputPlaceHold"}
-            underlineColorAndroid='transparent' //设置下划线背景色透明 达到去掉下划线的效果
-            onChangeText={(com_content) => this.setState({ com_content })}
-          />
-          <TouchableOpacity style={{ width: 70, marginRight: 0, marginBottom: 0, justifyContent: 'center', alignItems: 'center' }}
-            onPress={() => this.PublishComment()}>
-            <Text >发送</Text>
-          </TouchableOpacity>
-        </View>
-      )
-    } else {
-      return null;
-    }
-  }
-
   PublishCom = () => {
     if (this.state.focus) {
       return (
-        <View style={[styles.Publish]}>
+        <View style={styles.Publish}>
           <TextInput
-            placeholder={'请输入你的回复'}
+            placeholder={'请输入评论内容'}
             ref={'PublishInput'}
             style={styles.PublishInput}
-            onChangeText={(text) => this.CommentCont(text)}
+            onChangeText={(text) => this.setState({ com_content: text })}
             onEndEditing={() => this.setState({ focus: false })}
           ></TextInput>
           <TouchableOpacity
@@ -121,42 +115,21 @@ export default class Comment extends Component {
       return null
     }
   }
-  // componentDidMount() {
-  //   this.props.navigation.setParams({ navigatePress: this.getFocus })
-  //   that = this
-  //   axios({
-  //     url: 'http://192.168.10.79:8080/comment',
-  //     method: 'GET'
-  //   }).then((res) => {
-  //     that.setState({
-  //       CommentList: res.data.result
-  //     })
-  //   }).catch((err) => {
-  //     console.log(err)
-  //   }
-  //   )
-  // }
-  changeExpand = () => {
-    this.setState({
-      Expand: !this.state.Expand
-    })
-  }
-  toDetails = (son, item) => {
-    if (son) {
-      this.props.navigation.navigate('CommentDetails', { son, item })
-    }
-  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: '#F2F4F7', marginTop: px(30) }}>
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
+          {
+            this.state.CommentList.map((item,index) => {
+              return(
+                <CommentItem key={index} data={item} getRepId={(id) => this.getRepId(id)}/>
+              )
+            })
+          }
         </ScrollView>
         {this.PublishCom()}
+        {this.repCom()}
       </View>
     );
   }
@@ -172,12 +145,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     bottom: 0,
-    // paddingHorizontal:px(30)
   },
   PublishInput: {
     padding: 0,
     flex: 1,
-    // backgroundColor:'#F2F4F7',
     paddingLeft: px(30),
     fontSize:px(28)
   }

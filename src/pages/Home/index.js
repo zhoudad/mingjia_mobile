@@ -28,7 +28,7 @@ export default class Home extends Component {
     super(props);
     this.state = {
       city: '上海',
-      slides: [],
+      slides: null,
       token: '',
       account_id: ''
     };
@@ -44,11 +44,15 @@ export default class Home extends Component {
     }).then((data) => {
       this.setState({ account_id: data.account_id })
     })
+    this.getData()
+  }
+  async getData() {
     axios({
       url: `http://218.108.34.222:8080/slide?account_id=${2}`
-    }).then(res => {
-      this.state.slides = res.data.result
-      console.log(this.state.slides.length)
+    }).then((res) => {
+      this.setState({
+        slides: res.data.result
+      })
     })
   }
   getCity = (city) => {
@@ -129,7 +133,7 @@ export default class Home extends Component {
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
 
           {
-            this.state.slides == [] ? null :
+            this.state.slides == null ? <View style={{flex:1}}></View> :
               <Swiper
                 style={{ height: px(296), paddingHorizontal: px(30), }}
                 dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
@@ -158,13 +162,13 @@ export default class Home extends Component {
         <View style={styles.service}>
           <Text style={{ color: '#333333', fontSize: px(32) }}>服务专区</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
-            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Mortgage')}>
+            {/* <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Mortgage')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_fangdai.png')}
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>房贷计算</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
@@ -179,8 +183,6 @@ export default class Home extends Component {
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>新房专题</Text>
             </TouchableOpacity>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
             <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Developer')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
@@ -188,6 +190,8 @@ export default class Home extends Component {
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>碧桂园</Text>
             </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: px(15) }}>
             <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Experience')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
