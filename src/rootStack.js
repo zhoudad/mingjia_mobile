@@ -51,6 +51,7 @@ import Attention from './pages/Me/Attention'
 import callRecords from './pages/Me/callRecords'
 import Notification from './pages/Me/Notification'
 import meSelect from './pages/Me/meSelect'
+import Policy from './pages/Me/Setting/Policy'
 
 
 const TabNav = createBottomTabNavigator(
@@ -639,7 +640,7 @@ const MainStack = createStackNavigator({
   AboutOurs: {
     screen: AboutOurs,
     navigationOptions: ({ navigation }) => ({
-      title: '推荐二维码',
+      title: '关于我们',
       headerTitleStyle: {
         textAlign: 'center',
         flex: 1,
@@ -718,6 +719,29 @@ const MainStack = createStackNavigator({
     screen: callRecords,
     navigationOptions: ({ navigation }) => ({
       title: '联系记录',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('./assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      ),
+    })
+  },
+  Policy:{
+    screen: Policy,
+    navigationOptions: ({ navigation }) => ({
+      title: '明家用户隐私政策及协议',
       headerTitleStyle: {
         textAlign: 'center',
         flex: 1,

@@ -3,6 +3,7 @@ import { View, Text, TouchableHighlight, TextInput, ScrollView, StyleSheet, Imag
 // import CommentItem from './CommentItem'
 import px from '../../../utils/px'
 import IntervalTime from '../../../utils/IntervalTime'
+import axios from 'axios'
 
 class DetailsItem extends Component {
   constructor(props) {
@@ -29,9 +30,9 @@ class DetailsItem extends Component {
           <Text numberOfLines={999} style={{ color: '#303133', fontSize: px(24), lineHeight: px(46) }}>{reply_content} </Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30), marginBottom: px(40) }}>
-          <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={(com_id) => repContent(com_id)}>
+          {/* <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={(com_id) => repContent(com_id)}>
             <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
             <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ awesome: !this.state.awesome })} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
               <Image
@@ -60,11 +61,25 @@ export default class CommentDetails extends Component {
       num: '',
       awesome: false,
       nolike: false,
+      com_content: '',
     };
   }
   repContent = (id) => {
     this.refs.ComInput.focus();
     console.log(id)
+  }
+  PublishComment() {
+    axios({
+      url: `http://218.108.34.222:8080/comment_do`,
+      method: 'post',
+      data: {
+        user_id: 2,
+        com_content: this.state.com_content
+      }
+    }).then((res) => {
+      this.refs.ComInput.clear();
+      this.setState({com_content:''})
+    })
   }
   PublishCom = () => {
     return (
@@ -73,12 +88,14 @@ export default class CommentDetails extends Component {
           placeholder={'请输入你的内容'}
           ref={'ComInput'}
           style={styles.PublishInput}
+          onChangeText={(text) => this.setState({ com_content: text })}
         ></TextInput>
-        <TouchableHighlight
+        <TouchableOpacity
+          activeOpacity={1}
           onPress={() => this.PublishComment()}
           style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ lineHeight: px(46), color: '#FFFFFF', fontSize: px(32), }}>发表评论</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     )
   }

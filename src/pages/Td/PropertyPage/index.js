@@ -13,18 +13,18 @@ class PropertyPage extends Component {
       data: []
     };
   }
-componentDidMount(){
-  this.getdata()
-}
-  getdata(){
+  componentDidMount() {
+    this.getdata()
+  }
+  getdata() {
     axios({
-      method:'post',
-      url:`http://218.108.34.222:8080/visitor_houses`,
-      data:{
-        account_id:2
+      method: 'post',
+      url: `http://218.108.34.222:8080/visitor_houses`,
+      data: {
+        account_id: 2
       }
     }).then(res => {
-      this.setState({data:res.data.result})
+      this.setState({ data: res.data.result })
     })
   }
 
@@ -35,7 +35,7 @@ componentDidMount(){
       <TouchableOpacity
         style={styles.item}
         activeOpacity={1}
-        onPress={() => navigation.navigate('P_BasicInfo',{id:data.item.houses_id})}>
+        onPress={() => navigation.navigate('P_BasicInfo', { id: data.item.houses_id })}>
         <View style={styles.itemContent}>
           <View style={{ width: px(200), height: px(200), }}>
             <Image
@@ -49,7 +49,7 @@ componentDidMount(){
               <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.houses_csite}</Text>
               <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.survey_area}㎡</Text>
             </Text>
-            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{data.item.houses_price} <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
+            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{data.item.houses_price}<Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
             <View style={{ flexDirection: 'row', marginTop: px(8) }}>
               <TipicTag text={"在售"} isStress={true} />
               <TipicTag text={"住宅"} />

@@ -27,9 +27,9 @@ export default class Login extends Component {
       accountNumber: '请输入手机号',
       password: '请输入验证码',
       btnText: '获取验证码',
-      user_tel:'',
-      user_code:'',
-      ip:'',
+      user_tel: '',
+      user_code: '',
+      ip: '',
 
 
       // isSendVerification: false,
@@ -53,10 +53,10 @@ export default class Login extends Component {
   // }
   componentDidMount() {
     DeviceInfo.getIpAddress().then(res => {
-      this.setState({ip:res})
+      this.setState({ ip: res })
     })
     DeviceInfo.getCarrier().then(res => {
-      this.setState({ip_name:res})
+      this.setState({ ip_name: res })
     })
 
     axios({
@@ -104,7 +104,7 @@ export default class Login extends Component {
     //   return
     // })
   }
-   sendVerification = async () => {
+  sendVerification = async () => {
     let myreg = /^1[3456789]\d{9}$/;
     if (!this.state.user_tel) {
       ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
@@ -140,7 +140,7 @@ export default class Login extends Component {
       }
     }
   }
-  
+
   loginIn = () => {
     const { user_tel, user_code, ip, ip_name } = this.state;
     const self = this;
@@ -150,17 +150,17 @@ export default class Login extends Component {
       url: 'http://218.108.34.222:8080/userinfo',
       data: { user_tel, user_code, ip, ip_name, 'user_ftime': new Date().getTime(), }
     }).then((res) => {
-        console.log(res);
-        if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
-          // saveToken(data.data);
-          navigation.navigate('Select',{Token: res.data.token})
-          // navigationUtil.reset(self.props.navigation, 'Select');
-        }
-      }).catch(err => {
-        ToastAndroid.show('登录失败', ToastAndroid.SHORT);
-        // console.log(err)
-        // Alert.alert('登录失败', err.message || err);
-      });
+      console.log(res);
+      if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
+        // saveToken(data.data);
+        navigation.navigate('Select', { Token: res.data.token })
+        // navigationUtil.reset(self.props.navigation, 'Select');
+      }
+    }).catch(err => {
+      ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+      // console.log(err)
+      // Alert.alert('登录失败', err.message || err);
+    });
   }
   // 微信登陆授权
   weixinLogin = () => {
@@ -300,7 +300,7 @@ export default class Login extends Component {
                 keyboardType={'number-pad'}
                 returnKeyType={'done'}
                 underlineColorAndroid='transparent'
-                onChangeText={(text) => this.setState({user_tel:text})}
+                onChangeText={(text) => this.setState({ user_tel: text })}
               ></TextInput>
             </View>
             <View style={styles.item}>
@@ -314,23 +314,23 @@ export default class Login extends Component {
                   // password={true}
                   returnKeyType={'done'}
                   underlineColorAndroid='transparent'
-                  onChangeText={(text) => this.setState({user_code:text}) }
+                  onChangeText={(text) => this.setState({ user_code: text })}
                 ></TextInput>
               </View>
               <Touchable style={{ paddingHorizontal: 15, }} activeOpacity={0.8} onPress={() => this.state.isSend ? false : this.sendVerification()}>
-                <Text style={{ lineHeight: 40, textAlign: 'right', color: '#ea4c4c',fontSize:px(24)}} >
+                <Text style={{ lineHeight: 40, textAlign: 'right', color: '#ea4c4c', fontSize: px(24) }} >
                   {this.state.isSend ? this.state.btnText + 's' : this.state.btnText}
                 </Text>
               </Touchable>
             </View>
           </View>
           {/* <BoxShadow setting={shadowOpt}> */}
-            <View style={styles.loginButton}>
-              <TouchableOpacity activeOpacity={1} style={{ flex: 1, }} onPress={() => this.loginIn()}>
-                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: px(90), fontSize: px(32), fontWeight: 'bold' }}
-                >同意协议并登录</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.loginButton}>
+            <TouchableOpacity activeOpacity={1} style={{ flex: 1, }} onPress={() => this.loginIn()}>
+              <Text style={{ color: '#fff', textAlign: 'center', lineHeight: px(90), fontSize: px(32), fontWeight: 'bold' }}
+              >同意协议并登录</Text>
+            </TouchableOpacity>
+          </View>
           {/* </BoxShadow> */}
           <View style={{ marginTop: 40 * unitWidth, }}>
             <Text style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10 * unitWidth,
     color: '#333333',
     fontFamily: 'PingFang-SC-Medium',
-    fontSize:px(24)
+    fontSize: px(24)
   },
   input: {
     // marginStart: 10 * unitWidth,

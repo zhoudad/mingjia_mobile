@@ -32,7 +32,7 @@ export default class meSelect extends Component {
     }
     axios({
       method: 'post',
-      url: 'http://192.168.10.79:8080/choose',
+      url: 'http://218.108.34.222:8080/choose',
       data: {
         name: this.state.text,
         token: this.state.token

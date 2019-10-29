@@ -52,7 +52,9 @@ export default class Setting extends Component {
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>隐私政策</Text>
-            <TouchableOpacity  activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
+            <TouchableOpacity  
+             onPress={() => navigation.navigate('Policy')}
+            activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center',width:px(100),justifyContent:'center' }}>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
             </TouchableOpacity>
           </View>

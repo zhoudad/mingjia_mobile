@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TextInput, Image,Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TextInput, Image, Dimensions } from 'react-native';
 import IntervalTime from '../../../utils/IntervalTime'
 import px from '../../../utils/px'
 import { withNavigation } from 'react-navigation';
@@ -16,8 +16,6 @@ class CommentItem extends Component {
       nolike: false,
     };
   }
-
-
 
   shouExpandCom = () => {
     if (this.state.shouExpandBtn) {
@@ -36,14 +34,14 @@ class CommentItem extends Component {
   }
 
   render() {
-    const { navigation,getRepId,data, } = this.props
-    const { user_id, com_content, com_like, com_nolike, son,time} = data
+    const { navigation, getRepId, data, } = this.props
+    const { user_id, com_content, com_like, com_nolike, son, time, com_id } = data
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('CommentDetails',{data})}>
+      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('CommentDetails', { data })}>
         <View style={styles.CommentItem}>
           <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row', marginTop: px(30) }}>
             <Image
-            source={{ uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg' }}
+              source={{ uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg' }}
               style={{ backgroundColor: '#EA4C4C', width: px(60), height: px(60), borderRadius: px(30) }} />
             <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{user_id}</Text>
             <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>
@@ -54,18 +52,18 @@ class CommentItem extends Component {
             <View style={{ marginTop: px(30), }}>
               <Text
                 onLayout={(event) => {
-                  if(event.nativeEvent.layout.height > 50){
-                    this.setState({shouExpandBtn:true})
+                  if (event.nativeEvent.layout.height > 50) {
+                    this.setState({ shouExpandBtn: true })
                   }
                 }}
                 numberOfLines={this.state.Expand ? 999 : 2}
-                style={{ color: '#303133', fontSize: px(24),lineHeight:px(46) }}>
+                style={{ color: '#303133', fontSize: px(24), lineHeight: px(46) }}>
                 {com_content}
               </Text>
               <View>{this.shouExpandCom()}</View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30), marginBottom: px(40) }}>
-              <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={() => getRepId(user_id)}>
+              <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={() => getRepId(com_id)}>
                 <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
@@ -134,7 +132,7 @@ const styles = StyleSheet.create({
     padding: 0,
     flex: 1,
     paddingLeft: px(30),
-    fontSize:px(28)
+    fontSize: px(28)
   }
 })
 export default withNavigation(CommentItem);

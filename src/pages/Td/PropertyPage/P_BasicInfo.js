@@ -23,7 +23,7 @@ export default class BasicInfo extends Component {
       headerIndex: 0,
       isAttention: false,
       ReviewVisible: false,
-      commentTxtLength: 0,
+      commentTxt: '',
       images: [],
       index: 0,
       modelItemHeight: 0,
@@ -35,6 +35,54 @@ export default class BasicInfo extends Component {
   }
   componentDidMount(){
     this.getdata()
+    this.addFoot()
+  }
+  addAttention(){
+    const id = this.props.navigation.state.params.id
+    this.setState({isAttention:true})
+    axios({
+      method: 'post',
+      url: `http://218.108.34.222:8080/attention`,
+      data: {
+        account_id: 2,
+        user_id:2,
+        houses_id:id
+      }
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      this.setState({isAttention:false})
+    })
+  }
+  publicRev(){
+    let formData = new FormData();
+    for(var i = 0;i<images.length;i++){
+      let ary = images[i].path.split('/');
+      let file = {uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1]};   
+      formData.append("files",file);  
+  }
+  formData.append("commentTxt",this.state.commentTxt);  
+    axios({
+      method: 'post',
+      url: ``,
+      data: formData
+    }).then(res => {
+      console.log(res)
+    })
+  }
+  addFoot(){
+    const id = this.props.navigation.state.params.id
+    axios({
+      method: 'post',
+      url: `http://218.108.34.222:8080/track`,
+      data: {
+        account_id: 2,
+        user_id:2,
+        houses_id:id
+      }
+    }).then(res => {
+      console.log(res)
+    })
   }
   getdata(){
     const id = this.props.navigation.state.params.id
@@ -97,8 +145,8 @@ export default class BasicInfo extends Component {
     )
   }
   location() {
-    let lon = '121.2477511168';  // ---经度 121.248078
-    let lat = '31.0913734181';   // ---纬度 31.091769
+    let lon = '';  // ---经度 121.248078
+    let lat = '';   // ---纬度 31.091769
     let name = '上海市人民广场';//
     let array = []
     MyLocation.findEvents(lon, lat, name, (events) => {
@@ -416,15 +464,17 @@ export default class BasicInfo extends Component {
             </View>
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: px(50) }}>
-            <TouchableHighlight
+            <TouchableOpacity
+            activeOpacity={1}
               onPress={() => this.setState({ ReviewVisible: true })}
               style={styles.publishBtn}>
               <Text style={{ color: '#FFFFFF', fontSize: px(24) }}>我来点评</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
 
             {
               this.state.ReviewVisible ?
-                <TouchableHighlight
+                <TouchableOpacity
+                activeOpacity={1}
                   style={{ position: 'absolute', width: '100%', zIndex: 999, height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
                 >
                   <Modal
@@ -444,18 +494,21 @@ export default class BasicInfo extends Component {
                               style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>取消</Text>
                             <Text style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>点评</Text>
                           </View>
-                          <TouchableHighlight style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
+                          <TouchableOpacity 
+                          onPress={() => this.publicRev()}
+                          activeOpacity={1}
+                          style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: px(32) }}>发表</Text>
-                          </TouchableHighlight>
+                          </TouchableOpacity>
                         </View>
                         <View style={{ height: px(480), backgroundColor: '#F7F9FB', paddingHorizontal: px(30), paddingVertical: px(40) }}>
                           <TextInput
-                            onChangeText={(t) => this.setState({ commentTxtLength: t.length })}
+                            onChangeText={(t) => this.setState({ commentTxt:t })}
                             style={{ flex: 1, padding: 0, textAlignVertical: 'top', lineHeight: px(40), fontSize: px(24) }}
                             maxLength={100}
                             placeholder={' 对本楼盘本户型发表您的看法，不限环境、位置、三维图、全景 '}
                             multiline={true} />
-                          <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>{this.state.commentTxtLength}/100</Text>
+                          <Text style={{ color: '#A8ABB3', fontSize: px(24),lineHeight:px(40) }}>{this.state.commentTxt.length}/100</Text>
                           <View style={{ marginVertical: px(30), flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
                             <ScrollView
                               showsHorizontalScrollIndicator={false}
@@ -498,12 +551,13 @@ export default class BasicInfo extends Component {
                       </View>
                     </View>
                   </Modal>
-                </TouchableHighlight> : null
+                </TouchableOpacity> : null
             }
           </View>
         </ScrollView>
         <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
           <TouchableOpacity
+          onPress={() => this.addAttention()}
             activeOpacity={1}
             style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image

@@ -23,7 +23,8 @@ export default class NickName extends Component {
         <TextInput
           onChangeText={(text) => this.nameChang(text)}
           autoFocus={true}
-          style={{ height: px(100),backgroundColor:'#FFFFFF',paddingHorizontal:px(30),color:'#999999',fontSize:px(28) }}
+          placeholderTextColor={'#999999'}
+          style={{ height: px(100),backgroundColor:'#FFFFFF',paddingHorizontal:px(30),color:'#333333',fontSize:px(28) }}
           defaultValue={navigation.state.params.nickname}
         ></TextInput>
       </ScrollView>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, ScrollView,ImageBackground,TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, ScrollView, ImageBackground, TouchableHighlight } from 'react-native';
 import Icon from '../../components/Icon'
 // import { unitWidth } from '../../AdapterUtil'
 import px from '../../utils/px'
@@ -26,36 +26,36 @@ export default class index extends Component {
   }
 
 
-  _renderTab(){
-    if(true){
+  _renderTab() {
+    if (true) {
       return (
         <ScrollView
-            showsHorizontalScrollIndicator={false}
-            style={{ height: px(313), marginVertical: px(40) }}
-            horizontal={true}
-            contentContainerStyle={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around' }}>
-            <View style={{ marginEnd: px(30) }}>
-              <View style={{ width: px(240), height: px(313), }}>
-                <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
-              </View>
+          showsHorizontalScrollIndicator={false}
+          style={{ height: px(313), marginVertical: px(40) }}
+          horizontal={true}
+          contentContainerStyle={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ marginEnd: px(30) }}>
+            <View style={{ width: px(240), height: px(313), }}>
+              <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
             </View>
-            <View style={{ marginEnd: px(30) }}>
-              <View style={{ width: px(240), height: px(313), }}>
-                <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
-              </View>
+          </View>
+          <View style={{ marginEnd: px(30) }}>
+            <View style={{ width: px(240), height: px(313), }}>
+              <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
             </View>
-            <View style={{ marginEnd: px(30) }}>
-              <View style={{ width: px(240), height: px(313), }}>
-                <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
-              </View>
+          </View>
+          <View style={{ marginEnd: px(30) }}>
+            <View style={{ width: px(240), height: px(313), }}>
+              <Image style={{ width: px(240), height: px(313), borderRadius: px(20) }} source={require('../../assets/images/panda.jpg')} />
             </View>
-          </ScrollView>
+          </View>
+        </ScrollView>
       )
-    }else{
+    } else {
       return (
-        <View style={{height: px(330),justifyContent:'center',alignItems:'center'}}>
-          <Image style={{width:px(339),height:px(190)}} source={require('../../assets/images/loupan_bg.png')}/>
-          <Text style={{color:'#999999',fontSize:px(24),marginTop:px(42)}}>您还没保存您编辑的相关房屋哦！</Text>
+        <View style={{ height: px(330), justifyContent: 'center', alignItems: 'center' }}>
+          <Image style={{ width: px(339), height: px(190) }} source={require('../../assets/images/loupan_bg.png')} />
+          <Text style={{ color: '#999999', fontSize: px(24), marginTop: px(42) }}>您还没保存您编辑的相关房屋哦！</Text>
         </View>
       )
     }
@@ -74,19 +74,19 @@ export default class index extends Component {
         /> */}
         <View style={{ paddingTop: px(110), height: px(380), }}>
           <View style={styles.header}>
-            <TouchableHighlight 
-            onPress={() => navigation.navigate('Info')}
-            style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
+            <TouchableHighlight
+              onPress={() => navigation.navigate('Info')}
+              style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
               <Image
                 style={{ width: px(108), height: px(108), }}
                 source={require('../../assets/images/mine_use.png')} />
             </TouchableHighlight>
             <View style={{ flex: 1, justifyContent: 'space-around' }}>
               <Text style={{ color: '#323232', fontSize: px(32) }}>周大大</Text>
-              <TouchableOpacity 
-              activeOpacity={1}
-               onPress={() => navigation.navigate('Info')}
-              style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => navigation.navigate('Info')}
+                style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: '#323232', fontSize: px(24) }}>编辑个人资料</Text>
                 <Image
                   style={{ width: px(40), height: px(40), }}
@@ -101,33 +101,33 @@ export default class index extends Component {
           </View>
         </View>
         <View style={styles.entrance}>
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Footprint')}
-          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Footprint')}
+            activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_zuji.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>我的足迹</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Attention')}
-          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Attention')}
+            activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_guanzhu.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>我的关注</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('callRecords')}
-          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('callRecords')}
+            activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_lianxi.png')} />
             <Text style={{ color: '#333333', marginTop: px(20), fontSize: px(24) }}>联系记录</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-          onPress={() => navigation.navigate('Notification')}
-          activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Notification')}
+            activeOpacity={1} style={{ alignItems: 'center', flex: 1 }}>
             <Image
               style={{ width: px(80), height: px(80), }}
               source={require('../../assets/images/mine_icon_message.png')} />
@@ -158,7 +158,7 @@ export default class index extends Component {
             </View>
             {this._renderTab()}
           </View>
-          <TouchableOpacity activeOpacity={1} style={[styles.option,{borderTopColor:'#FFFFFF'}]}>
+          <TouchableOpacity activeOpacity={1} style={[styles.option, { borderTopColor: '#FFFFFF' }]}>
             <Text style={{ color: '#303233', fontSize: px(28) }}>问卷调查</Text>
             <Image style={{ width: px(48), height: px(48), }} source={require('../../assets/images/common_arrow.png')} />
           </TouchableOpacity>
@@ -201,13 +201,13 @@ const styles = StyleSheet.create({
     bottom: px(4),
     left: 0
   },
-  option:{
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    paddingEnd:px(55),
-    borderTopColor:'#EBEBEB',
-    borderTopWidth:px(1),
-    paddingVertical:px(40)
+  option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingEnd: px(55),
+    borderTopColor: '#EBEBEB',
+    borderTopWidth: px(1),
+    paddingVertical: px(40)
   },
 });
 

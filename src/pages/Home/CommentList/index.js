@@ -11,6 +11,7 @@ export default class Comment extends Component {
     super(props);
     this.state = {
       CommentList: [],
+      img_name:[],
       focus: false,
       com_content: '',//评论内容
       account_id:'',
@@ -35,9 +36,24 @@ export default class Comment extends Component {
       url: `http://218.108.34.222:8080/comment?account_id=${2}`,
       method: 'GET'
     }).then((res) => {
-      console.log(res)
       this.setState({
         CommentList: res.data.result
+      })
+      this.state.CommentList.forEach((item,index) => {
+        console.log(item)
+        axios({
+          url:'http://218.108.34.222:8080/user_img',
+          method:'post',
+          data:{user_id:item.user_id}
+        }).then(res =>{
+          console.log(res)
+          this.setState({
+            // CommentList[index]:[...this.state.CommentList]
+          })
+          // res.data.result.img,
+          // res.data.result.name,
+
+        })
       })
     })
   }
@@ -48,30 +64,39 @@ export default class Comment extends Component {
     })
   }
   getRepId = (id) =>{
-    console.log(id)
     this.setState({rep_id:id,toRep:true},() => {
       this.refs.repInput.focus();
     })
   }
 
+  publisRep(){
+    Keyboard.dismiss()
+    this.setState({  toRep: false })
+    axios({
+      url: `http://218.108.34.222:8080/reply_do`,
+      method: 'post',
+      data:{
+        user_id:2,
+        com_id:this.state.rep_id,
+        rep_content:this.state.rep_content
+      }
+    }).then((res) => {
+      console.log(res)
+    })
+  }
   repCom = () => {
     if (this.state.toRep) {
       return (
         <View style={styles.Publish}>
           <TextInput
-            placeholder={'请输入内容回复内容'}
+            placeholder={'回复' + this.state.rep_id + ':'}
             ref={'repInput'}
             style={styles.PublishInput}
             onChangeText={(text) => this.setState({ rep_content: text })}
             onEndEditing={() => this.setState({ toRep: false })}
           ></TextInput>
-          <TouchableOpacity
-            onPress={() => {
-              Keyboard.dismiss()
-              this.setState({
-                toRep: false
-              })
-            }}
+          <TouchableOpacity 
+            onPress={() => this.publisRep()}
             style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C' }}>
             <Text style={{ textAlign: 'center', lineHeight: px(100), color: '#FFF' ,fontSize:px(32)}}>发表回复</Text>
           </TouchableOpacity>
@@ -84,12 +109,18 @@ export default class Comment extends Component {
 
   PublishComment = () => {
     Keyboard.dismiss()
-    let com_time = new Date()
-    let com_content = this.state.com_content
-    let user_id = 'newUser'
     this.setState({
       focus: false,
-      CommentList: [...this.state.CommentList, { com_time, com_content, user_id }]
+    })
+    axios({
+      url: `http://218.108.34.222:8080/comment_do`,
+      method: 'post',
+      data:{
+        user_id:2,
+        com_content:this.state.com_content
+      }
+    }).then((res) => {
+      console.log(res)
     })
   }
 
