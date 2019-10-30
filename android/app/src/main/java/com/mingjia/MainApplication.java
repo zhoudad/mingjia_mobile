@@ -14,10 +14,11 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.horcrux.svg.SvgPackage;
-// import com.mingjia.maputil.UtilMapPackage;
 import com.theweflex.react.WeChatPackage;
-// import com.rnfs.RNFSPackage;
 import com.mingjia.MyLocationPackage;
+import com.mingjia.DplusReactPackage;
+import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -36,6 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
           packages.add(new WeChatPackage());
           // packages.add(new RNFSPackage());
           packages.add(new MyLocationPackage());
+          packages.add(new DplusReactPackage());
           return packages;
         }
 
@@ -54,8 +56,13 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
-  }
 
+    // Config.shareType = "react native";
+    RNUMConfigure.init(this, "5db6475d4ca3576be20007db", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,"");
+  }
+  {
+    PlatformConfig.setWeixin("wx07cb98a4feb4b5b3", "3a8cf146178490741d80f7ea93ef70b3");
+  }
   /**
    * Loads Flipper in React Native templates.
    *

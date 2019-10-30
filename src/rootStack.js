@@ -13,6 +13,7 @@ import Test from './pages/Me/Info/test'
 
 import LoginPage from './pages/Login'
 import SelectPage from './pages/Select'
+import Registered from './pages/Registered'
 //Home
 import HomePage from './pages/Home'
 import MetPage from './pages/Me'
@@ -79,7 +80,7 @@ const TabNav = createBottomTabNavigator(
     //showLabel - 是否显示tab bar的文本，默认是true
     showLabel: true,
     //是否将文本转换为大小，默认是true
-    upperCaseLabel: false,
+    // upperCaseLabel: false,
     //material design中的波纹颜色(仅支持Android >= 5.0)
     pressColor: '#788493',
     //按下tab bar时的不透明度(仅支持iOS和Android < 5.0).
@@ -126,6 +127,35 @@ const LoginStack = createStackNavigator({
       header: null
     }
   },
+  Policy:{
+    screen: Policy,
+    navigationOptions: ({ navigation }) => ({
+      title: '明家用户隐私政策及协议',
+      headerTitleStyle: {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: px(36),
+        color: '#333333'
+      },
+      headerTitleContainerStyle: {
+        left: TITLE_OFFSET,
+        right: TITLE_OFFSET,
+      },
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+          <Image
+            style={{ width: px(56), height: px(56), marginStart: px(3) }}
+            source={require('./assets/images/nav_icon_back.png')} />
+        </TouchableOpacity>
+      ),
+    })
+  },
+  Registered:{
+    screen: Registered,
+    navigationOptions: {
+      header: null
+    }
+  }
 }, {
   initialRouteName: 'Login',
 });

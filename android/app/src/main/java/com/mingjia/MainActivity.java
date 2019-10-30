@@ -4,6 +4,9 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import android.content.Intent;
+import android.os.Bundle;
+import com.umeng.socialize.UMShareAPI;
 
 
 public class MainActivity extends ReactActivity {
@@ -16,7 +19,7 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "mingjia";
   }
-    @Override
+  @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
     return new ReactActivityDelegate(this, getMainComponentName()) {
       @Override
@@ -24,5 +27,15 @@ public class MainActivity extends ReactActivity {
        return new RNGestureHandlerEnabledRootView(MainActivity.this);
       }
     };
+  }
+   @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ShareModule.initSocialSDK(this);
+    }
+  @Override
+    public void onActivityResult(int requestCode,int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
   }
 }

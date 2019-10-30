@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, TextInput, Image, ToastAndroid, Dimensions, AsyncStorage, } from 'react-native';
-// import { connect } from 'react-redux'; // 引入connect函数
-// import *as loginAction from '../actions/loginAction';// 导入action方法
+import { 
+  View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, 
+  TextInput, Image, ToastAndroid, Dimensions, AsyncStorage, 
+} from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { unitWidth, width } from '../AdapterUtil'
 import * as WeChat from 'react-native-wechat';
 import DeviceInfo from 'react-native-device-info';
 import axios from 'axios'
 import px from '../utils/px'
 import { BoxShadow } from 'react-native-shadow'
 import Touchable from '../components/Touchable'
-import request from '../utils/request';
-import navigationUtil from '../utils/navigation'
-
-// const resetAction = NavigationActions.navigate({
-//   routeName: 'Select',
-//   // actions: [
-//   //   NavigationActions.navigate({ routeName: 'Select' })
-//   // ]
-// })
+import UMShareModule from '../utils/ShareUtil'
 
 export default class Login extends Component {
   constructor(props) {
@@ -30,9 +22,6 @@ export default class Login extends Component {
       user_tel: '',
       user_code: '',
       ip: '',
-
-
-      // isSendVerification: false,
       CountdownNum: 60,
       send: false,
       isSend: false,
@@ -51,6 +40,7 @@ export default class Login extends Component {
   //   }
   //   return true;
   // }
+
   componentDidMount() {
     DeviceInfo.getIpAddress().then(res => {
       this.setState({ ip: res })
@@ -62,14 +52,27 @@ export default class Login extends Component {
     axios({
       url: 'http://218.108.34.222:8080/wechatapi'
     }).then(res => {
-      // console.log(res)
+      console.log(res)
       this.setState({
         appId: res.data.appId,
         secret: res.data.secret,
       })
     })
 
-    WeChat.registerApp('wx07cb98a4feb4b5b3')
+    UMShareModule.auth(2,(code,result,message) =>{
+      // this.setState({result:message});
+      // if (code == 200){
+      //     this.setState({result:result.uid});
+      // }
+      console.log(code,result,message)
+  });
+
+    // WeChat.registerApp('wx07cb98a4feb4b5b3')
+    // try {
+    //   WeChat.registerApp('wx07cb98a4feb4b5b3');//从微信开放平台申请
+    // } catch (e) {
+    //   console.error(e);
+    // }
     // _retrieveUserData = async () => {
     //   try {
     //     const value = await AsyncStorage.getItem('userData');
@@ -173,7 +176,7 @@ export default class Login extends Component {
           WeChat.sendAuthRequest(scope, state)
             .then(responseCode => {
               //授权成功获取token
-              // console.log(this.state.appId)
+              console.log(responseCode)
               this.getAccessToken(responseCode);
             }).catch(error => {
               alert('授权错误：', error.message, [
@@ -189,7 +192,7 @@ export default class Login extends Component {
   }
   // 微信登陆获取token
   getAccessToken = (responseCode) => {
-    _this = this
+    console.log('1')
     switch (parseInt(responseCode.errCode)) {
       // 用户换取access_token的code，仅在ErrCode为0时有效  
       case 0:
@@ -199,7 +202,7 @@ export default class Login extends Component {
         })
           .then(res => {
             //授权成功，获取用户头像等信息
-            // console.log(res)
+            console.log(res)
             this.setState({ refresh_token: res.data.refresh_token }, () => {
               this.getUserInfoFormWx(res);
             })
@@ -238,30 +241,31 @@ export default class Login extends Component {
         method: 'POST'
       }).then((res) => {
         // AsyncStorage.setItem('weixinUserId',res.data.id);
-        _storeData = async () => {
+        // _storeData = async () => {
           try {
-            await AsyncStorage.setItem('weixinUserId', JSON.stringify(res.data.id));
+            AsyncStorage.setItem('weixinUserId', JSON.stringify(res.data.id));
           } catch (error) {
             console.log(error)
           }
-        }
-        _storeData()
+        // }
+        // _storeData()
         console.log(res)
         if (res.data.status == 0 || res.data.status == 4) {
-          this.props.navigation.navigate('WeChatTel')
+          this.props.navigation.navigate('Registered')
         } else if (res.data.status == 1) {
           alert('登录失败')
         } else if (res.data.status == 2) {
           alert('数据为空')
         } else if (res.data.status == 3) {
-          saveUserInfo = async () => {
-            console.log(res.data)
+          // saveUserInfo = async () => {
+            // console.log(res.data)
             try {
-              await AsyncStorage.setItem('userinfo', JSON.stringify(res.data))
+              AsyncStorage.setItem('userinfo', JSON.stringify(res.data))
             } catch (e) {
+
             }
-          }
-          saveUserInfo()
+          // }
+          // saveUserInfo()
           this.props.navigation.navigate('Main')
         }
       }).catch((err) => {
@@ -332,12 +336,14 @@ export default class Login extends Component {
             </TouchableOpacity>
           </View>
           {/* </BoxShadow> */}
-          <View style={{ marginTop: 40 * unitWidth, }}>
-            <Text style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
+          <View style={{ marginTop: px(40), }}>
+            <Text 
+            onPress={() => navigation.navigate('Policy')}
+            style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
           </View>
         </KeyboardAvoidingView>
         <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: px(100) }} >
-          <TouchableOpacity activeOpacity={1} onPress={this.weixinLogin}>
+          <TouchableOpacity activeOpacity={1} onPress={() => this.weixinLogin()}>
             <Image style={{ width: px(88), height: px(88) }} source={require('../assets/images/a_soft_wechat.png')} />
           </TouchableOpacity>
         </View>
@@ -351,41 +357,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    height: 140 * unitWidth,
-    borderRadius: 70 * unitWidth,
-    marginTop: 180 * unitWidth,
+    height: px(140),
+    borderRadius: px(70),
+    marginTop: px(180),
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center'
   },
   form: {
-    marginTop: 80 * unitWidth,
+    marginTop: px(80),
   },
   loginButton: {
-    height: 90 * unitWidth,
-    width: 540 * unitWidth,
-    borderRadius: 45 * unitWidth,
+    height: px(90),
+    width: px(540),
+    borderRadius: px(45),
     backgroundColor: '#ea4c4c',
     marginTop: px(130),
   },
   item: {
-    width: 540 * unitWidth,
-    height: 120 * unitWidth,
+    width: px(540),
+    height: px(120),
     borderBottomColor: '#e6e9f0',
     borderBottomWidth: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    fontSize: 22 * unitWidth,
+    fontSize: px(22),
   },
   label: {
-    marginHorizontal: 10 * unitWidth,
+    marginHorizontal: px(10),
     color: '#333333',
     fontFamily: 'PingFang-SC-Medium',
-    fontSize: px(24)
+    fontSize: px(26)
   },
   input: {
-    // marginStart: 10 * unitWidth,
     flex: 1,
     color: '#000000',
     fontWeight: 'bold',

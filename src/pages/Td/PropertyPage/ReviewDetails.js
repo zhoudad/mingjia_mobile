@@ -11,20 +11,18 @@ class DetailsItem extends Component {
     };
   }
   render() {
+    const { com_id, time, reply_content} = this.props.data
     return (
       <View style={styles.ReviewItem}>
         <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row', marginTop: px(30) }}>
           <Image
             source={{ uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg' }}
             style={{ width: px(60), height: px(60), borderRadius: px(30) }} />
-          <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>周大大</Text>
-          <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>10分钟前</Text>
+          <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{com_id}</Text>
+          <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>{IntervalTime(time)}</Text>
         </View>
         <View style={{ flex: 1, marginTop: px(30), marginBottom: px(40) }}>
-          <Text numberOfLines={999} style={{ color: '#303133', fontSize: px(24), lineHeight: px(46) }}>
-            各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
-                  各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
-                </Text>
+          <Text numberOfLines={999} style={{ color: '#303133', fontSize: px(24), lineHeight: px(46) }}>{reply_content}</Text>
         </View>
       </View>
     )

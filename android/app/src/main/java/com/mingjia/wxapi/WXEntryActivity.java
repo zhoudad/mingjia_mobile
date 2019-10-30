@@ -1,14 +1,14 @@
-package com.mingjia.wxapi; 
+package com.mingjia.wxapi;
 
-import android.app.Activity;
-import android.os.Bundle;
-import com.theweflex.react.WeChatModule;
+import com.umeng.socialize.weixin.view.WXCallbackActivity;
+import android.content.Intent;
+import com.umeng.socialize.UMShareAPI;
 
-public class WXEntryActivity extends Activity {
+public class WXEntryActivity extends WXCallbackActivity {
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    WeChatModule.handleIntent(getIntent());
-    finish();
-  }
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+}
+
 }
