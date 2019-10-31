@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {
   View, Text, ScrollView, StyleSheet, Image, ImageBackground,
-  TouchableOpacity, TextInput, Dimensions, StatusBar, Modal, TouchableHighlight,
+  TouchableOpacity, TextInput, Dimensions, StatusBar, Modal,ToastAndroid,
   NativeModules, Alert
 } from 'react-native';
 import TipicTag from '../../../components/TipicTag'
@@ -11,6 +11,7 @@ import Swiper from 'react-native-swiper';
 import ActionSheet from 'react-native-general-actionsheet';
 import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow'
+import Video from 'react-native-video';
 import axios from 'axios'
 const MyLocation = NativeModules.MyLocation
 
@@ -19,6 +20,7 @@ const { height, width } = Dimensions.get('window')
 export default class BasicInfo extends Component {
   constructor(props) {
     super(props);
+    this.player = null
     this.state = {
       headerIndex: 0,
       isAttention: false,
@@ -30,71 +32,106 @@ export default class BasicInfo extends Component {
       modelEx: false,
       callVisible: false,
       tel: '',
-      data:{}
+      data: {},
+      paused: true,
+      isFullScreen: false,
+      videoHeight: px(422),
+      videoWidth: width,
     };
   }
-  componentDidMount(){
+  componentDidMount() {
     this.getdata()
     this.addFoot()
   }
-  addAttention(){
+  addAttention() {
     const id = this.props.navigation.state.params.id
-    this.setState({isAttention:true})
+    this.setState({ isAttention: true })
     axios({
       method: 'post',
       url: `http://218.108.34.222:8080/attention`,
       data: {
         account_id: 2,
-        user_id:2,
-        houses_id:id
+        user_id: 2,
+        houses_id: id
       }
     }).then(res => {
+      this.setState({
+        images:[],
+        commentTxt:''
+      })
       console.log(res)
     }).catch(err => {
-      this.setState({isAttention:false})
+      this.setState({ isAttention: false })
     })
   }
-  publicRev(){
+  publicRev() {
+    let {images} = this.state
     let formData = new FormData();
-    for(var i = 0;i<images.length;i++){
+    for (var i = 0; i < this.state.images.length; i++) {
       let ary = images[i].path.split('/');
-      let file = {uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1]};   
-      formData.append("files",file);  
-  }
-  formData.append("commentTxt",this.state.commentTxt);  
+      let file = { uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1] };
+      formData.append("files", file);
+    }
+    formData.append("commentTxt", this.state.commentTxt);
     axios({
       method: 'post',
       url: ``,
       data: formData
     }).then(res => {
+      this.refs.text.clear();
+      this.setState({
+        images:[],
+        commentTxt:''
+      })
       console.log(res)
     })
   }
-  addFoot(){
+  addFoot() {
     const id = this.props.navigation.state.params.id
     axios({
       method: 'post',
       url: `http://218.108.34.222:8080/track`,
       data: {
         account_id: 2,
-        user_id:2,
-        houses_id:id
+        user_id: 2,
+        houses_id: id
       }
     }).then(res => {
       console.log(res)
     })
   }
-  getdata(){
+  getdata() {
     const id = this.props.navigation.state.params.id
     axios({
-      method:'post',
-      url:`http://218.108.34.222:8080/visitor_once`,
-      data:{
-        houses_id:id
+      method: 'post',
+      url: `http://218.108.34.222:8080/visitor_once`,
+      data: {
+        houses_id: id
       }
     }).then(res => {
-      this.setState({data:res.data.result['0']})
+      this.setState({ data: res.data.result['0'] })
     })
+  }
+  //格式化音乐播放的时间为0：00
+  formatMediaTime(duration) {
+    let min = Math.floor(duration / 60);
+    let second = parseInt(duration) - min * 60;
+    min = min >= 10 ? min : "0" + min;
+    second = second >= 10 ? second : "0" + second;
+    return min + ":" + second;
+  }
+  //设置进度条和播放时间的变化
+  onProgress = (data) => {
+    let sliderValue = parseInt(this.state.currentTime);
+    this.setState({
+      slideValue: sliderValue,
+      currentTime: data.currentTime
+    });
+  }
+  //设置总时长
+  onLoad = (data) => {
+    console.log(data)
+    this.setState({ duration: data.duration });
   }
   callProperty() {
     let thef = this
@@ -144,10 +181,10 @@ export default class BasicInfo extends Component {
       </Modal>
     )
   }
-  location() {
+  location(ad) {
     let lon = '';  // ---经度 121.248078
     let lat = '';   // ---纬度 31.091769
-    let name = '上海市人民广场';//
+    let name = '天安门广场';//
     let array = []
     MyLocation.findEvents(lon, lat, name, (events) => {
       events.map((index, item) => {
@@ -264,7 +301,7 @@ export default class BasicInfo extends Component {
       console.log(image.path);
       let images = this.state.images
       images.push({
-        uri: image.path,
+        path: image.path,
         width: image.width,
         height: image.height,
         mime: image.mime
@@ -287,9 +324,9 @@ export default class BasicInfo extends Component {
     )
   }
   render() {
-    const id =  this.props.navigation.state.params.id
+    const id = this.props.navigation.state.params.id
     const { navigation } = this.props
-    const {data} = this.state
+    const { data } = this.state
     const modelListSty = {}
     modelListSty.height = this.state.modelItemHeight
     return (
@@ -306,14 +343,36 @@ export default class BasicInfo extends Component {
                 onIndexChanged={(index) => this.setState({ headerIndex: index })}
                 index={0}>
                 <View style={{ height: px(422), borderRadius: px(10) }}>
-                  <ImageBackground
-                    style={{ height: px(422) }}
-                    source={require('../../../assets/images/panda.jpg')}
-                  >
-                    <TouchableOpacity activeOpacity={1} style={styles.play}>
-                      <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
-                    </TouchableOpacity>
-                  </ImageBackground>
+                  <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })}>
+                    {
+                      this.state.paused ?
+                        <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
+                          <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
+                        </TouchableOpacity>
+                        : null
+                    }
+                    <Video
+                      playInBackground={false}
+                      ref={ref => this.player = ref}
+                      // poster={'https://baconmockup.com/300/200/'}
+                      // source={require('../../../assets/test.mp4')}
+                      source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
+                      style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
+                      rate={1}//播放速率
+                      paused={this.state.paused}// true代表暂停，默认为false
+                      resizeMode="cover"
+                      onLoad={this.onLoad}//加载媒体并准备播放时调用的回调函数。
+                      onProgress={this.onProgress}
+                      onEnd={(data) => () => {
+                        this.player.seek(0)
+                        this.setState({ paused: true })
+                      }}//视频播放结束时的回调函数。
+                      onError={() => {
+                        ToastAndroid.show("加载视频失败", ToastAndroid.SHORT);
+
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
                 <View style={{ height: px(422), borderRadius: px(10) }}>
                   <ImageBackground
@@ -411,7 +470,7 @@ export default class BasicInfo extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{ height: px(68), justifyContent: 'center', alignItems: 'center', marginTop: px(76) }}>
-                <TouchableOpacity activeOpacity={1} style={styles.detailsBtn} onPress={() => navigation.navigate('P_DetailsInfo',{id})}>
+                <TouchableOpacity activeOpacity={1} style={styles.detailsBtn} onPress={() => navigation.navigate('P_DetailsInfo', { id })}>
                   <Text style={{ color: '#FFFFFF' }}>信息详情</Text>
                 </TouchableOpacity>
               </View>
@@ -465,7 +524,7 @@ export default class BasicInfo extends Component {
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: px(50) }}>
             <TouchableOpacity
-            activeOpacity={1}
+              activeOpacity={1}
               onPress={() => this.setState({ ReviewVisible: true })}
               style={styles.publishBtn}>
               <Text style={{ color: '#FFFFFF', fontSize: px(24) }}>我来点评</Text>
@@ -474,7 +533,7 @@ export default class BasicInfo extends Component {
             {
               this.state.ReviewVisible ?
                 <TouchableOpacity
-                activeOpacity={1}
+                  activeOpacity={1}
                   style={{ position: 'absolute', width: '100%', zIndex: 999, height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
                 >
                   <Modal
@@ -494,21 +553,22 @@ export default class BasicInfo extends Component {
                               style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>取消</Text>
                             <Text style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>点评</Text>
                           </View>
-                          <TouchableOpacity 
-                          onPress={() => this.publicRev()}
-                          activeOpacity={1}
-                          style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
+                          <TouchableOpacity
+                            onPress={() => this.publicRev()}
+                            activeOpacity={1}
+                            style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: px(32) }}>发表</Text>
                           </TouchableOpacity>
                         </View>
                         <View style={{ height: px(480), backgroundColor: '#F7F9FB', paddingHorizontal: px(30), paddingVertical: px(40) }}>
                           <TextInput
-                            onChangeText={(t) => this.setState({ commentTxt:t })}
+                          ref={'text'}
+                            onChangeText={(t) => this.setState({ commentTxt: t })}
                             style={{ flex: 1, padding: 0, textAlignVertical: 'top', lineHeight: px(40), fontSize: px(24) }}
                             maxLength={100}
                             placeholder={' 对本楼盘本户型发表您的看法，不限环境、位置、三维图、全景 '}
                             multiline={true} />
-                          <Text style={{ color: '#A8ABB3', fontSize: px(24),lineHeight:px(40) }}>{this.state.commentTxt.length}/100</Text>
+                          <Text style={{ color: '#A8ABB3', fontSize: px(24), lineHeight: px(40) }}>{this.state.commentTxt.length}/100</Text>
                           <View style={{ marginVertical: px(30), flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
                             <ScrollView
                               showsHorizontalScrollIndicator={false}
@@ -516,10 +576,10 @@ export default class BasicInfo extends Component {
                               contentContainerStyle={{ flexDirection: 'row', paddingVertical: px(20), flexWrap: 'wrap', alignItems: 'center', }}>
                               {
                                 this.state.images.map((item, index) => {
-                                  if (item.uri) {
+                                  if (item.path) {
                                     return (
                                       <View style={{ width: px(120), height: px(120), borderRadius: px(10), marginRight: px(20), }} key={index}>
-                                        <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={{ uri: item.uri }} />
+                                        <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={{ uri: item.path }} />
                                         <TouchableOpacity
                                           onPress={() => this.closeImg(index)}
                                           activeOpacity={1}
@@ -557,7 +617,7 @@ export default class BasicInfo extends Component {
         </ScrollView>
         <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
           <TouchableOpacity
-          onPress={() => this.addAttention()}
+            onPress={() => this.addAttention()}
             activeOpacity={1}
             style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image
@@ -684,6 +744,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: px(190)
+  },
+  slider: {
+    height: px(5),
+    flex: 1
+  },
+  controls: {
+    paddingHorizontal: px(30),
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: px(60),
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    zIndex: 998,
   },
   imgDel: {
     width: px(26),

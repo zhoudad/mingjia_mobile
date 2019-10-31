@@ -7,6 +7,7 @@ import px from '../../../utils/px'
 import Swiper from 'react-native-swiper';
 import Slider from '@react-native-community/slider';
 import Communications from 'react-native-communications';
+import ImagePicker from 'react-native-image-crop-picker';
 import { BoxShadow } from 'react-native-shadow'
 import Video from 'react-native-video';
 const { height, width } = Dimensions.get('window')
@@ -26,10 +27,33 @@ export default class H_BasicInfo extends Component {
       paused: true,
       isFullScreen: false,
       videoHeight: px(422),
-      videoWidth: width
+      videoWidth: width,
+      commentTxt:'',
+      images:[]
     };
   }
-
+  publicRev() {
+    let {images} = this.state
+    let formData = new FormData();
+    for (var i = 0; i < images.length; i++) {
+      let ary = images[i].path.split('/');
+      let file = { uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1] };
+      formData.append("files", file);
+    }
+    formData.append("commentTxt", this.state.commentTxt);
+    axios({
+      method: 'post',
+      url: ``,
+      data: formData
+    }).then(res => {
+      console.log(res)
+      this.refs.text.clear();
+      this.setState({
+        images:[],
+        commentTxt:''
+      })
+    })
+  }
   //格式化音乐播放的时间为0：00
   formatMediaTime(duration) {
     let min = Math.floor(duration / 60);
@@ -157,13 +181,45 @@ export default class H_BasicInfo extends Component {
     }
     // Orientation.unlockAllOrientations();
   };
+  closeImg(index) {
+    let newImages = this.state.images
+    newImages.splice(index, 1)
+    this.setState({
+      images: newImages
+    })
+  }
+  pickSingle(cropit, circular = false) {//选择，展示图片
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: cropit,
+      cropperCircleOverlay: circular,
+      compressImageMaxWidth: 640,
+      compressImageMaxHeight: 480,
+      compressImageQuality: 0.5,
+      //   compressVideoPreset: 'MediumQuality',
+      includeExif: true,
+    }).then(image => {
+      console.log(image.path);
+      let images = this.state.images
+      images.push({
+        path: image.path,
+        width: image.width,
+        height: image.height,
+        mime: image.mime
+      })
+      this.setState({ images });
+      console.log(this.state.images)
+    }).catch(e => {
+      // console.log(e);
+      // Alert.alert(e.message ? e.message : e);
+    });
+  }
 
   render() {
     const { navigation } = this.props
-    let videoStr = {}
-    if (width > height) {
-
-    }
+    const {data,name} = this.props.navigation.state.params
+    console.log(data)
     return (
       <View style={{ flex: 1 }} onLayout={this._onLayout}>
         <View style={styles.headerImg}>
@@ -300,17 +356,17 @@ export default class H_BasicInfo extends Component {
           <View style={{ paddingHorizontal: px(30), backgroundColor: '#FFF', marginTop: px(15) }}>
             <Text style={styles.tit}>户型信息</Text>
             <Text style={{ color: '#303133', fontSize: px(24), lineHeight: px(50) }}>
-              <Text>3室2厅2卫</Text>
-              <Text>27888元/㎡</Text>
-              <Text>89㎡</Text>{'\n'}
-              <Text>物业类型：住宅</Text><Text>朝向：南 </Text>{'\n'}
-              <Text>户型分布：3#，2#</Text>{'\n'}
+              <Text>{data.building_type}  </Text>
+              <Text>  27888元/㎡  </Text>
+              <Text>  {data.building_area}</Text>{'\n'}
+              <Text>物业类型：住宅  </Text><Text>朝向：{data.building_qi} </Text>{'\n'}
+              <Text>户型分布：{}</Text>{'\n'}
             </Text>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }} >所属楼盘</Text>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-              <Text style={{ color: '#303133', fontSize: px(28) }} onPress={() => navigation.navigate('P_BasicInfo')}>3#</Text>
+              <Text style={{ color: '#303133', fontSize: px(28) }} onPress={() => navigation.navigate('P_BasicInfo')}>{name}</Text>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
             </TouchableOpacity>
           </View>
@@ -326,11 +382,12 @@ export default class H_BasicInfo extends Component {
               </View>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: px(50) }}>
-              <TouchableHighlight
+              <TouchableOpacity
+              activeOpacity={1}
                 onPress={() => this.setState({ ReviewVisible: true })}
                 style={styles.publishBtn}>
                 <Text style={{ color: '#FFFFFF', fontSize: px(24) }}>我来点评</Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
 
               {
                 this.state.ReviewVisible ?
@@ -350,31 +407,64 @@ export default class H_BasicInfo extends Component {
                           <View style={{ height: px(100), flexDirection: 'row', alignItems: 'center' }}>
                             <View style={{ height: px(100), flexDirection: 'row', alignItems: 'center', flex: 1, paddingLeft: px(30), justifyContent: 'space-between', marginRight: px(144) }}>
                               <Text
-                                onPress={() => this.setState({ ReviewVisible: false })}
+                                onPress={() => this.setState({ ReviewVisible: false,images:[],commentTxt:'' })}
                                 style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>取消</Text>
                               <Text style={{ lineHeight: px(40), color: '#303133', fontSize: px(32) }}>点评</Text>
                             </View>
-                            <TouchableHighlight style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
+                            <TouchableOpacity 
+                            activeOpacity={1}
+                            onPress={() => publicRev}
+                            style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
                               <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: px(32) }}>发表</Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                           </View>
                           <View style={{ height: px(480), backgroundColor: '#F7F9FB', paddingHorizontal: px(30), paddingVertical: px(40) }}>
-                            <TextInput
-                              style={{ flex: 1, padding: 0, textAlignVertical: 'top', lineHeight: px(40), fontSize: px(24) }}
-                              maxLength={100}
-                              placeholder={' 对本楼盘本户型发表您的看法，不限环境、位置、三维图、全景 '}
-                              multiline={true} />
-                            <View style={{ marginVertical: px(30), height: px(120), flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-                                {/* {this._renderImage()}  */}
-                                <View style={{ width: px(120), height: px(120), borderRadius: px(10) }}>
-                                  <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={require('../../../assets/images/panda.jpg')} />
-                                </View>
-                              </View>
-                              <TouchableHighlight style={{ marginStart: px(20) }}>
-                                <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={require('../../../assets/images/comment_add.png')} />
-                              </TouchableHighlight>
-                            </View>
+                          <TextInput
+                          ref={'text'}
+                            onChangeText={(t) => this.setState({ commentTxt:t })}
+                            style={{ flex: 1, padding: 0, textAlignVertical: 'top', lineHeight: px(40), fontSize: px(24) }}
+                            maxLength={100}
+                            placeholder={' 对本楼盘本户型发表您的看法，不限环境、位置、三维图、全景 '}
+                            multiline={true} />
+                          <Text style={{ color: '#A8ABB3', fontSize: px(24),lineHeight:px(40) }}>{this.state.commentTxt.length}/100</Text>
+                          <View style={{ marginVertical: px(30), flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <ScrollView
+                              showsHorizontalScrollIndicator={false}
+                              horizontal={true}
+                              contentContainerStyle={{ flexDirection: 'row', paddingVertical: px(20), flexWrap: 'wrap', alignItems: 'center', }}>
+                              {
+                                this.state.images.map((item, index) => {
+                                  if (item.path) {
+                                    return (
+                                      <View style={{ width: px(120), height: px(120), borderRadius: px(10), marginRight: px(20), }} key={index}>
+                                        <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={{ uri: item.path }} />
+                                        <TouchableOpacity
+                                          onPress={() => this.closeImg(index)}
+                                          activeOpacity={1}
+                                          style={styles.imgDel}>
+                                          <View style={{ width: px(22), height: px(22), backgroundColor: '#EA4C4C', borderRadius: px(11) }}>
+                                            <View style={{ width: px(16), height: px(3), backgroundColor: '#FFF', transform: [{ rotateZ: '45deg' }], position: 'absolute', left: '50%', top: '50%', marginTop: px(-1.5), marginLeft: px(-8) }}></View>
+                                            <View style={{ width: px(3), height: px(16), backgroundColor: '#FFF', transform: [{ rotateZ: '45deg' }], position: 'absolute', left: '50%', top: '50%', marginTop: px(-8), marginLeft: px(-1.5) }}></View>
+                                          </View>
+                                        </TouchableOpacity>
+                                      </View>
+                                    )
+                                  } else {
+                                    return null
+                                  }
+                                })
+                              }
+                              {
+                                this.state.images.length > 2 ? null :
+                                  <TouchableOpacity
+                                    activeOpacity={1}
+                                    onPress={() => this.pickSingle(false)}
+                                  >
+                                    <Image style={{ width: px(120), height: px(120), borderRadius: px(10) }} source={require('../../../assets/images/comment_add.png')} />
+                                  </TouchableOpacity>
+                              }
+                            </ScrollView>
+                          </View>
                           </View>
                         </View>
                       </View>
@@ -489,5 +579,16 @@ const styles = StyleSheet.create({
     width,
     backgroundColor: 'rgba(255,255,255,0.2)',
     zIndex: 998,
+  },
+  imgDel: {
+    width: px(26),
+    height: px(26),
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    borderRadius: px(13),
+    right: px(-10),
+    marginTop: px(-10)
   }
 })

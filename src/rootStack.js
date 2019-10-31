@@ -16,6 +16,7 @@ import SelectPage from './pages/Select'
 import Registered from './pages/Registered'
 //Home
 import HomePage from './pages/Home'
+import Search from './pages/Home/Search'
 import MetPage from './pages/Me'
 import TdPage from './pages/Td'
 import Local from './pages/Home/Local'
@@ -167,7 +168,12 @@ const MainStack = createStackNavigator({
     }
   },
 
-
+  Search:{
+    screen: Search,
+    navigationOptions: {
+      header: null
+    }
+  },
   Main: {
     screen: TabNav,
     navigationOptions: {
@@ -822,7 +828,7 @@ const MainStack = createStackNavigator({
   }
 
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'Search',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

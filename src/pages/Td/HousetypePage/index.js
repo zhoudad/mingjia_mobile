@@ -5,11 +5,12 @@ import { withNavigation } from 'react-navigation';
 import { View, Text, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import Axios from 'axios';
 
-class RenderItem extends Component{
+class RenderItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
       Expand: false,
+      itemHeight:0
     };
   }
 
@@ -18,9 +19,11 @@ class RenderItem extends Component{
     return (
       <TouchableOpacity
         key={index}
-        style={styles.H_item}
+        style={[styles.H_item,
+          // {marginRight:index+1 % 3 == 0 ? 0 : px(12) }
+        ]}
         activeOpacity={1}
-        onPress={() => navigation.navigate('H_BasicInfo')}>
+        onPress={() => navigation.navigate('H_BasicInfo',{data,name:data.building_name})}>
         <View style={styles.itemContent} onLayout={(e) => {
           this.setState({ itemHeight: e.nativeEvent.layout.height })
         }}>
@@ -39,27 +42,27 @@ class RenderItem extends Component{
       </TouchableOpacity>
     )
   }
-  render(){
-    const {data} = this.props
-    return(
-      <View style={{ paddingTop: px(40),backgroundColor:'#FFF' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
+  render() {
+    const { data } = this.props
+    return (
+      <View style={{ paddingTop: px(40), backgroundColor: '#FFF' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row',backgroundColor:'#FFF' }}>
           <Text style={styles.tit}>{data.item.building_name} </Text>
           <TouchableOpacity
-            onPress={() => this.setState({Expand:!this.state.Expand})}
+            onPress={() => this.setState({ Expand: !this.state.Expand })}
             activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>{this.state.Expand ? '收回全部' : '展开全部'}</Text>
-            <Image style={{ width: px(24), height: px(24) }} 
-            source={this.state.Expand ? require('../../../assets/images/fangke_arrow_up.png') : require('../../../assets/images/fangke_arrow_down.png')} />
+            <Image style={{ width: px(24), height: px(24) }}
+              source={this.state.Expand ? require('../../../assets/images/fangke_arrow_up.png') : require('../../../assets/images/fangke_arrow_down.png')} />
           </TouchableOpacity>
         </View>
-        <View 
-        style={[{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-         this.state.Expand ? null : {height:this.state.itemHeight}]}>
+        <View
+          style={[{ flexDirection: 'row', flexWrap: 'wrap',justifyContent:'space-between' },
+          this.state.Expand ? null : { height: this.state.itemHeight }]}>
           {
             data.item.type ? data.item.type.map((item, index) => {
               return (
-                this._renderItem_H(item, index)
+                this._renderItem_H(item, index,)
               )
             }) : null
           }
@@ -90,13 +93,13 @@ class HousetypePage extends Component {
       method: 'post'
     }).then(res => {
       console.log(res)
-      this.setState({ data: res.data.result.building })
+      this.setState({ data: res.data.result })
     })
   }
   _renderItem(data) {
-    const {navigation} = this.props
+    const { navigation } = this.props
     return (
-     <RenderItem data={data} navigation={navigation}/>
+      <RenderItem data={data} navigation={navigation} />
     )
   }
 
@@ -121,6 +124,7 @@ const styles = StyleSheet.create({
   },
   H_item: {
     // height: px(300),
+    // width:px(218),
     paddingTop: px(30),
     // paddingBottom: px(20),
     // backgroundColor:'red'

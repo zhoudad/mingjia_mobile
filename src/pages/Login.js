@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { 
-  View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, 
-  TextInput, Image, ToastAndroid, Dimensions, AsyncStorage, 
+import {
+  View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity,
+  TextInput, Image, ToastAndroid, Dimensions, AsyncStorage,
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import * as WeChat from 'react-native-wechat';
@@ -28,18 +28,10 @@ export default class Login extends Component {
       sendDate: null,
       appId: '',
       secret: '',
-      refresh_token: ''
+      refresh_token: '',
+      result: ''
     };
   }
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // 登录完成,切成功登录   
-  //   if (nextProps.status === '登陆成功' && nextProps.isSuccess) {
-  //     this.props.navigation.dispatch(resetAction)
-  //     // this.sendForm()
-  //     return false;
-  //   }
-  //   return true;
-  // }
 
   componentDidMount() {
     DeviceInfo.getIpAddress().then(res => {
@@ -52,60 +44,13 @@ export default class Login extends Component {
     axios({
       url: 'http://218.108.34.222:8080/wechatapi'
     }).then(res => {
-      console.log(res)
+      // console.log(res)
       this.setState({
         appId: res.data.appId,
         secret: res.data.secret,
       })
     })
-
-    UMShareModule.auth(2,(code,result,message) =>{
-      // this.setState({result:message});
-      // if (code == 200){
-      //     this.setState({result:result.uid});
-      // }
-      console.log(code,result,message)
-  });
-
     // WeChat.registerApp('wx07cb98a4feb4b5b3')
-    // try {
-    //   WeChat.registerApp('wx07cb98a4feb4b5b3');//从微信开放平台申请
-    // } catch (e) {
-    //   console.error(e);
-    // }
-    // _retrieveUserData = async () => {
-    //   try {
-    //     const value = await AsyncStorage.getItem('userData');
-    //     if (value !== null) {
-    //       // this.props.navigation.navigate('Main')
-    //     }
-    //   } catch (error) {
-    //     // Error retrieving data
-    //   }
-    // }
-    // _retrieveUserData()
-    // _retrieveWeixinUserData = async () => {
-    //   try {
-    //     const value = await AsyncStorage.getItem('weixinUserData');
-    //     if (value !== null) {
-    //       // this.props.navigation.navigate('Main')
-    //     }
-    //   } catch (error) {
-    //     // Error retrieving data
-    //   }
-    // }
-    // _retrieveWeixinUserData()
-    // axios({
-    //   url: 'http://218.108.34.222:8080/wechatapi'
-    // }).then(res => {
-    //   // console.log(res)
-    //   this.setState({
-    //     appId: res.data.appId,
-    //     secret: res.data.secret,
-    //   })
-    // }).catch(err => {
-    //   return
-    // })
   }
   sendVerification = async () => {
     let myreg = /^1[3456789]\d{9}$/;
@@ -144,9 +89,9 @@ export default class Login extends Component {
     }
   }
 
+
   loginIn = () => {
     const { user_tel, user_code, ip, ip_name } = this.state;
-    const self = this;
     const { navigation } = this.props;
     axios({
       method: 'POST',
@@ -167,28 +112,36 @@ export default class Login extends Component {
   }
   // 微信登陆授权
   weixinLogin = () => {
-    let scope = 'snsapi_userinfo'
-    let state = 'wechat_adk_mingjia'
-    WeChat.isWXAppInstalled()
-      .then((isInstalled) => {
-        if (isInstalled) {
-          //获取微信授权
-          WeChat.sendAuthRequest(scope, state)
-            .then(responseCode => {
-              //授权成功获取token
-              console.log(responseCode)
-              this.getAccessToken(responseCode);
-            }).catch(error => {
-              alert('授权错误：', error.message, [
-                { text: '确定' }
-              ])
-            })
-        } else {
-          alert('没有安装微信', '请先安装微信', [
-            { text: '确定' }
-          ])
-        }
-      })
+    // let scope = 'snsapi_userinfo'
+    // let state = 'wechat_adk_mingjia'
+    // WeChat.isWXAppInstalled()
+    //   .then((isInstalled) => {
+    //     if (isInstalled) {
+    //       //获取微信授权
+    //       WeChat.sendAuthRequest(scope, state)
+    //         .then(responseCode => {
+    //           //授权成功获取token
+    //           console.log(responseCode)
+    //           this.getAccessToken(responseCode);
+    //         }).catch(error => {
+    //           alert('授权错误：', error.message, [
+    //             { text: '确定' }
+    //           ])
+    //         })
+    //     } else {
+    //       alert('没有安装微信', '请先安装微信', [
+    //         { text: '确定' }
+    //       ])
+    //     }
+    //   })
+    UMShareModule.auth(2, (code, result, message) => {
+      this.setState({ result: message });
+      if (code == 200) {
+        this.setState({ result: result.uid });
+        UMShareModule.profileSignInWithPUID("");
+      }
+      console.log(1)
+    })
   }
   // 微信登陆获取token
   getAccessToken = (responseCode) => {
@@ -242,11 +195,11 @@ export default class Login extends Component {
       }).then((res) => {
         // AsyncStorage.setItem('weixinUserId',res.data.id);
         // _storeData = async () => {
-          try {
-            AsyncStorage.setItem('weixinUserId', JSON.stringify(res.data.id));
-          } catch (error) {
-            console.log(error)
-          }
+        try {
+          AsyncStorage.setItem('weixinUserId', JSON.stringify(res.data.id));
+        } catch (error) {
+          console.log(error)
+        }
         // }
         // _storeData()
         console.log(res)
@@ -258,12 +211,12 @@ export default class Login extends Component {
           alert('数据为空')
         } else if (res.data.status == 3) {
           // saveUserInfo = async () => {
-            // console.log(res.data)
-            try {
-              AsyncStorage.setItem('userinfo', JSON.stringify(res.data))
-            } catch (e) {
+          // console.log(res.data)
+          try {
+            AsyncStorage.setItem('userinfo', JSON.stringify(res.data))
+          } catch (e) {
 
-            }
+          }
           // }
           // saveUserInfo()
           this.props.navigation.navigate('Main')
@@ -337,9 +290,9 @@ export default class Login extends Component {
           </View>
           {/* </BoxShadow> */}
           <View style={{ marginTop: px(40), }}>
-            <Text 
-            onPress={() => navigation.navigate('Policy')}
-            style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
+            <Text
+              onPress={() => navigation.navigate('Policy')}
+              style={{ textAlign: 'center', fontSize: 13, color: '#ea4c4c' }}>登录即代表同意《明家用户使用协议》</Text>
           </View>
         </KeyboardAvoidingView>
         <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: px(100) }} >

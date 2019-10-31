@@ -1,12 +1,13 @@
 package com.mingjia;
 
-import android.app.Application;
+// import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
 
-import com.rnfs.RNFSPackage;
+// import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -20,7 +21,7 @@ import com.mingjia.DplusReactPackage;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication  implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -58,10 +59,9 @@ public class MainApplication extends Application implements ReactApplication {
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
 
     // Config.shareType = "react native";
-    RNUMConfigure.init(this, "5db6475d4ca3576be20007db", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,"");
-  }
-  {
-    PlatformConfig.setWeixin("wx07cb98a4feb4b5b3", "3a8cf146178490741d80f7ea93ef70b3");
+    // RNUMConfigure.init(this, "5db6475d4ca3576be20007db", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,"");
+     UMConfigure.init(this,"5db94561570df3e29a000524","umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
+    //  UMConfigure.init(this, "5db6475d4ca3576be20007db", "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
   }
   /**
    * Loads Flipper in React Native templates.
@@ -87,5 +87,8 @@ public class MainApplication extends Application implements ReactApplication {
         e.printStackTrace();
       }
     }
+  }
+  {
+    PlatformConfig.setWeixin("wx07cb98a4feb4b5b3", "4c081dc0af963c596d8e93f548acfd22");
   }
 }

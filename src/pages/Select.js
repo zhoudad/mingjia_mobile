@@ -42,7 +42,7 @@ export default class Select extends Component {
       }
     }).then((res) => {
       console.log(res)
-      saveToken({access_token:this.state.token})
+      // saveToken({access_token:this.state.token})
       if(res.data.status == '1103'){
         this.props.navigation.navigate('Main')
         storage.save({

@@ -28,7 +28,7 @@ public class MainActivity extends ReactActivity {
       }
     };
   }
-   @Override
+  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ShareModule.initSocialSDK(this);

@@ -148,7 +148,7 @@ public class MyLocationModule extends ReactContextBaseJavaModule implements AMap
         if (isAppInstalled(getReactApplicationContext(), "com.baidu.BaiduMap")) {
             WritableNativeMap ob = new WritableNativeMap();
             ob.putString("title", "百度地图");
-            ob.putString("url", "baidumap://map/direction?origin=我的位置&destination=name=" + address + "&mode=driving&coord_type=gcj02");
+            ob.putString("url", "baidumap://map/direction?origin=我的位置&destination=" + address + "&mode=driving&coord_type=gcj02");
             array.pushMap(ob);
         }
 

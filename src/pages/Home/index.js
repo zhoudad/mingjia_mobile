@@ -126,8 +126,8 @@ export default class Home extends Component {
             <Image
               style={{ width: px(40), height: px(40), marginHorizontal: px(10) }}
               source={require('../../assets/images/search_icon.png')} />
-            {/* <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text> */}
-            <TextInput style={{ flex: 1, color: '#909399', fontSize: px(28), padding: 0 }} placeholder={"请输入楼盘、户型、地址名称"}></TextInput>
+            <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text>
+            {/* <TextInput style={{ flex: 1, color: '#909399', fontSize: px(28), padding: 0 }} placeholder={"请输入楼盘、户型、地址名称"}></TextInput> */}
           </View>
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>

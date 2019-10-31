@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, TextInput, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import px from '../../../utils/px'
 import IntervalTime from '../../../utils/IntervalTime'
+import Axios from 'axios';
 
 class DetailsItem extends Component {
   constructor(props) {
@@ -38,6 +39,25 @@ export default class ReviewDetails extends Component {
       nolike: false
     };
   }
+  PublishComment(){
+    let { data } = this.props.navigation.state.params;
+    const { user_id, com_id } = data
+    Axios({
+      method:'post',
+      data:{
+        user_id,
+        com_id,
+        content:this.state.text
+      },
+      url:'http://218.108.34.222:8080/revert_do'
+    }).then(res => {
+      console.log(res)
+      this.refs.PublishInput.clear()
+      this.setState({
+        text:'',
+      })
+    })
+  }
   PublishCom = () => {
     return (
       <View style={styles.Publish}>
@@ -45,13 +65,14 @@ export default class ReviewDetails extends Component {
           placeholder={'请输入你的回复'}
           ref={'PublishInput'}
           style={styles.PublishInput}
-          onChangeText={(text) => this.CommentCont(text)}
+          onChangeText={(text) => this.setState({text})}
         ></TextInput>
-        <TouchableHighlight
-          // onPress={() => this.PublishComment()}
+        <TouchableOpacity
+        activeOpacity={1}
+          onPress={() => this.PublishComment()}
           style={{ width: px(200), height: px(100), backgroundColor: '#EA4C4C', justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ lineHeight: px(46), color: '#FFFFFF', fontSize: px(32), }}>发表</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     )
   }

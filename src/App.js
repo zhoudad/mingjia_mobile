@@ -34,7 +34,7 @@ class App extends Component {
     if (!checkedLogin) {
       return null;
     }
-    const AppNavigator = configAppNavigator(isLoggedIn);
+    const AppNavigator = configAppNavigator(true);
     return (
       <View style={styles.container}>
         <AppNavigator />
