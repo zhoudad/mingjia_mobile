@@ -1,4 +1,4 @@
-package com.umeng.soexample.invokenative;
+package com.mingjia;
 
 import android.app.Activity;
 import java.util.List;

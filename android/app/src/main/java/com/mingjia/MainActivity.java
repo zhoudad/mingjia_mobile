@@ -7,6 +7,7 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import android.content.Intent;
 import android.os.Bundle;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.message.PushAgent;
 
 
 public class MainActivity extends ReactActivity {
@@ -33,6 +34,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         ShareModule.initSocialSDK(this);
         PushModule.initPushSDK(this);
+        PushAgent.getInstance(context).onAppStart();
     }
   @Override
     public void onActivityResult(int requestCode,int resultCode, Intent data) {

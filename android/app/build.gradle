@@ -135,6 +135,9 @@ android {
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        // ndk {
+        //     abiFilters "armeabi-v7a", "x86"
+        // }
     }
     splits {
         abi {
@@ -190,6 +193,11 @@ dependencies {
     // implementation project(':RCTWeChat') 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:multidex:1.0.3'
+    // 友盟
+    // implementation 'com.umeng.umsdk:common:2.0.1'
+    implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+    implementation 'com.umeng.umsdk:push:6.0.1'
+    // implementation project(':push')
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

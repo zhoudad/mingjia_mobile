@@ -20,7 +20,6 @@ export default class Message extends Component {
   componentDidMount() {
     this.props.navigation.setParams({ msManagement: this.msManagement, mode: 'edit' })
     axios({url:'http://218.108.34.222:8080/alert'}).then(res => {
-      console.log(res.data.result)
       this.setState({
         arr:res.data.result
       })
