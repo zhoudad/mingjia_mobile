@@ -828,7 +828,7 @@ const MainStack = createStackNavigator({
   }
 
 }, {
-  initialRouteName: 'Search',
+  initialRouteName: 'Message',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

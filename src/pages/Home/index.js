@@ -30,31 +30,51 @@ export default class Home extends Component {
       city: '上海',
       slides: null,
       token: '',
-      account_id: ''
+      account_id: '',
+      houses: [],
+      comments: [],
+      user_id: ''
     };
   }
-  componentDidMount() {
-    storage.load({
-      key: 'accessToken',
-    }).then((token) => {
-      this.setState({ token })
-    })
-    storage.load({
-      key: 'Id',
-    }).then((data) => {
-      this.setState({ account_id: data.account_id })
-    })
-    this.getData()
-  }
-  async getData() {
-    axios({
-      url: `http://218.108.34.222:8080/slide?account_id=${2}`
-    }).then((res) => {
-      this.setState({
-        slides: res.data.result
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
       })
     })
+    axios.all([this.getSlide(), this.getComment(), this.getHouse()])
+      .then(axios.spread(function (slides, comments, houses) {
+        self.setState({
+          slides: slides.data.result,
+          comments: comments.data.result.length > 2 ? comments.data.result.slice(0, 2) : comments.data.result,
+          houses: houses.data.result.length > 6 ? houses.data.result.slice(0, 7) : houses.data.result,
+        })
+        // console.log(comments)
+      }))
   }
+
+  getSlide() {
+    return axios({
+      url: 'http://218.108.34.222:8080/slide?account_id=' + this.state.account_id
+    })
+  }
+  getComment() {
+    return axios({
+      url: 'http://218.108.34.222:8080/comment?account_id=' + this.state.account_id,
+    })
+  }
+  getHouse() {
+    return axios({
+      url: 'http://218.108.34.222:8080/visitor_houses?account_id=' + this.state.account_id,
+    })
+  }
+
+
   getCity = (city) => {
     this.setState({ city: city.city })
   }
@@ -68,22 +88,26 @@ export default class Home extends Component {
     } else {
       return (
         <View>
-          {this._renderItem()}
-          {this._renderItem()}
-          {this._renderItem()}
-          {this._renderItem()}
+          {
+            this.state.houses.map((item, index) => {
+              return (
+                this._renderItem(item, index)
+              )
+            })
+          }
         </View>
       )
     }
   }
 
-  _renderItem(data) {
+  _renderItem(data, key) {
     const { navigation } = this.props
     return (
       <TouchableOpacity
+        key={key}
         style={styles.item}
         activeOpacity={1}
-        onPress={() => navigation.navigate('P_BasicInfo')}>
+        onPress={() => navigation.navigate('P_BasicInfo', { id: data.houses_id })}>
         <View style={styles.itemContent}>
           <View style={{ width: px(200), height: px(200), }}>
             <Image
@@ -91,13 +115,14 @@ export default class Home extends Component {
               source={require('../../assets/images/panda.jpg')} />
           </View>
           <View style={{ flex: 1, marginStart: px(30), height: px(200), }}>
-            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28), fontFamily: 'PingFang-SC-Bold', fontWeight: 'bold' }}>广州珠江新城</Text>
+            <Text
+              style={{ color: '#333333', fontWeight: "bold", fontSize: px(28), fontFamily: 'PingFang-SC-Bold', fontWeight: 'bold' }}>{data.houses_name}</Text>
             <Text style={{ fontSize: px(24), color: '#B3B3B3', marginTop: px(9), fontFamily: 'PingFang-SC-Medium' }}>
-              <Text style={{ paddingEnd: px(35) }}>萧山</Text>
-              <Text style={{ paddingEnd: px(35) }}>钱江世界城</Text>
-              <Text style={{ paddingEnd: px(35) }}>建面积</Text>
+              <Text style={{ paddingEnd: px(35) }}>{data.houses_ssite}</Text>
+              <Text style={{ paddingEnd: px(35) }}>{data.houses_csite}</Text>
+              <Text style={{ paddingEnd: px(35) }}>{data.survey_area}</Text>
             </Text>
-            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>58600 <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
+            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{data.houses_price} <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
             <View style={{ flexDirection: 'row', marginTop: px(8) }}>
               <TipicTag text={"在售"} isStress={true} />
               <TipicTag text={"住宅"} />
@@ -126,14 +151,16 @@ export default class Home extends Component {
             <Image
               style={{ width: px(40), height: px(40), marginHorizontal: px(10) }}
               source={require('../../assets/images/search_icon.png')} />
-            <Text style={{ color: '#909399', fontSize: px(28) }}>请输入楼盘、户型、地址名称</Text>
+            <Text style={{ color: '#909399', fontSize: px(28) }}
+              onPress={() => navigation.navigate('Search')}
+            >请输入楼盘、户型、地址名称</Text>
             {/* <TextInput style={{ flex: 1, color: '#909399', fontSize: px(28), padding: 0 }} placeholder={"请输入楼盘、户型、地址名称"}></TextInput> */}
           </View>
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
 
           {
-            this.state.slides == null ? <View style={{flex:1}}></View> :
+            this.state.slides == null ? <View style={{ flex: 1 }}></View> :
               <Swiper
                 style={{ height: px(296), paddingHorizontal: px(30), }}
                 dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
@@ -214,25 +241,26 @@ export default class Home extends Component {
             <Text style={{ color: '#B3B3B3', fontSize: px(24) }} onPress={() => navigation.navigate('CommentList')}>点击更多></Text>
           </View>
           <View style={styles.comment}>
-            <View style={styles.commentItem}>
-              <Text
-                onPress={() => navigation.navigate('CommentDetails')}
-                style={{ color: '#333333', fontSize: px(24), lineHeight: px(40) }}>
-                房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
+            {
+              this.state.comments.map((item, index) => {
+                return (
+                  <View style={styles.commentItem} key={index}>
+                    <Text
+                    ellipsizeMode = {'tail'}
+                    numberOfLines={2}
+                      onPress={() => navigation.navigate('CommentDetails',{data:item})}
+                      style={{ color: '#333333', fontSize: px(24), lineHeight: px(40) }}>
+                      {item.com_id}：{item.com_content}
                 </Text>
-            </View>
-            <View style={[styles.commentItem, { borderTopColor: '#E1E6F0', borderTopWidth: 1 }]}>
-              <Text
-                onPress={() => navigation.navigate('CommentDetails')}
-                style={{ color: '#333333', fontSize: px(24), lineHeight: px(40) }}>
-                房大师：随着前几年房价的飙涨，很多手里握着几套或几百套 房的炒房客可谓是赚得盆满钵满...
-                </Text>
-            </View>
+                  </View>
+                )
+              })
+            }
           </View>
         </View>
         <View style={{ marginHorizontal: px(30), marginTop: px(20), }}>
           <Text style={{ color: '#333333', fontSize: px(32), }}>新房专区</Text>
-          {this._renderHousr(1)}
+          {this._renderHousr(this.state.houses.length)}
         </View>
       </ScrollView>
     );

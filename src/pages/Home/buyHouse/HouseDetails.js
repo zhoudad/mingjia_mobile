@@ -3,62 +3,34 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import px from '../../../utils/px'
 
 export default class HouseDetails extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  }
 
-    render() {
-        return (
-            <View style={{flex:1}}>
-                <View style={styles.issueTit}>
-                    <Text style={{ fontSize: px(32), color: '#333333', fontWeight: 'bold' }}>房屋的使用面积是什么？如何计算？</Text>
-                </View>
-                <ScrollView contentContainerStyle={{ paddingHorizontal: px(30), paddingVertical: px(37) }}>
-                    <Text style={{ fontSize: px(28), color: '#606266' }}>
-                        概要：新房网签是在购房者做完购房资格核验之后，
-                        到售楼处完成网签。只有购房资格核验通过的，才能顺利进行网签。
-                        一：买新房什么时候网签？
-                        新房网签的时间节点，是在购房者做完购房资格核验之后，到售楼处完成网签。购房资格核验通过的，才能进行网签，核验没通过的无法进行网签。购房资格核验结果的有效期为30天，决定哪天网签，要看认购书中约定的最终签约日期，在最终签约日期之前进行网签即可。
-                        网上签约的程序：交易双方当事人根据网上公示的商品房定金协议或买卖合同文本协商拟定相关条款—由房地产开发企业通过网上签约系统，打印经双方确认的协议或合同—双方当事人签字（盖章）—在电子楼盘表上注明该商品房已被预订或签约。
-                        二、网签时注意事项有哪些？
-                        1、网签时一定要审查开发商是否具有商品房预售许可证，有了预售证，则通常开发商也具有了 土地使用证，规划许可证、建设工程许可证等。这是买房能否办房证的关键。
-                        2、网签时一定要采用房地产管理部门统一印制的标准房屋买卖合同文本，并按照文本中所列条款逐项逐条填写，千万不能马虎。
-                        3、网签时一定要注意合同条款中双方所填写的内容中权利与义务是否对等。
-                        概要：新房网签是在购房者做完购房资格核验之后，
-                        到售楼处完成网签。只有购房资格核验通过的，才能顺利进行网签。
-                        一：买新房什么时候网签？
-                        新房网签的时间节点，是在购房者做完购房资格核验之后，到售楼处完成网签。购房资格核验通过的，才能进行网签，核验没通过的无法进行网签。购房资格核验结果的有效期为30天，决定哪天网签，要看认购书中约定的最终签约日期，在最终签约日期之前进行网签即可。
-                        网上签约的程序：交易双方当事人根据网上公示的商品房定金协议或买卖合同文本协商拟定相关条款—由房地产开发企业通过网上签约系统，打印经双方确认的协议或合同—双方当事人签字（盖章）—在电子楼盘表上注明该商品房已被预订或签约。
-                        二、网签时注意事项有哪些？
-                        1、网签时一定要审查开发商是否具有商品房预售许可证，有了预售证，则通常开发商也具有了 土地使用证，规划许可证、建设工程许可证等。这是买房能否办房证的关键。
-                        2、网签时一定要采用房地产管理部门统一印制的标准房屋买卖合同文本，并按照文本中所列条款逐项逐条填写，千万不能马虎。
-                        3、网签时一定要注意合同条款中双方所填写的内容中权利与义务是否对等。
-                        概要：新房网签是在购房者做完购房资格核验之后，
-                        到售楼处完成网签。只有购房资格核验通过的，才能顺利进行网签。
-                        一：买新房什么时候网签？
-                        新房网签的时间节点，是在购房者做完购房资格核验之后，到售楼处完成网签。购房资格核验通过的，才能进行网签，核验没通过的无法进行网签。购房资格核验结果的有效期为30天，决定哪天网签，要看认购书中约定的最终签约日期，在最终签约日期之前进行网签即可。
-                        网上签约的程序：交易双方当事人根据网上公示的商品房定金协议或买卖合同文本协商拟定相关条款—由房地产开发企业通过网上签约系统，打印经双方确认的协议或合同—双方当事人签字（盖章）—在电子楼盘表上注明该商品房已被预订或签约。
-                        二、网签时注意事项有哪些？
-                        1、网签时一定要审查开发商是否具有商品房预售许可证，有了预售证，则通常开发商也具有了 土地使用证，规划许可证、建设工程许可证等。这是买房能否办房证的关键。
-                        2、网签时一定要采用房地产管理部门统一印制的标准房屋买卖合同文本，并按照文本中所列条款逐项逐条填写，千万不能马虎。
-                        3、网签时一定要注意合同条款中双方所填写的内容中权利与义务是否对等。
-                        </Text>
-                </ScrollView>
-            </View>
-        );
-    }
+  render() {
+    let {data} = this.props.navigation.state.params
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={styles.issueTit}>
+          <Text style={{ fontSize: px(32), color: '#333333', fontWeight: 'bold' }}>{data.know_problem}</Text>
+        </View>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: px(30), paddingVertical: px(37) }}>
+          <Text style={{ fontSize: px(28), color: '#606266' }}>{data.know_answer}</Text>
+        </ScrollView>
+      </View>
+    );
+  }
 }
 const styles = StyleSheet.create({
-    issueTit: {
-        marginHorizontal: px(30),
-        height: px(100),
-        justifyContent: 'center',
-        paddingTop: px(40),
-        paddingBottom: px(30),
-        borderBottomColor: '#E6E9F0',
-        borderBottomWidth: px(1),
-    },
-
+  issueTit: {
+    marginHorizontal: px(30),
+    height: px(100),
+    justifyContent: 'center',
+    paddingTop: px(40),
+    paddingBottom: px(30),
+    borderBottomColor: '#E6E9F0',
+    borderBottomWidth: px(1),
+  },
 })

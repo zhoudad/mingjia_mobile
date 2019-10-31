@@ -1,106 +1,59 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import px from '../../../utils/px'
+import { storage } from '../../../utils/storage'
 import Axios from 'axios';
 
 export default class BuyHouse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index:'0',
-      tab: [
-        '准备买房',
-        '看房/选房',
-        '认购新房',
-        '签约/约定',
-        '全款/贷款',
-        '收房/验房',
-        '装修/入住',
-        '退房/维权'
-      ],
-      tabCont: [
-        [
-          '买新房什么1111',
-          '买新房什么2222',
-          '买新房什么333',
-          '买新房什么4444',
-          '买新房什么555',
-          '买新房什么666',
-          '买新房什么777',
-        ], [
-          '买新房2什么1111',
-          '买新房2什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ], [
-          '买新房3什么1111',
-          '买新房42什么2222',
-          '买新房42什么333',
-          '买新房32什么4444',
-          '买新房32什么555',
-          '买新房32什么666',
-          '买新房32什么777',
-        ], [
-          '买新房42什么1111',
-          '买新房42什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ], [
-          '买新房52什么1111',
-          '买新房2什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ], [
-          '买新房62什么1111',
-          '买新房2什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ], [
-          '买新房72什么1111',
-          '买新房2什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ], [
-          '买新房28什么1111',
-          '买新房2什么2222',
-          '买新房2什么333',
-          '买新房2什么4444',
-          '买新房2什么555',
-          '买新房2什么666',
-          '买新房2什么777',
-        ]
-      ]
+      list: [],
+      content: [],
+      user_id: '',
+      account_id: '',
+      know_name: ''
     };
   }
-  tabIndex = (key) => {
-    console.log(key)
-    this.setState({
-      index:key
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
+      })
+    })
+    // Axios.all([this.getList(), this.getContent(),])
+    //   .then(Axios.spread(function (list, content) {
+    //     self.setState({
+    //       list: list.data.result,
+    //       content: content.data.result
+    //     })
+    //     console.log(list, content)
+    //   }))
+    this.getList()
+  }
+
+  getList() {
+    Axios({ url: 'http://218.108.34.222:8080/mc_show' }).then(res => {
+      console.log(res)
+      this.setState({
+        list : res.data.result
+      })
+     this.getContent()
     })
   }
-  componentDidMount(){
-    this.getdata()
-  }
-  getdata(){
+  getContent(){
     Axios({
-      url:`http://218.108.34.222:8080/know`,
+      url: `http://218.108.34.222:8080/know?account_id=` + this.state.account_id + '&know_name=' + this.state.list[0].know_name,
     }).then(res => {
-      console.log(res)
+      console.log(res.data.result)
+      this.setState({
+        content:res.data.result
+      })
     })
   }
 
@@ -108,38 +61,43 @@ export default class BuyHouse extends Component {
     return (
       <View>
         <View style={styles.issueTit}>
-          <Text style={{ fontSize: px(32),color:'#303133',fontWeight:'bold' }}>新房指南</Text>
+          <Text style={{ fontSize: px(32), color: '#303133', fontWeight: 'bold' }}>新房指南</Text>
         </View>
-        <View style={{ flexDirection: 'row',height:'100%' }}>
-          <View style={{ width: px(220),backgroundColor:'#F2F4F7' }}>
+        <View style={{ flexDirection: 'row', height: '100%' }}>
+          <View style={{ width: px(220), backgroundColor: '#F2F4F7' }}>
             {
-              this.state.tab.map((item, key) => {
+              this.state.list ? this.state.list.map((item, key) => {
                 return (
-                  <TouchableOpacity 
-                  onPress={() => {this.tabIndex(key)}}
-                  key={key} 
-                  activeOpacity={1}
-                  style={[styles.tabItem,{backgroundColor:this.state.index == key ? '#EA4C4C' : '#F2F4F7',}]} >
-                    <Text style={{ color:this.state.index == key ? '#FFFFFF' :'#303133' }} >{item}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({ know_name: item.know_name },() => {
+                        this.getContent()
+                      })
+                    }}
+                    key={key}
+                    activeOpacity={1}
+                    style={[styles.tabItem, { backgroundColor: this.state.know_name == item.know_name ? '#EA4C4C' : '#F2F4F7', }]} >
+                    <Text style={{ color: this.state.know_name == item.know_name ? '#FFFFFF' : '#303133' }} >{item.know_name}</Text>
                   </TouchableOpacity>
                 )
-              })
+              }):null
             }
           </View>
-          <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', borderTopColor: '#E6E9F0', borderTopWidth: px(1),  }}>
+          <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', borderTopColor: '#E6E9F0', borderTopWidth: px(1), }}>
             {
-              this.state.tabCont[this.state.index].map((item, key) => {
+              this.state.content ? this.state.content.map((item, key) => {
                 return (
-                  <TouchableOpacity 
-                  onPress={() => this.props.navigation.navigate('HouseDetails')}
-                  key={key} 
-                  style={styles.tabContItem}>
-                      <View style={{flex:1,borderBottomColor: '#E6E9F0', borderBottomWidth: px(1),justifyContent: 'center',marginHorizontal:px(30), }}>
-                        <Text style={{ color:'#606266',fontSize:px(24) }} >{item}</Text>
-                      </View>
+                  <TouchableOpacity
+                  activeOpacity={0.8}
+                    onPress={() => this.props.navigation.navigate('HouseDetails',{data:item})}
+                    key={key}
+                    style={styles.tabContItem}>
+                    <View style={{ flex: 1, borderBottomColor: '#E6E9F0', borderBottomWidth: px(1), justifyContent: 'center', marginHorizontal: px(30), }}>
+                      <Text style={{ color: '#606266', fontSize: px(24) }} >{item.know_name}</Text>
+                    </View>
                   </TouchableOpacity>
                 )
-              })
+              }) : null
             }
           </ScrollView>
         </View>
@@ -149,21 +107,21 @@ export default class BuyHouse extends Component {
 }
 
 const styles = StyleSheet.create({
-    issueTit:{
-        paddingHorizontal:px(30),
-        height: px(100),
-         justifyContent: 'center', 
-         paddingTop: px(40),
-        paddingBottom: px(30)
-    },
-    tabItem:{
-        height: px(100), 
-        justifyContent: 'center', 
-        alignItems:'center',
-        width:px(220)
-    },
-    tabContItem:{
-        height: px(100), 
-        width:'100%'
-    }
+  issueTit: {
+    paddingHorizontal: px(30),
+    height: px(100),
+    justifyContent: 'center',
+    paddingTop: px(40),
+    paddingBottom: px(30)
+  },
+  tabItem: {
+    height: px(100),
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: px(220)
+  },
+  tabContItem: {
+    height: px(100),
+    width: '100%'
+  }
 })

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, } from 'react-native';
 import px from '../../../utils/px';
 import axios from 'axios'
+import {storage} from '../../../utils/storage'
 
 export default class callRecords extends Component {
   constructor(props) {
@@ -10,7 +11,17 @@ export default class callRecords extends Component {
     };
   }
 
-  componentDidMount(){
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
+      })
+    })
     this.getdata()
   }
 

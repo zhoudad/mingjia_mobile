@@ -3,27 +3,39 @@ import { View, Text, FlatList, StyleSheet, RefreshControl, ActivityIndicator, To
 import TipicTag from '../../../components/TipicTag'
 import px from '../../../utils/px';
 import axios from 'axios'
+import {storage} from '../../../utils/storage'
 
 export default class Attention extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      AttentionArr: []
+      AttentionArr: [],
+      user_id:'',
+      account_id:''
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
+      })
+    })
     this.getdata()
   }
   getdata() {
-    console.log
     axios({
       method: 'post',
       url: 'http://218.108.34.222:8080/attention_show',
       data: {
-        account_id: 2,
-        user_id: 2
+        account_id: this.state.account_id,
+        user_id: this.state.user_id
       }
     }).then(res => {
       console.log(res)

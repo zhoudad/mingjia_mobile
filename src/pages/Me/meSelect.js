@@ -17,8 +17,8 @@ export default class meSelect extends Component {
       token: '',
     };
   }
-  componentDidMount() {
-    storage.load({
+  async componentDidMount() {
+    await storage.load({
       key: 'accessToken',
     }).then((token) => {
       this.setState({ token: token })

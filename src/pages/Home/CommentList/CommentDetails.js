@@ -4,6 +4,7 @@ import { View, Text, TouchableHighlight, TextInput, ScrollView, StyleSheet, Imag
 import px from '../../../utils/px'
 import IntervalTime from '../../../utils/IntervalTime'
 import axios from 'axios'
+import {storage} from '../../../utils/storage'
 
 class DetailsItem extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class DetailsItem extends Component {
       nolike: false,
     };
   }
+
   render() {
     const { repContent } = this.props
     const { com_id, time, reply_content, reply_like, reply_nolike } = this.props.data
@@ -62,7 +64,21 @@ export default class CommentDetails extends Component {
       awesome: false,
       nolike: false,
       com_content: '',
+      user_id:'',
+      account_id:''
     };
+  }
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
+      })
+    })
   }
   repContent = (id) => {
     this.refs.ComInput.focus();
@@ -73,7 +89,7 @@ export default class CommentDetails extends Component {
       url: `http://218.108.34.222:8080/comment_do`,
       method: 'post',
       data: {
-        user_id: 2,
+        user_id: this.state.user_id,
         com_content: this.state.com_content
       }
     }).then((res) => {

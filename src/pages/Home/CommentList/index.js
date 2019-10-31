@@ -17,24 +17,25 @@ export default class Comment extends Component {
       account_id:'',
       toRep:false,
       rep_content:'',//回复内容
-      rep_id:''
+      rep_id:'',
+      account_id:'',
+      user_id:''
     };
   }
-  componentDidMount() {
-    // storage.load({
-    //   key: 'accessToken',
-    // }).then((token) => {
-    //   this.setState({ token })
-    // })
-    // storage.load({
-    //   key: 'Id',
-    // }).then((data) => {
-    //   this.setState({ account_id: data.account_id })
-    // })
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id,
+      })
+    })
     this.props.navigation.setParams({ navigatePress: this.getFocus })
     axios({
-      url: `http://218.108.34.222:8080/comment?account_id=${2}`,
-      method: 'GET'
+      url: 'http://218.108.34.222:8080/comment?account_id=' + this.state.account_id,
     }).then((res) => {
       this.setState({
         CommentList: res.data.result
@@ -76,7 +77,7 @@ export default class Comment extends Component {
       url: `http://218.108.34.222:8080/reply_do`,
       method: 'post',
       data:{
-        user_id:2,
+        user_id:this.state.user_id,
         com_id:this.state.rep_id,
         rep_content:this.state.rep_content
       }
@@ -116,7 +117,7 @@ export default class Comment extends Component {
       url: `http://218.108.34.222:8080/comment_do`,
       method: 'post',
       data:{
-        user_id:2,
+        user_id:this.state.user_id,
         com_content:this.state.com_content
       }
     }).then((res) => {

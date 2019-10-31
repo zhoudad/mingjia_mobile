@@ -11,6 +11,7 @@ import px from '../utils/px'
 import { BoxShadow } from 'react-native-shadow'
 import Touchable from '../components/Touchable'
 import UMShareModule from '../utils/ShareUtil'
+import {storage,saveToken} from '../utils/storage'
 
 export default class Login extends Component {
   constructor(props) {
@@ -53,6 +54,7 @@ export default class Login extends Component {
     // WeChat.registerApp('wx07cb98a4feb4b5b3')
   }
   sendVerification = async () => {
+    let {CountdownNum} = this.state
     let myreg = /^1[3456789]\d{9}$/;
     if (!this.state.user_tel) {
       ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
@@ -61,8 +63,8 @@ export default class Login extends Component {
         this.timer = setInterval(() => {
           if (this.state.CountdownNum >= 0) {
             this.setState({
-              CountdownNum: this.state.CountdownNum > 10 ? --this.state.CountdownNum : '0' + --this.state.CountdownNum,
-              btnText: this.state.CountdownNum,
+              CountdownNum: CountdownNum >= 10 ? --CountdownNum : '0' + --CountdownNum,
+              btnText: CountdownNum,
               isSend: true
             })
           } else {
@@ -89,7 +91,6 @@ export default class Login extends Component {
     }
   }
 
-
   loginIn = () => {
     const { user_tel, user_code, ip, ip_name } = this.state;
     const { navigation } = this.props;
@@ -98,16 +99,17 @@ export default class Login extends Component {
       url: 'http://218.108.34.222:8080/userinfo',
       data: { user_tel, user_code, ip, ip_name, 'user_ftime': new Date().getTime(), }
     }).then((res) => {
-      console.log(res);
+      console.log(res)
       if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
-        // saveToken(data.data);
+        // saveToken()
+        storage.save({
+          key: 'userId',
+          data: {user_id:res.data.result.user_id},
+        });
         navigation.navigate('Select', { Token: res.data.token })
-        // navigationUtil.reset(self.props.navigation, 'Select');
       }
     }).catch(err => {
       ToastAndroid.show('登录失败', ToastAndroid.SHORT);
-      // console.log(err)
-      // Alert.alert('登录失败', err.message || err);
     });
   }
   // 微信登陆授权

@@ -32,6 +32,7 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ShareModule.initSocialSDK(this);
+        PushModule.initPushSDK(this);
     }
   @Override
     public void onActivityResult(int requestCode,int resultCode, Intent data) {

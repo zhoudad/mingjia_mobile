@@ -58,10 +58,8 @@ public class MainApplication extends MultiDexApplication  implements ReactApplic
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this); // Remove this line if you don't want Flipper enabled
 
-    // Config.shareType = "react native";
     // RNUMConfigure.init(this, "5db6475d4ca3576be20007db", "Umeng", UMConfigure.DEVICE_TYPE_PHONE,"");
-     UMConfigure.init(this,"5db94561570df3e29a000524","umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
-    //  UMConfigure.init(this, "5db6475d4ca3576be20007db", "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
+     UMConfigure.init(this,"5db94561570df3e29a000524","umeng",UMConfigure.DEVICE_TYPE_PHONE,"fd5hm4mm1bm6sxxd2oduxo2q7i6tdraz");
   }
   /**
    * Loads Flipper in React Native templates.

@@ -21,15 +21,23 @@ export default class Info extends Component {
       sureVisible: false,
       sex: '选择性别',
       nickname: '周大大',
-      uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg'
+      uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg',
+      user_id:''
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+      })
+    })
     this.props.navigation.setParams({ isSave: false })
     axios({
       url: 'http://218.108.34.222:8080/datum',
       method: 'post',
-      data: { user_id: 2 }
+      data: { user_id: this.state.user_id }
     }).then(res => {
       // console.log(res)
       this.setState({
@@ -79,38 +87,6 @@ export default class Info extends Component {
       }
     ).start();
   };
-  // _renderUpimg(flag) {
-  //   this.openPanel()
-  //   if (flag) {
-  //     return (
-  //       <View style={{ paddingHorizontal: px(30), position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}>
-  //         <Couverture
-  //           onPress={() => this.closePanel()}
-  //           isShow={this.state.isShowCouver}
-  //           opacity={this.state.fadeAnim}
-  //         />
-  //         <View style={{ position: 'absolute', left: px(30), right: px(30), bottom: px(20) }}>
-  //           <TouchableOpacity
-  //             activeOpacity={1}
-  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
-  //             <Text style={{ color: '#333333', fontSize: px(32) }}>从手机选择</Text>
-  //           </TouchableOpacity>
-  //           <TouchableOpacity
-  //             activeOpacity={1}
-  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(10), }}>
-  //             <Text style={{ color: '#333333', fontSize: px(32) }}>拍照</Text>
-  //           </TouchableOpacity>
-  //           <TouchableOpacity
-  //             onPress={() => this.closePanel()}
-  //             activeOpacity={1}
-  //             style={{ backgroundColor: '#FFFFFF', height: px(100), justifyContent: 'center', alignItems: 'center', borderRadius: px(10), marginTop: px(20), }}>
-  //             <Text style={{ color: '#333333', fontSize: px(32) }}>取消</Text>
-  //           </TouchableOpacity>
-  //         </View>
-  //       </View>
-  //     )
-  //   }
-  // }
 
   uploadImage = (path) => {
     var ary = path.split('/');

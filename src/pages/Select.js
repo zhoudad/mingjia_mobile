@@ -5,7 +5,7 @@ import {
 import Touchable from '../components/Touchable';
 import { unitWidth, width } from '../AdapterUtil'
 import axios from 'axios'
-import {saveToken,storage} from '../utils/storage'
+import {storage,saveToken} from '../utils/storage'
 export default class Select extends Component {
   constructor(props) {
     super(props);
@@ -42,13 +42,13 @@ export default class Select extends Component {
       }
     }).then((res) => {
       console.log(res)
-      // saveToken({access_token:this.state.token})
       if(res.data.status == '1103'){
-        this.props.navigation.navigate('Main')
+        saveToken({access_token:this.state.token})
         storage.save({
-          key: 'Id',
+          key: 'accountId',
           data: {account_id:res.data.result.account_id},
         });
+        this.props.navigation.navigate('Main')
       }
     })
   }
