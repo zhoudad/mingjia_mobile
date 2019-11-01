@@ -128,7 +128,7 @@ const LoginStack = createStackNavigator({
       header: null
     }
   },
-  Policy:{
+  Policy: {
     screen: Policy,
     navigationOptions: ({ navigation }) => ({
       title: '明家用户隐私政策及协议',
@@ -151,7 +151,7 @@ const LoginStack = createStackNavigator({
       ),
     })
   },
-  Registered:{
+  Registered: {
     screen: Registered,
     navigationOptions: {
       header: null
@@ -161,14 +161,14 @@ const LoginStack = createStackNavigator({
   initialRouteName: 'Login',
 });
 const MainStack = createStackNavigator({
-  Test:{
+  Test: {
     screen: Test,
     navigationOptions: {
       header: null
     }
   },
 
-  Search:{
+  Search: {
     screen: Search,
     navigationOptions: {
       header: null
@@ -201,33 +201,66 @@ const MainStack = createStackNavigator({
   Message: {
     screen: Message,
     headerLayoutPreset: "center",
-    navigationOptions: ({ navigation }) => ({
-      title: '消息通知',
-      headerTitleStyle: {
-        textAlign: 'center',
-        flex: 1,
-        fontSize: px(36),
-        color: '#333333'
-      },
-      headerRight: (
-        <Text
-          style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
-          onPress={() => {
-            console.log(navigation.state)
-            navigation.state.params.msManagement()
-            navigation.setParams({ mode: navigation.state.params.mode == 'edit' ? '' : 'edit' })
-          }}
-        // >{navigation.state.params.mode == 'edit' ? '管理' : '完成'}</Text>
-        >{'管理' }</Text>
-      ),
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
-          <Image
-            style={{ width: px(56), height: px(56), marginStart: px(3) }}
-            source={require('./assets/images/nav_icon_back.png')} />
-        </TouchableOpacity>
-      )
-    })
+    navigationOptions: ({ navigation }) => {
+      const { state, setParams } = navigation
+      const { params = {} } = state
+      return {
+        title: '消息通知',
+        headerTitleStyle: {
+          textAlign: 'center',
+          flex: 1,
+          fontSize: px(36),
+          color: '#333333'
+        },
+        headerRight: (
+          <Text
+            style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
+            onPress={() => {
+              params.msManagement()
+              setParams({ mode: params.mode == 'edit' ? '' : 'edit' })
+            }}
+          >{params.mode == 'edit' ? '完成' : '管理'}</Text>
+        ),
+        headerLeft: (
+          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+            <Image
+              style={{ width: px(56), height: px(56), marginStart: px(3) }}
+              source={require('./assets/images/nav_icon_back.png')} />
+          </TouchableOpacity>
+        )
+      }
+    }
+    // navigationOptions: ({ navigation }) => ({
+    //   title: '消息通知',
+    //   headerTitleStyle: {
+    //     textAlign: 'center',
+    //     flex: 1,
+    //     fontSize: px(36),
+    //     color: '#333333'
+    //   },
+    //   headerRight: (
+    //     <Text
+    //       style={{ fontSize: px(30), textAlign: 'center', marginEnd: px(30), color: '#EA4C4C', }}
+    //       onPress={() => {
+    //         navigation.state.params.msManagement()
+    //         navigation.setParams({ mode: navigation.state.params.mode == 'edit' ? '' : 'edit' })
+    //       }}
+    //     >{navigation.state.params.mode == 'edit' ? '管理' : '完成'}</Text>
+    //     >{'管理' }</Text>
+    //     <Button title={navigation.state.params.mode === 'edit' ? '完成' : '编辑'}
+    //       onPress={() => {
+    //         navigation.setParams({ mode: navigation.state.params.mode === 'edit' ? '' : 'edit' })
+    //       }}
+    //     ></Button>
+    //   ),
+    //   headerLeft: (
+    //     <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={1}>
+    //       <Image
+    //         style={{ width: px(56), height: px(56), marginStart: px(3) }}
+    //         source={require('./assets/images/nav_icon_back.png')} />
+    //     </TouchableOpacity>
+    //   )
+    // })
   },
   msgDetails: {
     screen: msgDetails,
@@ -572,7 +605,7 @@ const MainStack = createStackNavigator({
       header: null
     }
   },
-  H_Album:{
+  H_Album: {
     screen: H_Album,
     navigationOptions: ({ navigation }) => ({
       title: '户型相册',
@@ -774,7 +807,7 @@ const MainStack = createStackNavigator({
       ),
     })
   },
-  Policy:{
+  Policy: {
     screen: Policy,
     navigationOptions: ({ navigation }) => ({
       title: '明家用户隐私政策及协议',
@@ -820,7 +853,7 @@ const MainStack = createStackNavigator({
       ),
     })
   },
-  meSelect:{
+  meSelect: {
     screen: meSelect,
     navigationOptions: {
       header: null
@@ -828,7 +861,7 @@ const MainStack = createStackNavigator({
   }
 
 }, {
-  initialRouteName: 'Message',
+  initialRouteName: 'Main',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

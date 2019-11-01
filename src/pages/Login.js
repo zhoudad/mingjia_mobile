@@ -136,13 +136,12 @@ export default class Login extends Component {
     //       ])
     //     }
     //   })
-    UMShareModule.auth(2, (code, result, message) => {
-      this.setState({ result: message });
-      if (code == 200) {
-        this.setState({ result: result.uid });
-        UMShareModule.profileSignInWithPUID("");
-      }
-      console.log(1)
+    UMShareModule.auth(2, async (code, result, message) => {
+      // this.setState({ result: message });
+      // if (code == 200) {
+      //   this.setState({ result: result.uid });
+      // }
+      console.log(code, result, message)
     })
   }
   // 微信登陆获取token

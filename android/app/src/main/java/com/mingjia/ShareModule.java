@@ -132,7 +132,6 @@ public class ShareModule extends ReactContextBaseJavaModule {
                     public void onStart(SHARE_MEDIA share_media) {
 
                     }
-
                     @Override
                     public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
                         WritableMap result = Arguments.createMap();

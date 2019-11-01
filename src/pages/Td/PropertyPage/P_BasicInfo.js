@@ -490,15 +490,6 @@ export default class BasicInfo extends Component {
               {this._randerModel()}
             </View>
           </View>
-          {/* <View style={styles.sandTable}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-              <Text style={{ color: '#303133', fontSize: px(28) }}>沙盘图</Text>
-              <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>楼盘详情</Text>
-            </View>
-            <ImageBackground
-              style={{ height: px(387), marginTop: px(30), borderRadius: px(51) }}
-              source={require('../../../assets/images/panda.jpg')}></ImageBackground>
-          </View> */}
           <View style={styles.tD}>
             <Text style={{ color: '#303133', fontSize: px(28) }}>小区三维</Text>
             <ImageBackground

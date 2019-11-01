@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, BackHandler, Dimensions, ScrollView, Easing, } from 'react-native';
+import {
+  View, Text, StyleSheet, Image, TouchableOpacity, Animated, BackHandler, Dimensions, ScrollView, Easing,
+  Button
+} from 'react-native';
 import Touchable from '../../components/Touchable'
 import px from '../../utils/px'
 import CustomTabBar from '../../components/CustomTabBar'
 import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import PropertyPage from './PropertyPage'
 import HousetypePage from './HousetypePage'
-import ActionBar from '../../components/test'
+// import ActionBar from '../../components/ActionBar'
+import Couverture from '../../components/Couverture'
 const { width, height } = Dimensions.get('window');
 const data = [
-  ["区域", "第一项目", "第一项目", "第一项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
-  ["价格", "第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
-  ["户型", "第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目","第二项目", "第二项目", "第二项目"],
+  [["区域"], ["第一项目", "第一项目", "第一项目", "第二项目", "第二项目", "第二项目", "第二项目", "第二项目", "第二项目"]],
+  [["单价"], ["1万以下", "1-1.5万", "1.5-2万", "2-3万", "3-5万", "5万以上"]],
+  [["不限", "一室", "两室", "三室", "四室", "五室", "六室", "七室", "八室", "九室"]],
 
 ]
 export default class Td extends Component {
@@ -31,18 +35,18 @@ export default class Td extends Component {
 
   constructor(props) {
     var selectIndex = new Array(data.length);
-    for (var i = 0; i < selectIndex.length; i++) {
+    for (var i = 0; i < data.length; i++) {
       selectIndex[i] = 0;
     }
     super(props);
     this.state = {
       sortActivity: false,
-      maxHeight: px(450),
+      maxHeight: px(500),
       priceActive: false,
       text: '',
       activityIndex: -1,
       selectIndex: selectIndex,
-      rotationAnims: data.map(() => new Animated.Value(0)),
+      isCouver: false,
       sortIndex: 0,
       sortArr: [
         {
@@ -56,24 +60,40 @@ export default class Td extends Component {
           data: ['未来一个月', '未来三个月', '未来半年', '过去一个月', '过去三个月']
         }
       ],
-      dataArr: ['默认排序']
+      dataArr: ['默认排序'],
+      rotationAnim: new Animated.Value(0),
+      DownArrowArr: data.map(() => new Animated.Value(0)),
+      titleArr: ['区域', '单价', '户型']
     };
   }
 
   split(data) {
     return data.length > 6 ? data.substring(0, 6) + '...' : data
   }
-  renderDropDownArrow(index) {
+
+  sort() {
+    let self = this
+    this.setState({
+      sortActivity: !this.state.sortActivity,
+      activityIndex: -1
+    }, () => {
+      if (this.state.sortActivity) {
+        self._openPanel()
+      } else {
+        self._closePanel()
+      }
+    })
+  }
+  _renderDropDownArrow(index) {
     return (
       <Animated.Image
         source={require("../../assets/images/nav_arrow_down1.png")}
         style={{
           width: px(24), height: px(24), marginLeft: 8,
-          tintColor:
-            index === this.state.activityIndex ? "#EA4C4C" : "#C0C4CC",
+          tintColor: index === this.state.activityIndex ? "#EA4C4C" : "#C0C4CC",
           transform: [
             {
-              rotateZ: this.state.rotationAnims[index].interpolate({
+              rotateZ: this.state.DownArrowArr[index].interpolate({
                 inputRange: [0, 1],
                 outputRange: ["0deg", "360deg"]
               })
@@ -83,61 +103,20 @@ export default class Td extends Component {
       />
     );
   }
-
-  openOrClosePanel(index) {
-    if (this.state.activityIndex == index) {
-      this.closePanel(index);
-      this.setState({
-        activityIndex: -1,
-        sortActivity: false
-      });
-    } else {
-      if (this.state.activityIndex == 3) {
-        this.openPanel(index);
-        this.setState({
-          activityIndex: index,
-          sortActivity: true
-        });
-      }
-      if (this.state.activityIndex > -1) {
-        this.closePanel(this.state.activityIndex);
-      }
-      this.openPanel(index);
-      this.setState({
-        activityIndex: index
-      });
+  _itemOnPress(index) {
+    var { selectIndex, titleArr, activityIndex } = this.state;
+    if (activityIndex > -1) {
+      selectIndex[activityIndex] = index;
+      titleArr[activityIndex] = data[activityIndex].length > 1 ? data[activityIndex][1][index] : data[activityIndex][0][index]
+      this.setState({ selectIndex, titleArr });
     }
+    this._openOrClosePanel(this.state.activityIndex);
   }
-
-  openPanel(index) {
-    if (this.state.rotationAnims[index]) {
-      Animated.timing(this.state.rotationAnims[index], {
-        toValue: 0.5,
-        duration: 300,
-        easing: Easing.linear
-      }).start();
-    } else {
-      return
-    }
-  }
-
-  closePanel(index) {
-    if (this.state.rotationAnims[index]) {
-      Animated.timing(this.state.rotationAnims[index], {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.linear
-      }).start();
-    } else {
-      return
-    }
-  }
-
-  renderChcek(index, title) {
+  _renderChcek(title, index) {
     var activityIndex = this.state.activityIndex;
     if (this.state.selectIndex[activityIndex] == index) {
       return (
-        <View style={{ flex: 1, justifyContent: "space-between", alignItems: "center", paddingHorizontal: px(30), flexDirection: "row", height: px(90), }} >
+        <View style={styles.Check} >
           <Text style={{ color: '#303133', fontSize: px(28) }}>{title}</Text>
           <Image
             source={require('../../assets/images/nav_right1.png')}
@@ -147,143 +126,191 @@ export default class Td extends Component {
       );
     } else {
       return (
-        <View
-          style={{ flex: 1, justifyContent: "space-between", alignItems: "center", paddingHorizontal: px(30), flexDirection: "row" }} >
+        <View style={styles.Check} >
           <Text style={{ color: '#303133', fontSize: px(28) }} >{title} </Text>
         </View>
       );
     }
   }
-
-  renderActivityPanel() {
-    if (this.state.activityIndex >= 0) {
-      var currentTitles = data[this.state.activityIndex] ? data[this.state.activityIndex] : [];
-      var heightStyle = {};
-      if (this.state.maxHeight && this.state.maxHeight < currentTitles.length * px(90)) {
-        heightStyle.height = this.state.maxHeight;
-      }
-      return (
-        <View style={{ position: "absolute",top: px(90), width, height:height-px(90), }} pointerEvents={'box-only'}>
-          <TouchableOpacity
-            onPress={() => this.openOrClosePanel(this.state.activityIndex)}
-            activeOpacity={1}
-            style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }} >
-            <View style={{ opacity: 0.4, backgroundColor: "black", flex: 1 }} />
-          </TouchableOpacity>
+  _renderActivityPanel() {
+    const { rotationAnim, maxHeight } = this.state;
+    return (
+      <Animated.View
+        style={[styles.ActivityPanel, {
+          transform: [
+            {
+              translateY: rotationAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, maxHeight + px(200)]
+              })
+            },
+          ]
+        }]}
+      >
+        <View style={{ height: maxHeight, flexDirection: 'row', }}>
           {
-            this.state.activityIndex == 0 ?
-              <View style={[styles.ActivityPanel, heightStyle, { flexDirection: 'row', }]}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ height: px(90), backgroundColor: '#F7F7F7', paddingHorizontal: px(30), justifyContent: 'center' }}>
-                    <Text style={{ color: '#303133', fontSize: px(28) }}>区域</Text>
-                  </View>
-                </View>
-                <ScrollView style={{ flex: 1, borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}>
-                  {currentTitles.map((title, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      activeOpacity={1}
-                      style={{ flex: 1, height: px(89), borderBottomColor: '#E6E9F0', borderBottomWidth: px(1) }}
-                      onPress={() => this.itemOnPress(index)}
-                    >
-                      {this.renderChcek(index, title)}
-                      <View style={{ backgroundColor: "red ", height: 1, marginLeft: px(10) }} />
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-              : this.state.activityIndex == 3 ?
-                <View style={[styles.ActivityPanel, heightStyle, { flexDirection: 'row', }]}>
-                  <View style={{ flex: 1 }}>
-                    {
-                      this.state.sortArr.map((item, index) => {
-                        return (
-                          <TouchableOpacity
-                            onPress={() => this.setState({ dataArr: this.state.sortArr[index], sortIndex: index })}
-                            activeOpacity={1}
+            data[this.state.activityIndex] ?
+              data[this.state.activityIndex].length > 1 ? data[this.state.activityIndex].map((arr, i) => {
+                if (i == 0) {
+                  return (
+                    <View style={{ flex: 1 }} key={i}>
+                      <TouchableOpacity style={{ height: px(90), backgroundColor: '#F7F7F7', justifyContent: 'center', paddingLeft: px(30) }}>
+                        <Text style={{ fontSize: px(28), color: '#303133' }}>{arr[0]}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )
+                } else {
+                  return (
+                    <View style={{ flex: 1 }} key={i}>
+                      <ScrollView
+                        contentContainerStyle={{ borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}
+                        showsVerticalScrollIndicator={false}>
+                        {arr ? arr.map((item, index) => (
+                          <Touchable
                             key={index}
-                            style={{ height: px(90), backgroundColor: this.state.sortIndex == index ? '#F7F7F7' : '#FFF', paddingHorizontal: px(30), justifyContent: 'center' }}>
-                            <Text style={{ color: '#303133', fontSize: px(28) }}>{item.title}</Text>
-                          </TouchableOpacity>
+                            style={{ flex: 1, height: px(90) }}
+                            onPress={() => this._itemOnPress(index)}
+                          >
+                            {this._renderChcek(item, index)}
+                          </Touchable>
+                        )) : null}
+                      </ScrollView>
+                    </View>
+                  )
+                }
+              })
+                : <View style={{ flex: 1 }}>
+                  <ScrollView
+                    contentContainerStyle={{ borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}
+                    showsVerticalScrollIndicator={false}>
+                    {data[this.state.activityIndex][0] ? data[this.state.activityIndex][0].map((item, index) => (
+                      <Touchable
+                        key={index}
+                        style={{ flex: 1, height: px(90) }}
+                        onPress={() => this._itemOnPress(index)}
+                      >
+                        {this._renderChcek(item, index)}
+                      </Touchable>
+                    )) : null}
+                  </ScrollView>
+                </View>
+              : <View style={{ flex: 1, flexDirection: 'row' }}>
+
+                <View style={{ width: px(410) }}>
+                  {
+                    this.state.sortArr.map((item, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          activeOpacity={1}
+                          onPress={() => this.setState({ sortIndex: index })}
+                          style={{ height: px(90), paddingLeft: px(30), justifyContent: 'center', borderBottomColor: '#EEE', borderBottomWidth: px(1) }}>
+                          <Text style={{ color: '#303133', fontSize: px(28) }}>{item.title}</Text>
+                        </TouchableOpacity>
+                      )
+                    })
+                  }
+                </View>
+                <View style={{ flex: 1, borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}>
+                  <ScrollView>
+                    {
+                      this.state.sortArr[this.state.sortIndex].data.map((item, index) => {
+                        return (
+                          <View style={styles.Check} key={index}>
+                            <Text style={{ color: '#303133', fontSize: px(28) }} >{item} </Text>
+                          </View>
                         )
                       })
                     }
-                  </View>
-                  <ScrollView style={{ flex: 1, borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}>
-                    {this.state.dataArr.map((data, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        activeOpacity={1}
-                        style={{ flex: 1, height: px(89), borderBottomColor: '#E6E9F0', borderBottomWidth: px(1) }}
-                        onPress={() => this.itemOnPress(index)}
-                      >
-                        {this.renderChcek(index, data)}
-                        <View style={{ backgroundColor: "red ", height: 1, marginLeft: px(10) }} />
-                      </TouchableOpacity>
-                    ))}
                   </ScrollView>
                 </View>
-                :
-                <ScrollView
-                  style={[styles.ActivityPanel, heightStyle]}>
-                  {currentTitles.map((title, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      activeOpacity={1}
-                      style={{ flex: 1, height: px(90) }}
-                      onPress={() => this.itemOnPress(index)}
-                    >
-                      {this.renderChcek(index, title)}
-                      <View style={{ backgroundColor: "red ", height: 1, marginLeft: px(10) }} />
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
+              </View>
           }
-
         </View>
-      );
-    } else {
-      return null;
-    }
+        <View style={{ height: px(90), flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAFAFA', height: px(90) }}
+            activeOpacity={1}>
+            <Text style={{ fontSize: px(30), color: '#999999' }}>重置</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EA4C4C', height: px(90) }}
+            activeOpacity={1}>
+            <Text style={{ color: '#FFF', fontSize: px(30), }}>确定</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    )
   }
-
-  itemOnPress(index) {
-    console.log(index)
-    if (this.state.activityIndex > -1) {
-      var selectIndex = this.state.selectIndex;
-      selectIndex[this.state.activityIndex] = index;
+  _openOrClosePanel(index) {
+    if (this.state.activityIndex == index) {
+      this._closePanel(index);
       this.setState({
-        selectIndex: selectIndex
+        activityIndex: -1,
+        sortActivity: false
       });
-      if (this.props.handler) {
-        this.props.handler(this.state.activityIndex, index);
+    } else {
+      if (this.state.activityIndex > -1) {
+        this._closePanel(index);
+        this.setState({ sortActivity: false })
       }
+      this._openPanel(index);
+      this.setState({
+        activityIndex: index,
+        sortActivity: false
+      });
     }
-    this.openOrClosePanel(this.state.activityIndex);
   }
+  _openPanel(index) {
+    console.log('openPanel')
+    const { rotationAnim } = this.state;
+    // rotationAnim.setValue(0);
+    if (this.state.DownArrowArr[index]) {
+      Animated.timing(this.state.DownArrowArr[index], {
+        toValue: 1,
+        duration: 300,
+        // easing: Easing.linear,
+        // useNativeDriver: true,
+      }).start();
+    }
+    Animated.spring(
+      rotationAnim,
+      {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }
+    ).start();
+    this.setState({ isCouver: false })
+  }
+  _closePanel(index) {
+    console.log('closePanel')
+    const { rotationAnim } = this.state;
+    // rotationAnim.setValue(1);
+    if (this.state.DownArrowArr[index]) {
+      Animated.timing(this.state.DownArrowArr[index], {
+        toValue: 0,
+        duration: 300,
+        // easing: Easing.linear,
+        // useNativeDriver: true,
+      }).start();
+    }
+    Animated.spring(
+      rotationAnim,
+      {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      }
+    ).start();
+    this.setState({ isCouver: true })
+  };
 
   render() {
     const { navigation } = this.props
     return (
       <View style={{ flex: 1, }}>
-        <View style={styles.header}>
-          <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32) }}>新房</Text>
-          <TouchableOpacity style={styles.search} activeOpacity={1}>
-            <Image
-              style={{ width: px(22), height: px(22) }}
-              source={require('../../assets/images/search_icon.png')} />
-            <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.replace('Owner')}>
-            <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
-              <Image
-                style={{ width: px(40), height: px(40) }}
-                source={require('../../assets/images/nav_horizontal.png')} />
-              <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32) }}>业主</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={{ position: 'absolute', top: px(180), left: 0, width, height: height - px(180), }}>
+        <View style={{ position: 'absolute', top: px(190), left: 0, width, height: height - px(190), zIndex: 1 }}>
           <ScrollableTabView
             renderTabBar={() => (<CustomTabBar
               backgroundColor={'#FFF'}
@@ -299,31 +326,58 @@ export default class Td extends Component {
               <HousetypePage />
             </View>
           </ScrollableTabView>
-         
+        </View>
+        <Couverture
+          isShow={this.state.isCouver}
+          onPress={() => this._closePanel()}
+          opacity={this.state.rotationAnim}
+          zIndex={25}
+        />
+        {this._renderActivityPanel()}
+        <View style={{ height: px(100), width, position: 'absolute', top: 0, left: 0, zIndex: 100 }}>
+          <View style={styles.header}>
+            <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32) }}>新房</Text>
+            <TouchableOpacity style={styles.search} activeOpacity={1}>
+              <Image
+                style={{ width: px(22), height: px(22) }}
+                source={require('../../assets/images/search_icon.png')} />
+              <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.replace('Owner')}>
+              <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
+                <Image
+                  style={{ width: px(40), height: px(40) }}
+                  source={require('../../assets/images/nav_horizontal.png')} />
+                <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32) }}>业主</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.drop}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-            {data.map((item, index) => (
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => this.openOrClosePanel(index)}
-                key={index}
-                style={{ height: px(90), alignItems: "center", justifyContent: "center", }} >
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", }} >
-                  <Text style={{ fontSize: px(28), color: '#303133', fontFamily: 'PingFang-SC-Medium' }}  >
-                    {this.split(item[this.state.selectIndex[index]])}
-                  </Text>
-                  {this.renderDropDownArrow(index)}
-                </View>
-              </TouchableOpacity>
-            ))}
+            {this.state.titleArr.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => this._openOrClosePanel(index)}
+                  key={index}
+                  style={{ height: px(90), alignItems: "center", justifyContent: "center", }} >
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", }} >
+                    <Text style={{ fontSize: px(28), color: '#303133', fontFamily: 'PingFang-SC-Medium' }}  >
+                      {/* {this.split(item[0][this.state.selectIndex[index]])} */}
+                      {this.split(item)}
+                    </Text>
+                    {this._renderDropDownArrow(index)}
+                  </View>
+                </TouchableOpacity>
+              )
+            })}
             <TouchableOpacity
-              activeOpacity={1} onPress={() => this.openOrClosePanel(3)}>
+              activeOpacity={1} onPress={() => this.sort()}>
               <Image style={{ width: px(30), height: px(25) }}
                 source={this.state.sortActivity ? require('../../assets/images/nav_vertical_s.png') : require('../../assets/images/nav_vertical.png')} />
             </TouchableOpacity>
           </View>
-          {this.renderActivityPanel()}
         </View>
       </View >
     );
@@ -350,28 +404,55 @@ const styles = StyleSheet.create({
     height: px(60),
   },
   drop: {
-    flexDirection: 'row',
+    backgroundColor: '#FFF',
     height: px(90),
     width,
-    borderBottomColor: '#E6E9F0',
-    borderBottomWidth: px(1),
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: px(30),
+    justifyContent: 'space-around',
+    flexDirection: 'row',
     position: 'absolute',
     top: px(90),
     left: 0,
-    zIndex: 19,
-    backgroundColor:'#FFF'
+    zIndex: 100,
+    padding: px(30)
     // elevation: 1,
   },
-  ActivityPanel: {
-    position: "absolute",
-    top: 0,
+  // ActivityPanel: {
+  //   position: "absolute",
+  //   top: 0,
+  //   left: 0,
+  //   right: 0,
+  //   borderBottomColor: '#E6E9F0',
+  //   borderBottomWidth: px(1),
+  //   backgroundColor: '#FFF',
+  //   zIndex: 99
+  // },
+  btn: {
+    height: px(100),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    width,
+    bottom: 120,
     left: 0,
-    right: 0,
-    borderBottomColor: '#E6E9F0',
-    borderBottomWidth: px(1),
+    // zIndex:39
+  },
+  ActivityPanel: {
+    height: px(500),
+    position: 'absolute',
+    width,
     backgroundColor: '#FFF',
+    left: 0,
+    top: px(-499),
+    zIndex: px(9)
+  },
+  Check: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: px(30),
+    flexDirection: "row",
+    height: px(90),
+    borderBottomColor: '#E6E9F0',
+    borderBottomWidth: px(1)
   }
 })

@@ -174,6 +174,7 @@ export default class Info extends Component {
   }
 
   loginOut(){
+    const { navigation } = this.props
     axios({
       url: 'http://218.108.34.222:8080/logout',
       method: 'post',

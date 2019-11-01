@@ -34,7 +34,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         ShareModule.initSocialSDK(this);
         PushModule.initPushSDK(this);
-        PushAgent.getInstance(context).onAppStart();
+        PushAgent.getInstance(this).onAppStart();
     }
   @Override
     public void onActivityResult(int requestCode,int resultCode, Intent data) {
