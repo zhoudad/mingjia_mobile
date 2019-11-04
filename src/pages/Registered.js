@@ -3,6 +3,8 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid } fro
 import px from '../utils/px'
 import Touchable from '../components/Touchable'
 import axios from 'axios'
+import DeviceInfo from 'react-native-device-info';
+import { storage, saveToken } from '../utils/storage'
 
 export default class Registered extends Component {
   constructor(props) {
@@ -16,94 +18,91 @@ export default class Registered extends Component {
     };
   }
 
-  // sendVerification = async () => {
-  //   let myreg = /^1[3456789]\d{9}$/;
-  //   if (!this.state.user_tel) {
-  //     ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
-  //   } else {
-  //     if (myreg.test(this.state.user_tel)) {
-  //       this.timer = setInterval(() => {
-  //         if (this.state.CountdownNum >= 0) {
-  //           this.setState({
-  //             CountdownNum: this.state.CountdownNum >= 10 ? --this.state.CountdownNum : '0' + --this.state.CountdownNum,
-  //             btnText: this.state.CountdownNum,
-  //             isSend: true
-  //           })
-  //         } else {
-  //           clearInterval(this.timer)
-  //           this.setState({
-  //             btnText: '重新发送',
-  //             CountdownNum: 60,
-  //             isSend: false
-  //           })
-  //         }
-  //       }, 1000)
-  //       await axios({
-  //         method: 'post',
-  //         url: 'http://218.108.34.222:8080/sendcode',
-  //         data: {
-  //           'tel': this.state.user_tel,
-  //         }
-  //       }).then((res) => {
-  //         ToastAndroid.show('发送成功', ToastAndroid.SHORT);
-  //       })
-  //     } else {
-  //       ToastAndroid.show('手机号格式不正确', ToastAndroid.SHORT);
-  //     }
-  //   }
-  // }
+  sendVerification = async () => {
+    let myreg = /^1[3456789]\d{9}$/;
+    let {CountdownNum} = this.state
+    if (!this.state.user_tel) {
+      ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
+    } else {
+      if (myreg.test(this.state.user_tel)) {
+        this.timer = setInterval(() => {
+          if (CountdownNum >= 0) {
+            this.setState({
+              CountdownNum: CountdownNum >= 10 ? --CountdownNum : '0' + --CountdownNum,
+              btnText: CountdownNum,
+              isSend: true
+            })
+          } else {
+            clearInterval(this.timer)
+            this.setState({
+              btnText: '重新发送',
+              CountdownNum: 60,
+              isSend: false
+            })
+          }
+        }, 1000)
+        await axios({
+          method: 'post',
+          url: 'http://218.108.34.222:8080/sendcode',
+          data: {
+            'tel': this.state.user_tel,
+          }
+        }).then((res) => {
+          ToastAndroid.show('发送成功', ToastAndroid.SHORT);
+        })
+      } else {
+        ToastAndroid.show('手机号格式不正确', ToastAndroid.SHORT);
+      }
+    }
+  }
 
   componentDidMount() {
-		// _retrieveData = async () => {
-		// 	try {
-		// 		const value = await AsyncStorage.getItem('weixinUserId');
-		// 		if (value !== null) {
-		// 			this.setState({ id: value })
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error)
-		// 	}
-		// }
-		// _retrieveData()
-		DeviceInfo.getIPAddress().then(ip => {
-			this.setState({ ip, ip_name: DeviceInfo.getCarrier() })
-		});
+    DeviceInfo.getIpAddress().then(res => {
+      this.setState({ ip: res })
+    })
+    DeviceInfo.getCarrier().then(res => {
+      this.setState({ ip_name: res })
+    })
 	}
 	get = () => {
 		axios({
-			url: 'http://192.168.10.79:8080/wechat_tel',
+			url: 'http://218.108.34.222:8080/wechat_tel',
 			method: 'POST',
 			data: {
 				tel: this.state.user_tel
 			}
 		}).then((res) => {
-			// console.log(res)
+			console.log(res)
 		}).catch((err) => {
-			// console.log(err)
+			console.log(err)
 		})
 	}
 	login = () => {
+    let id = this.props.navigation.state.params.id
+    if(!this.state.user_code){
+      ToastAndroid.show('验证码不能为空', ToastAndroid.SHORT);
+      return
+    }
+    console.log(id)
 		axios({
-			url: 'http://192.168.10.79:8080/tel_add',
+			url: 'http://218.108.34.222:8080/tel_add',
 			data: {
-				'user_tel': this.state.user_tel,
-				'user_code': this.state.user_code,
-				'user_ftime': (new Date()).getTime(),
-				'ip': this.state.ip,
-				'ip_name': this.state.ip_name,
-				'id': this.state.id
+				user_tel: this.state.user_tel,
+				user_code: this.state.user_code,
+				user_ftime: new Date().getTime(),
+				ip: this.state.ip,
+				ip_name: this.state.ip_name,
+				id: id
 			},
 			method: 'POST',
 		}).then((res) => {
-			console.log(res)
-			saveUserInfo = async () => {
-				try {
-					await AsyncStorage.setItem('userinfo', res.data)
-				} catch (e) {
-				}
-			}
-			saveUserInfo()
-			this.props.navigation.navigate('Main')
+      console.log(res.data.result)
+      saveToken({access_token:res.data.token})
+      storage.save({
+        key: 'userId',
+        data: { user_id: res.data.result.user_id },
+      });
+			this.props.navigation.navigate('Select')
 		}).catch((err) => {
 			console.log(err)
 		})
@@ -143,7 +142,7 @@ export default class Registered extends Component {
             </Text>
           </Touchable>
         </View>
-        <TouchableOpacity activeOpacity={0.8} style={styles.loginButton}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.loginButton} onPress={() => this.login()}>
           <Text style={{fontSize:px(32),color:'#FFF'}}>绑定手机号</Text>
         </TouchableOpacity>
       </View>

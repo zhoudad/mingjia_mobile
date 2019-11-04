@@ -30,7 +30,7 @@ export default class NotItem extends Component {
                 </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30),marginBottom:px(40) }}>
-              <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={() => this.refs.PublishInput.focus()}>
+              <TouchableOpacity activeOpacity={1} style={styles.replyBtn}>
                 <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>删除</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>

@@ -49,6 +49,7 @@ export default class Home extends Component {
     })
     axios.all([this.getSlide(), this.getComment(), this.getHouse()])
       .then(axios.spread(function (slides, comments, houses) {
+        console.log(slides.data.result)
         self.setState({
           slides: slides.data.result,
           comments: comments.data.result.length > 2 ? comments.data.result.slice(0, 2) : comments.data.result,
@@ -172,7 +173,7 @@ export default class Home extends Component {
                   this.state.slides.map((item, index) => {
                     return (
                       <View key={index} style={{ height: px(296), borderRadius: px(10) }} >
-                        <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: `http://218.108.34.222/:8080/uploads/${item.slide_file}` }} ></Image>
+                        <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: `http://218.108.34.222:8080/uploads/`+ item.slide_file}} ></Image>
                       </View>
                     )
                   })

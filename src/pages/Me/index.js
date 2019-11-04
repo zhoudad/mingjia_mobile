@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, ScrollView,
 import Icon from '../../components/Icon'
 // import { unitWidth } from '../../AdapterUtil'
 import px from '../../utils/px'
+import axios from 'axios'
+import { storage } from '../../utils/storage'
 
 export default class index extends Component {
   static navigationOptions = {
@@ -21,13 +23,40 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabnum: 0
+      tabnum: 0,
+      user_id:'',
+      uri:'',
+      nickname:''
     };
+  }
+
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      console.log(results[0].user_id)
+      self.setState({
+        user_id: results[0].user_id,
+        info:results[1]
+      })
+    })
+    axios({
+      url: 'http://218.108.34.222:8080/datum',
+      method: 'post',
+      data: { user_id: this.state.user_id }
+    }).then(res => {
+      console.log(res)
+      this.setState({
+        nickname: res.data.result.user_name,
+        uri:res.data.result.user_file
+      })
+    })
   }
 
 
   _renderTab() {
-    if (true) {
+    if (false) {
       return (
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -79,10 +108,10 @@ export default class index extends Component {
               style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
               <Image
                 style={{ width: px(108), height: px(108), }}
-                source={require('../../assets/images/mine_use.png')} />
+                source={{uri: this.state.uri}} />
             </TouchableHighlight>
             <View style={{ flex: 1, justifyContent: 'space-around' }}>
-              <Text style={{ color: '#323232', fontSize: px(32) }}>周大大</Text>
+              <Text style={{ color: '#323232', fontSize: px(32) }}>{this.state.nickname}</Text>
               <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => navigation.navigate('Info')}

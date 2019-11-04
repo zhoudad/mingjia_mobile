@@ -5,7 +5,7 @@ import Couverture from '../../../components/Couverture';
 import { BoxShadow } from 'react-native-shadow'
 import ActionSheet from 'react-native-general-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
-import { removeTokens } from '../../../utils/storage'
+import { removeTokens,storage } from '../../../utils/storage'
 // import {NavigationActions} from 'react-navigation'
 import configAppNavigator from '../../../rootStack'
 import axios from 'axios'
@@ -20,15 +20,19 @@ export default class Info extends Component {
       askVisible: false,
       sureVisible: false,
       sex: '选择性别',
-      nickname: '周大大',
-      uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg',
-      user_id:''
+      nickname: '',
+      uri: '',
+      user_id:'',
+      info:{}
     };
   }
   async componentDidMount() {
-    storage.getBatchData([
+    let self = this
+    await storage.getBatchData([
       { key: 'userId', syncInBackground: false },
+      { key: 'Info', syncInBackground: false },
     ]).then(results => {
+      console.log(results[0].user_id)
       self.setState({
         user_id: results[0].user_id,
       })
@@ -39,11 +43,11 @@ export default class Info extends Component {
       method: 'post',
       data: { user_id: this.state.user_id }
     }).then(res => {
-      // console.log(res)
+      console.log(res)
       this.setState({
         sex: res.data.result.user_sex == 1 ? '男' : '女',
         nickname: res.data.result.user_name,
-        // url:res.data.result.user_file
+        uri:res.data.result.user_file
       })
     })
   }
@@ -323,6 +327,7 @@ export default class Info extends Component {
                     onPress={() => {
                       this.setState({ askVisible: false, sureVisible: true })
                       removeTokens()
+                      configAppNavigator(false)
                       this.loginOut()
                     }}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}
@@ -360,7 +365,7 @@ export default class Info extends Component {
                   <TouchableHighlight
                     onPress={() => {
                       this.setState({ sureVisible: false })
-                      configAppNavigator(false)
+                      navigation.navigate('Login')
                       // navigation.reset([NavigationActions.navigate({ routeName: 'login' })], 0);
                     }}
                     style={{ height: px(80), justifyContent: 'center', alignItems: 'center', flex: 1 }}

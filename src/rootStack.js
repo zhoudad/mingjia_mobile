@@ -174,7 +174,7 @@ const MainStack = createStackNavigator({
       header: null
     }
   },
-  Main: {
+  Home: {
     screen: TabNav,
     navigationOptions: {
       header: null
@@ -861,7 +861,7 @@ const MainStack = createStackNavigator({
   }
 
 }, {
-  initialRouteName: 'Main',
+  initialRouteName: 'Home',
 });
 export default function configAppNavigator(isLoggedIn) {
   return createAppContainer(createSwitchNavigator(

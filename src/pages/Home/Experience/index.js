@@ -10,6 +10,7 @@ export default class Experience extends Component {
   }
 
   render() {
+    let {navigation} = this.props
     return (
       <ScrollView style={{ paddingHorizontal: px(30) }}>
         <View>
@@ -18,10 +19,12 @@ export default class Experience extends Component {
             imageStyle={{ borderRadius: px(10) }}
             source={require('../../../assets/images/panda.jpg')}
             style={{ width: px(690), height: px(388), justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              source={require('../../../assets/images/3d_play1.png')}
-              style={{ width: px(102), height: px(102), }}
-            />
+              <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('P_tD')}>
+              <Image
+                source={require('../../../assets/images/3d_play1.png')}
+                style={{ width: px(102), height: px(102), }}
+              />
+              </TouchableOpacity>
           </ImageBackground>
         </View>
         <View style={{ marginTop: px(50),marginBottom:px(10) }}>
