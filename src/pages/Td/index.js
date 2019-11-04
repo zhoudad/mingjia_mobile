@@ -9,6 +9,7 @@ import CustomTabBar from '../../components/CustomTabBar'
 import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import PropertyPage from './PropertyPage'
 import HousetypePage from './HousetypePage'
+import pcas from '../../components/pcas.json'
 // import ActionBar from '../../components/ActionBar'
 import Couverture from '../../components/Couverture'
 const { width, height } = Dimensions.get('window');
@@ -308,6 +309,7 @@ export default class Td extends Component {
 
   render() {
     const { navigation } = this.props
+    console.log(pcas)
     return (
       <View style={{ flex: 1, }}>
         <View style={{ position: 'absolute', top: px(190), left: 0, width, height: height - px(190), zIndex: 1 }}>
@@ -327,12 +329,12 @@ export default class Td extends Component {
             </View>
           </ScrollableTabView>
         </View>
-        <Couverture
+        {/* <Couverture
           isShow={this.state.isCouver}
           onPress={() => this._closePanel()}
           opacity={this.state.rotationAnim}
           zIndex={25}
-        />
+        /> */}
         {this._renderActivityPanel()}
         <View style={{ height: px(100), width, position: 'absolute', top: 0, left: 0, zIndex: 100 }}>
           <View style={styles.header}>
@@ -343,7 +345,7 @@ export default class Td extends Component {
                 source={require('../../assets/images/search_icon.png')} />
               <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.replace('Owner')}>
+            <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Owner')}>
               <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
                 <Image
                   style={{ width: px(40), height: px(40) }}

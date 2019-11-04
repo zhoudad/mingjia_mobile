@@ -197,7 +197,7 @@ export default class Home extends Component {
               />
               <Text style={{ color: '#333333', fontSize: px(24) }}>房贷计算</Text>
             </TouchableOpacity> */}
-            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={{ width: px(128), alignItems: 'center' }} activeOpacity={1} onPress={() => navigation.navigate('Owner')}>
               <Image
                 style={{ width: px(128), height: px(128) }}
                 source={require('../../assets/images/home_yezhu.png')}

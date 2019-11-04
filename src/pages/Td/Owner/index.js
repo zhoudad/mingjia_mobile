@@ -240,18 +240,18 @@ export default class Owner extends Component {
       <View style={{ flex: 1 }}>
         <View style={styles.header}>
           <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32), fontFamily: 'PingFang-SC-Medium' }}>新房</Text>
-          <TouchableOpacity style={styles.search} activeOpacity={1}>
+          {/* <TouchableOpacity style={styles.search} activeOpacity={1}>
             <Image
               style={{ width: px(22), height: px(22) }}
               source={require('../../../assets/images/search_icon.png')} />
             <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity activeOpacity={0.9} onPress = {() => navigation.replace('Main')}>
             <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
               <Image
                 style={{ width: px(40), height: px(40) }}
                 source={require('../../../assets/images/nav_horizontal.png')} />
-              <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32), fontFamily: 'PingFang-SC-Medium', fontWeight: '500' }}>业主</Text>
+              {/* <Text style={{ paddingStart: 8, color: '#303133', fontSize: px(32), fontFamily: 'PingFang-SC-Medium', fontWeight: '500' }}></Text> */}
             </View>
           </TouchableOpacity>
         </View>
