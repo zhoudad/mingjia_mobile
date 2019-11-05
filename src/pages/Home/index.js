@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, Image, ImageBackground, TouchableOpacity, TextInput,
-  ToastAndroid
+  ToastAndroid,StatusBar
 } from 'react-native';
 import { unitWidth, width } from '../../AdapterUtil'
 import px from '../../utils/px'
@@ -9,6 +9,7 @@ import Swiper from 'react-native-swiper';
 import axios from 'axios'
 import { storage } from '../../utils/storage'
 import TipicTag from '../../components/TipicTag'
+import Geolocation from '@react-native-community/geolocation';
 
 export default class Home extends Component {
   static navigationOptions = {
@@ -33,11 +34,15 @@ export default class Home extends Component {
       account_id: '',
       houses: [],
       comments: [],
-      user_id: ''
+      user_id: '',
+      key: '0b86bb00dfc1b69be7e033b1bef0e762',
+      currentLongitude: '',
+      currentLatitude: '',
     };
   }
   async componentDidMount() {
     let self = this
+    this.getPositions()
     await storage.getBatchData([
       { key: 'userId', syncInBackground: false },
       { key: 'accountId', syncInBackground: false },
@@ -49,7 +54,6 @@ export default class Home extends Component {
     })
     axios.all([this.getSlide(), this.getComment(), this.getHouse()])
       .then(axios.spread(function (slides, comments, houses) {
-        console.log(slides.data.result)
         self.setState({
           slides: slides.data.result,
           comments: comments.data.result.length > 2 ? comments.data.result.slice(0, 2) : comments.data.result,
@@ -57,6 +61,64 @@ export default class Home extends Component {
         })
         // console.log(comments)
       }))
+  }
+  getPositions = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        location => {
+          // console.log(location.coords.longitude)
+          this.setState({
+            currentLongitude: location.coords.longitude,//经度
+            currentLatitude: location.coords.latitude,//纬度
+          });
+          fetch('http://restapi.amap.com/v3/geocode/regeo?key=' + this.state.key + '&location=' + this.state.currentLongitude + ',' + this.state.currentLatitude + '&radius=1000&extensions=all&batch=false&roadlevel=0', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: ``
+          })
+            .then((response) => response.json())
+            .then((jsonData) => {
+              // console.log(jsonData)
+              // console.log(jsonData.regeocode.addressComponent.city.substring(0,2))
+              try {
+                this.setState({
+                  city: jsonData.regeocode.addressComponent.city.substring(0,2),
+                });
+                storage.save({
+                  key:'local',
+                  data:{
+                    province:jsonData.regeocode.addressComponent.province,
+                    areas:jsonData.regeocode.addressComponent.province
+                  }
+                })
+              } catch (e) {
+                console.log(e)
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        },
+        error => {
+          reject(error);
+          if (error.code == 2) {
+            ToastAndroid.show('定位失败，请查看手机是否开启GPS定位服务', ToastAndroid.SHORT);
+          } else if (error.code == 3) {
+            ToastAndroid.show("定位超时，请尝试重新获取定位", ToastAndroid.SHORT);
+          } else {
+            ToastAndroid.show("定位失败：" + error.message, ToastAndroid.SHORT);
+          }
+        }, {
+          enableHighAccuracy: false,
+          timeout: 5000,
+          maximumAge: 10000
+        }
+      );
+
+    })
+
   }
 
   getSlide() {
@@ -139,6 +201,7 @@ export default class Home extends Component {
     const { navigation } = this.props
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         <View style={styles.search}>
           <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Local', { getCity: this.getCity })}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
@@ -148,15 +211,14 @@ export default class Home extends Component {
                 source={require('../../assets/images/home_arrow_down.png')} />
             </View>
           </TouchableOpacity>
-          <View style={styles.searchBox}>
+          <TouchableOpacity style={styles.searchBox} activeOpacity={1} onPress={() => navigation.navigate('Search')}>
             <Image
               style={{ width: px(40), height: px(40), marginHorizontal: px(10) }}
               source={require('../../assets/images/search_icon.png')} />
             <Text style={{ color: '#909399', fontSize: px(28) }}
-              onPress={() => navigation.navigate('Search')}
             >请输入楼盘、户型、地址名称</Text>
             {/* <TextInput style={{ flex: 1, color: '#909399', fontSize: px(28), padding: 0 }} placeholder={"请输入楼盘、户型、地址名称"}></TextInput> */}
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={{ paddingHorizontal: px(30), height: px(350), }}>
 

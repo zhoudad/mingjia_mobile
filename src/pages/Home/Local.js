@@ -17,24 +17,25 @@ export default class Local extends Component {
 
   componentDidMount() {
     var that = this;
-    if (Platform.OS === 'ios') {
-      this.getPositions();
-    } else {
-      async function requestLocationPermission() {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            that.getPositions();
-          } else {
-            alert("没有权限");
-          }
-        } catch (err) {
-          alert("err", err);
-        }
-      }
-      requestLocationPermission();
-    }
+    this.getPositions();
+    // if (Platform.OS === 'ios') {
+    //   this.getPositions();
+    // } else {
+    //   async function requestLocationPermission() {
+    //     try {
+    //       const granted = await PermissionsAndroid.request(
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+    //       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //         that.getPositions();
+    //       } else {
+    //         alert("没有权限");
+    //       }
+    //     } catch (err) {
+    //       alert("err", err);
+    //     }
+    //   }
+    //   requestLocationPermission();
+    // }
   }
   goBack = () => {
     console.log('back')
@@ -72,7 +73,7 @@ export default class Local extends Component {
                   position: jsonData.regeocode.addressComponent.city.substring(0,2),
                 });
               } catch (e) {
-
+                console.log(e)
               }
             })
             .catch((error) => {

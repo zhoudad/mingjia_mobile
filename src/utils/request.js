@@ -8,7 +8,6 @@ const DEFAULT_HEADERS = {
 };
 
 /**
- * 请求 API 接口
  *
  * @param {Object} options
  * @param {string} options.url - 接口地址
@@ -46,30 +45,30 @@ export default function request({ url, method, headers, params, data, access_tok
   });
 }
 
-export function requestWithToken(options) {
-  return storage.load({
-    key: 'accessToken',
-    syncInBackground: false
-  }).then(result => request({ ...options, access_token: result }));
-}
+// export function requestWithToken(options) {
+//   return storage.load({
+//     key: 'accessToken',
+//     syncInBackground: false
+//   }).then(result => request({ ...options, access_token: result }));
+// }
 
-export function refreshToken() {
-  console.log('Refresh token...');
-  return storage.load({
-    key: 'refreshToken'
-  }).then(result => {
-    return request({
-      method: 'GET',
-      url: '/refresh_token',
-      params: {
-        refresh_token: result
-      }
-    }).then(({ data }) => {
-      saveToken(data);
-      return data;
-    });
-  });
-}
+// export function refreshToken() {
+//   console.log('Refresh token...');
+//   return storage.load({
+//     key: 'refreshToken'
+//   }).then(result => {
+//     return request({
+//       method: 'GET',
+//       url: '/refresh_token',
+//       params: {
+//         refresh_token: result
+//       }
+//     }).then(({ data }) => {
+//       saveToken(data);
+//       return data;
+//     });
+//   });
+// }
 
 /**
  * 请求参数序列化

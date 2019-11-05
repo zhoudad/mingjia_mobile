@@ -37,6 +37,13 @@ class App extends Component {
     const AppNavigator = configAppNavigator(isLoggedIn);
     return (
       <View style={styles.container}>
+         <StatusBar
+          animated={true}
+          hidden={false}
+          backgroundColor='#FFF'
+          translucent={true}
+          barStyle='dark-content'
+        />
         <AppNavigator />
       </View>
     )
@@ -46,8 +53,9 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     // height,
-    // paddingTop,
-    flex: 1
+    paddingTop,
+    flex: 1,
+    backgroundColor:"#FFF"
   }
 });
 

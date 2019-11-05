@@ -9,6 +9,7 @@ import px from '../../../utils/px'
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Communications from 'react-native-communications';
 import TipicTag from '../../../components/TipicTag'
+import { storage } from '../../../utils/storage'
 
 export default class Owner extends Component {
   constructor(props) {
@@ -20,11 +21,27 @@ export default class Owner extends Component {
       cont: '',
       progressNum: '',
       timer: '',
-      beginDown: false
+      beginDown: false,
+      drawings: []
     };
   }
 
+  async componentDidMount() {
+    let self = this
+    await storage.load(
+      { key: 'drawings', syncInBackground: false },
+    ).then(results => {
+      console.log(results)
+      self.setState({
+        drawings: results.drawings
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
   downloadFile() {
+    console.log(111)
+    let self = this
     // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
 
     // 图片
@@ -65,8 +82,6 @@ export default class Owner extends Component {
       },
       progress: (res) => {
         let pro = res.bytesWritten / res.contentLength;
-        // if()
-        console.log(res, pro)
         this.setState({
           progressNum: pro,
         });
@@ -80,8 +95,15 @@ export default class Owner extends Component {
         // 例如保存图片
         CameraRoll.saveToCameraRoll('file://' + downloadDest)
           .then((res) => {
-            console.log(res)
-            // console.log('图片已保存到相册')
+            let newDrawings = []
+            newDrawings.push('file://' + downloadDest)
+            storage.save({
+              key: 'drawings',
+              data: {
+                drawings: [...newDrawings, ...self.state.drawings]
+              }
+            })
+            console.log('图片已保存到相册')
           }).catch(() => {
             // console.log('图片保存失败')
           })
@@ -225,7 +247,7 @@ export default class Owner extends Component {
     )
   }
   render() {
-    const {navigation} =  this.props
+    const { navigation } = this.props
     const shadowOpt = {
       height: px(100),
       width: px(750),
@@ -246,7 +268,7 @@ export default class Owner extends Component {
               source={require('../../../assets/images/search_icon.png')} />
             <Text style={{ paddingStart: 8, color: "#606466", fontSize: px(24) }}>搜索你想要的内容</Text>
           </TouchableOpacity> */}
-          <TouchableOpacity activeOpacity={0.9} onPress = {() => navigation.replace('Main')}>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.replace('Home')}>
             <View style={{ flexDirection: 'row', paddingStart: 12, alignItems: 'center' }}>
               <Image
                 style={{ width: px(40), height: px(40) }}
@@ -263,10 +285,10 @@ export default class Owner extends Component {
             activeColor={"#303133"}
             inactiveColor={"#A8ABB3"}
           />)}>
-          <View tabLabel='楼盘' style={{ flex: 1, backgroundColor: '#fff',paddingHorizontal:px(30), }}>
+          <View tabLabel='楼盘' style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: px(30), }}>
             {this._renderItem_P()}
           </View>
-          <View tabLabel='户型' style={{ flex: 1, backgroundColor: '#fff',paddingHorizontal:px(30), }}>
+          <View tabLabel='户型' style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: px(30), }}>
             {this._renderItem_H()}
           </View>
         </ScrollableTabView>

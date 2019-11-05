@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {
   View, Text, ScrollView, StyleSheet, Image, ImageBackground,
-  TouchableOpacity, TextInput, Dimensions, StatusBar, Modal,ToastAndroid,
+  TouchableOpacity, TextInput, Dimensions, StatusBar, Modal, ToastAndroid,
   NativeModules, Alert
 } from 'react-native';
 import TipicTag from '../../../components/TipicTag'
@@ -39,33 +39,51 @@ export default class BasicInfo extends Component {
       videoWidth: width,
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
     this.getdata()
     this.addFoot()
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false, autoSync: false, },
+      { key: 'accountId', syncInBackground: false, autoSync: false, },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        acccount_id: results[1].acccount_id
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   }
   addAttention() {
     const id = this.props.navigation.state.params.id
-    this.setState({ isAttention: true })
-    axios({
-      method: 'post',
-      url: `http://218.108.34.222:8080/attention`,
-      data: {
-        account_id: 2,
-        user_id: 2,
-        houses_id: id
+    this.setState({ isAttention: !this.state.isAttention }, () => {
+      if (this.state.isAttention){
+        axios({
+          method: 'post',
+          url: `http://218.108.34.222:8080/attention`,
+          data: {
+            account_id: 2,
+            user_id: 2,
+            houses_id: id
+          }
+        }).then(res => {
+          this.setState({
+            images: [],
+            commentTxt: ''
+          })
+          console.log(res)
+        }).catch(err => {
+          this.setState({ isAttention: false })
+        })
+      }else{
+        
       }
-    }).then(res => {
-      this.setState({
-        images:[],
-        commentTxt:''
-      })
-      console.log(res)
-    }).catch(err => {
-      this.setState({ isAttention: false })
     })
+
   }
   publicRev() {
-    let {images} = this.state
+    let { images } = this.state
     let formData = new FormData();
     for (var i = 0; i < this.state.images.length; i++) {
       let ary = images[i].path.split('/');
@@ -80,8 +98,8 @@ export default class BasicInfo extends Component {
     }).then(res => {
       this.refs.text.clear();
       this.setState({
-        images:[],
-        commentTxt:''
+        images: [],
+        commentTxt: ''
       })
       console.log(res)
     })
@@ -553,7 +571,7 @@ export default class BasicInfo extends Component {
                         </View>
                         <View style={{ height: px(480), backgroundColor: '#F7F9FB', paddingHorizontal: px(30), paddingVertical: px(40) }}>
                           <TextInput
-                          ref={'text'}
+                            ref={'text'}
                             onChangeText={(t) => this.setState({ commentTxt: t })}
                             style={{ flex: 1, padding: 0, textAlignVertical: 'top', lineHeight: px(40), fontSize: px(24) }}
                             maxLength={100}

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import { unitWidth, width } from '../AdapterUtil'
 import px from '../utils/px'
 
 export default class TipicTag extends Component {

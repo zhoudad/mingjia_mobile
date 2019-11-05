@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, Dimensions, ScrollView } from 'react-native';
-import storage from '../../../utils/storage'
+import {storage} from '../../../utils/storage'
 import axios from 'axios'
 import CommentItem from './CommentItem'
 import px from '../../../utils/px'
@@ -37,25 +37,23 @@ export default class Comment extends Component {
     axios({
       url: 'http://218.108.34.222:8080/comment?account_id=' + this.state.account_id,
     }).then((res) => {
+      console.log(res)
       this.setState({
         CommentList: res.data.result
       })
-      this.state.CommentList.forEach((item,index) => {
-        console.log(item)
-        axios({
-          url:'http://218.108.34.222:8080/user_img',
-          method:'post',
-          data:{user_id:item.user_id}
-        }).then(res =>{
-          console.log(res)
-          this.setState({
-            // CommentList[index]:[...this.state.CommentList]
-          })
-          // res.data.result.img,
-          // res.data.result.name,
-
-        })
-      })
+      // this.state.CommentList.forEach((item,index) => {
+      //   axios({
+      //     url:'http://218.108.34.222:8080/user_img',
+      //     method:'post',
+      //     data:{user_id:item.user_id}
+      //   }).then(res =>{
+      //     console.log(res)
+      //     this.setState({
+      //     })
+      //   })
+      // })
+    }).catch(err => {
+      console.log(err)
     })
   }
 

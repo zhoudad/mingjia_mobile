@@ -30,9 +30,8 @@ export default class Info extends Component {
     let self = this
     await storage.getBatchData([
       { key: 'userId', syncInBackground: false },
-      { key: 'Info', syncInBackground: false },
     ]).then(results => {
-      console.log(results[0].user_id)
+      console.log(results)
       self.setState({
         user_id: results[0].user_id,
       })

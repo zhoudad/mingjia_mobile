@@ -9,15 +9,23 @@ import CustomTabBar from '../../components/CustomTabBar'
 import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import PropertyPage from './PropertyPage'
 import HousetypePage from './HousetypePage'
-import pcas from '../../components/pcas.json'
+// import cities from '../../components/cities.json'
+import areas from '../../components/areas.json'
+// import pcas from '../../components/pcas.json'
+import streets from '../../components/streets.json'
 // import ActionBar from '../../components/ActionBar'
 import Couverture from '../../components/Couverture'
 const { width, height } = Dimensions.get('window');
+const newAreas = areas.filter(item => {
+  return item.parent_code.includes('3301')
+})
+const newStreets = streets.filter(item => {
+  return item.parent_code.includes('330102')
+})
 const data = [
-  [["区域"], ["第一项目", "第一项目", "第一项目", "第二项目", "第二项目", "第二项目", "第二项目", "第二项目", "第二项目"]],
+  [["区域"], newAreas, newStreets],
   [["单价"], ["1万以下", "1-1.5万", "1.5-2万", "2-3万", "3-5万", "5万以上"]],
   [["不限", "一室", "两室", "三室", "四室", "五室", "六室", "七室", "八室", "九室"]],
-
 ]
 export default class Td extends Component {
   static navigationOptions = {
@@ -32,12 +40,20 @@ export default class Td extends Component {
         <Image style={{ width: px(56), height: px(56) }} source={require('../../assets/images/3d_play_s.png')} />
       );
     },
+    tabBarOnPress: (event) => {
+      event.defaultHandler();
+      // console.log(event);
+    },
   };
 
   constructor(props) {
     var selectIndex = new Array(data.length);
     for (var i = 0; i < data.length; i++) {
-      selectIndex[i] = 0;
+      if (i == 0) {
+        selectIndex[i] = [0, 0]
+      } else {
+        selectIndex[i] = 0;
+      }
     }
     super(props);
     this.state = {
@@ -49,6 +65,8 @@ export default class Td extends Component {
       selectIndex: selectIndex,
       isCouver: false,
       sortIndex: 0,
+      sortIndex_C: 0,
+      selectSortIndex: 0,
       sortArr: [
         {
           title: '默认排序',
@@ -61,15 +79,37 @@ export default class Td extends Component {
           data: ['未来一个月', '未来三个月', '未来半年', '过去一个月', '过去三个月']
         }
       ],
-      dataArr: ['默认排序'],
+      // dataArr: ['默认排序'],
       rotationAnim: new Animated.Value(0),
       DownArrowArr: data.map(() => new Animated.Value(0)),
-      titleArr: ['区域', '单价', '户型']
+      titleArr: ['区域', '单价', '户型'],
+      city: '3301',
+      areas: '330102',
+      data: data,
     };
   }
 
+  componentDidMount() {
+    this.changeData()
+  }
+  changeData() {
+    const newAreas = areas.filter(item => {
+      return item.parent_code.includes(this.state.city)
+    })
+    const newStreets = streets.filter(item => {
+      return item.parent_code.includes(this.state.areas)
+    })
+    this.setState({
+      data: [
+        [["区域"], newAreas, newStreets],
+        [["单价"], ["1万以下", "1-1.5万", "1.5-2万", "2-3万", "3-5万", "5万以上"]],
+        [["不限", "一室", "两室", "三室", "四室", "五室", "六室", "七室", "八室", "九室"]],
+      ]
+    })
+  }
+
   split(data) {
-    return data.length > 6 ? data.substring(0, 6) + '...' : data
+    return data.length > 3 ? data.substring(0, 3) + '...' : data
   }
 
   sort() {
@@ -104,37 +144,72 @@ export default class Td extends Component {
       />
     );
   }
-  _itemOnPress(index) {
+  _itemOnPress(item, index, i) {
     var { selectIndex, titleArr, activityIndex } = this.state;
     if (activityIndex > -1) {
-      selectIndex[activityIndex] = index;
-      titleArr[activityIndex] = data[activityIndex].length > 1 ? data[activityIndex][1][index] : data[activityIndex][0][index]
+      if (activityIndex == 0) {
+        selectIndex[activityIndex][i] = index;
+        titleArr[activityIndex] = item.name ? item.name : item
+        if (i == 1) {
+          selectIndex[activityIndex][2] = 0
+          this.setState({
+            city: item.parent_code,
+            areas: item.code
+          }, () => this.changeData())
+        }
+
+      } else {
+        selectIndex[activityIndex] = index;
+        titleArr[activityIndex] = item.name ? item.name : item
+      }
       this.setState({ selectIndex, titleArr });
     }
-    this._openOrClosePanel(this.state.activityIndex);
+    if (activityIndex == 2) {
+      this._openOrClosePanel(this.state.activityIndex);
+    }
   }
-  _renderChcek(title, index) {
-    var activityIndex = this.state.activityIndex;
-    if (this.state.selectIndex[activityIndex] == index) {
-      return (
-        <View style={styles.Check} >
-          <Text style={{ color: '#303133', fontSize: px(28) }}>{title}</Text>
-          <Image
-            source={require('../../assets/images/nav_right1.png')}
-            style={{ width: px(24), height: px(16), }}
-          />
-        </View>
-      );
+  _renderChcek(item, index, i) {
+    let { activityIndex, selectIndex } = this.state;
+    if (selectIndex[activityIndex].length > 1) {
+      if (selectIndex[activityIndex][i] == index) {
+        return (
+          <View style={styles.Check} >
+            <Text style={{ color: '#303133', fontSize: px(28) }}>{item.name ? item.name : item}</Text>
+            <Image
+              source={require('../../assets/images/nav_right1.png')}
+              style={{ width: px(24), height: px(16), }}
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View style={styles.Check} >
+            <Text style={{ color: '#303133', fontSize: px(28) }} >{item.name ? item.name : item} </Text>
+          </View>
+        );
+      }
     } else {
-      return (
-        <View style={styles.Check} >
-          <Text style={{ color: '#303133', fontSize: px(28) }} >{title} </Text>
-        </View>
-      );
+      if (selectIndex[activityIndex] == index) {
+        return (
+          <View style={styles.Check} >
+            <Text style={{ color: '#303133', fontSize: px(28) }}>{item.name ? item.name : item}</Text>
+            <Image
+              source={require('../../assets/images/nav_right1.png')}
+              style={{ width: px(24), height: px(16), }}
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View style={styles.Check} >
+            <Text style={{ color: '#303133', fontSize: px(28) }} >{item.name ? item.name : item} </Text>
+          </View>
+        );
+      }
     }
   }
   _renderActivityPanel() {
-    const { rotationAnim, maxHeight } = this.state;
+    const { rotationAnim, maxHeight, data } = this.state;
     return (
       <Animated.View
         style={[styles.ActivityPanel, {
@@ -142,44 +217,46 @@ export default class Td extends Component {
             {
               translateY: rotationAnim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, maxHeight + px(200)]
+                outputRange: [0, maxHeight + px(179)]
               })
             },
-          ]
+          ],
+          height: maxHeight
         }]}
       >
-        <View style={{ height: maxHeight, flexDirection: 'row', }}>
+        <View style={{ height: maxHeight - px(90), flexDirection: 'row', }}>
           {
             data[this.state.activityIndex] ?
-              data[this.state.activityIndex].length > 1 ? data[this.state.activityIndex].map((arr, i) => {
-                if (i == 0) {
-                  return (
-                    <View style={{ flex: 1 }} key={i}>
-                      <TouchableOpacity style={{ height: px(90), backgroundColor: '#F7F7F7', justifyContent: 'center', paddingLeft: px(30) }}>
-                        <Text style={{ fontSize: px(28), color: '#303133' }}>{arr[0]}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )
-                } else {
-                  return (
-                    <View style={{ flex: 1 }} key={i}>
-                      <ScrollView
-                        contentContainerStyle={{ borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}
-                        showsVerticalScrollIndicator={false}>
-                        {arr ? arr.map((item, index) => (
-                          <Touchable
-                            key={index}
-                            style={{ flex: 1, height: px(90) }}
-                            onPress={() => this._itemOnPress(index)}
-                          >
-                            {this._renderChcek(item, index)}
-                          </Touchable>
-                        )) : null}
-                      </ScrollView>
-                    </View>
-                  )
-                }
-              })
+              data[this.state.activityIndex].length > 1 ?
+                data[this.state.activityIndex].map((arr, i) => {
+                  if (i == 0) {
+                    return (
+                      <View style={{ flex: 1 }} key={i}>
+                        <TouchableOpacity style={{ height: px(90), backgroundColor: '#F7F7F7', justifyContent: 'center', paddingLeft: px(30) }}>
+                          <Text style={{ fontSize: px(28), color: '#303133' }}>{arr[0]}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )
+                  } else {
+                    return (
+                      <View style={{ flex: 1 }} key={i}>
+                        <ScrollView
+                          contentContainerStyle={{ borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}
+                          showsVerticalScrollIndicator={false}>
+                          {arr ? arr.map((item, index) => (
+                            <Touchable
+                              key={index}
+                              style={{ flex: 1, height: px(90) }}
+                              onPress={() => this._itemOnPress(item, index, i)}
+                            >
+                              {this._renderChcek(item, index, i)}
+                            </Touchable>
+                          )) : null}
+                        </ScrollView>
+                      </View>
+                    )
+                  }
+                })
                 : <View style={{ flex: 1 }}>
                   <ScrollView
                     contentContainerStyle={{ borderLeftWidth: px(1), borderLeftColor: '#E6E9F0' }}
@@ -188,7 +265,7 @@ export default class Td extends Component {
                       <Touchable
                         key={index}
                         style={{ flex: 1, height: px(90) }}
-                        onPress={() => this._itemOnPress(index)}
+                        onPress={() => this._itemOnPress(item, index, 0)}
                       >
                         {this._renderChcek(item, index)}
                       </Touchable>
@@ -196,7 +273,6 @@ export default class Td extends Component {
                   </ScrollView>
                 </View>
               : <View style={{ flex: 1, flexDirection: 'row' }}>
-
                 <View style={{ width: px(410) }}>
                   {
                     this.state.sortArr.map((item, index) => {
@@ -205,7 +281,10 @@ export default class Td extends Component {
                           key={index}
                           activeOpacity={1}
                           onPress={() => this.setState({ sortIndex: index })}
-                          style={{ height: px(90), paddingLeft: px(30), justifyContent: 'center', borderBottomColor: '#EEE', borderBottomWidth: px(1) }}>
+                          style={{
+                            height: px(90), paddingLeft: px(30), justifyContent: 'center',
+                            borderBottomColor: '#EEE', borderBottomWidth: px(1), backgroundColor: this.state.sortIndex == index ? '#F7F7F7' : '#FFF'
+                          }}>
                           <Text style={{ color: '#303133', fontSize: px(28) }}>{item.title}</Text>
                         </TouchableOpacity>
                       )
@@ -217,9 +296,20 @@ export default class Td extends Component {
                     {
                       this.state.sortArr[this.state.sortIndex].data.map((item, index) => {
                         return (
-                          <View style={styles.Check} key={index}>
+                          <TouchableOpacity
+                            onPress={() => this.setState({ sortIndex_C: index, selectSortIndex: this.state.sortIndex })}
+                            key={index}
+                            activeOpacity={1}
+                            style={styles.Check} key={index}>
                             <Text style={{ color: '#303133', fontSize: px(28) }} >{item} </Text>
-                          </View>
+                            {
+                              this.state.sortIndex_C == index && this.state.selectSortIndex == this.state.sortIndex ?
+                                <Image
+                                  source={require('../../assets/images/nav_right1.png')}
+                                  style={{ width: px(24), height: px(16), }}
+                                /> : null
+                            }
+                          </TouchableOpacity>
                         )
                       })
                     }
@@ -228,18 +318,33 @@ export default class Td extends Component {
               </View>
           }
         </View>
-        <View style={{ height: px(90), flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAFAFA', height: px(90) }}
-            activeOpacity={1}>
-            <Text style={{ fontSize: px(30), color: '#999999' }}>重置</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EA4C4C', height: px(90) }}
-            activeOpacity={1}>
-            <Text style={{ color: '#FFF', fontSize: px(30), }}>确定</Text>
-          </TouchableOpacity>
-        </View>
+        {
+          this.state.activityIndex == 0 ?
+            <View style={{ height: px(91), flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={() => this._openOrClosePanel(this.state.activityIndex)}
+                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAFAFA', height: px(90) }}
+                activeOpacity={1}>
+                <Text style={{ fontSize: px(30), color: '#999999' }}>重置</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this._openOrClosePanel(this.state.activityIndex)}
+                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EA4C4C', height: px(90) }}
+                activeOpacity={1}>
+                <Text style={{ color: '#FFF', fontSize: px(30), }}>确定</Text>
+              </TouchableOpacity>
+            </View>
+            : this.state.activityIndex == 1 ?
+              <View style={{ height: px(90), flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  onPress={() => this._openOrClosePanel(this.state.activityIndex)}
+                  style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#EA4C4C', height: px(90) }}
+                  activeOpacity={1}>
+                  <Text style={{ color: '#FFF', fontSize: px(30), }}>确定</Text>
+                </TouchableOpacity>
+              </View> : null
+        }
+
       </Animated.View>
     )
   }
@@ -282,7 +387,7 @@ export default class Td extends Component {
         useNativeDriver: true,
       }
     ).start();
-    this.setState({ isCouver: false })
+    this.setState({ isCouver: true })
   }
   _closePanel(index) {
     console.log('closePanel')
@@ -304,12 +409,11 @@ export default class Td extends Component {
         useNativeDriver: true
       }
     ).start();
-    this.setState({ isCouver: true })
+    this.setState({ isCouver: false })
   };
 
   render() {
     const { navigation } = this.props
-    console.log(pcas)
     return (
       <View style={{ flex: 1, }}>
         <View style={{ position: 'absolute', top: px(190), left: 0, width, height: height - px(190), zIndex: 1 }}>
@@ -329,17 +433,18 @@ export default class Td extends Component {
             </View>
           </ScrollableTabView>
         </View>
-        {/* <Couverture
+        <Couverture
           isShow={this.state.isCouver}
-          onPress={() => this._closePanel()}
-          opacity={this.state.rotationAnim}
-          zIndex={25}
-        /> */}
+          // isShow={true}
+          onPress={() => this._openOrClosePanel(this.state.activityIndex)}
+          opacity={0.5}
+          zIndex={1000}
+        />
         {this._renderActivityPanel()}
         <View style={{ height: px(100), width, position: 'absolute', top: 0, left: 0, zIndex: 100 }}>
           <View style={styles.header}>
             <Text style={{ marginRight: px(20), color: '#303133', fontSize: px(32) }}>新房</Text>
-            <TouchableOpacity style={styles.search} activeOpacity={1}>
+            <TouchableOpacity style={styles.search} activeOpacity={1} onPress={() => navigation.navigate('Search')}>
               <Image
                 style={{ width: px(22), height: px(22) }}
                 source={require('../../assets/images/search_icon.png')} />
@@ -416,30 +521,18 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 100,
     padding: px(30)
-    // elevation: 1,
   },
-  // ActivityPanel: {
-  //   position: "absolute",
-  //   top: 0,
+  // btn: {
+  //   height: px(100),
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   position: 'absolute',
+  //   width,
+  //   bottom: 120,
   //   left: 0,
-  //   right: 0,
-  //   borderBottomColor: '#E6E9F0',
-  //   borderBottomWidth: px(1),
-  //   backgroundColor: '#FFF',
-  //   zIndex: 99
+  //   zIndex:39
   // },
-  btn: {
-    height: px(100),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    width,
-    bottom: 120,
-    left: 0,
-    // zIndex:39
-  },
   ActivityPanel: {
-    height: px(500),
     position: 'absolute',
     width,
     backgroundColor: '#FFF',

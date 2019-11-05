@@ -2,14 +2,42 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import px from '../../utils/px'
 import TipicTag from '../../components/TipicTag'
+import axios from 'axios'
+import {storage} from '../../utils/storage'
 
 export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
       content: '',
-      data: [1]
+      data: [],
+      account_id:''
     };
+  }
+  componentDidMount(){
+    storage.getBatchData([
+      { key: 'accountId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        account_id: results[0].account_id,
+      })
+    })
+  }
+
+  search(){
+    axios({
+      url:'http://218.108.34.222:8080/search',
+      method:'post',
+      data:{
+        houses_name:this.state.content,
+        account_id:this.state.account_id
+      }
+    }).then(res => {
+      console.log(res)
+      this.setState({
+        data:res.data.results
+      })
+    })
   }
 
   _renderItem(data, key) {
@@ -27,13 +55,13 @@ export default class Search extends Component {
               source={require('../../assets/images/panda.jpg')} />
           </View>
           <View style={{ flex: 1, marginStart: px(30), height: px(200), }}>
-            <Text style={styles.tit}>{}</Text>
+            <Text style={styles.tit}>{data.houses_name}</Text>
             <Text style={{ fontSize: px(24), color: '#B3B3B3', marginTop: px(9), fontFamily: 'PingFang-SC-Medium' }}>
-              <Text style={{ marginRight: px(35) }}>{}</Text>
-              <Text style={{ paddingRight: px(35) }}>&emsp;{}</Text>
-              <Text style={{ paddingRight: px(35) }}>&emsp;{}㎡</Text>
+              <Text style={{ marginRight: px(35) }}>{data.houses_ssite}</Text>
+              <Text style={{ paddingRight: px(35) }}>&emsp;{data.houses_csite}</Text>
+              <Text style={{ paddingRight: px(35) }}>&emsp;{data.survey_area}㎡</Text>
             </Text>
-            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{}
+            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{data.houses_price}
             <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
             <View style={{ flexDirection: 'row', marginTop: px(8) }}>
               <TipicTag text={"在售"} isStress={true} />
@@ -64,10 +92,10 @@ export default class Search extends Component {
             placeholderTextColor={'#A8ABB3'}
             underlineColorAndroid='transparent'
             onChangeText={(content) => this.setState({ content })}
-            style={{ flex: 1, borderRadius: px(35), height: px(70), backgroundColor: '#F5F7FA', paddingLeft: px(15) }} />
+            style={{ flex: 1, borderRadius: px(35), height: px(70), backgroundColor: '#F5F7FA', paddingLeft: px(20) }} />
           <TouchableOpacity
             style={{ marginLeft: px(20) }}
-            onPress={() => console.log('')} activeOpacity={1}>
+            onPress={() => this.search()} activeOpacity={1}>
             <Image
               style={{ width: px(45), height: px(45), marginStart: px(3) }}
               source={require('../../assets/images/map_icon_1.png')}
@@ -76,11 +104,11 @@ export default class Search extends Component {
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           {
-            this.state.data.map((item, index) => {
+            this.state.data?this.state.data.map((item, index) => {
               return (
                 this._renderItem(item, index)
               )
-            })
+            }):null
           }
         </ScrollView>
       </View>
