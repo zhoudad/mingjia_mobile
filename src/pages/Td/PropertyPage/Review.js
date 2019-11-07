@@ -8,6 +8,7 @@ import ReviewItem from './ReviewItem'
 import { BoxShadow } from 'react-native-shadow'
 import axios from 'axios'
 import ImagePicker from 'react-native-image-crop-picker';
+import {storage} from '../../../utils/storage'
 
 export default class Review extends Component {
   constructor(props) {
@@ -15,16 +16,30 @@ export default class Review extends Component {
     this.state = {
       text: '',
       ReviewArr: [],
-      images: []
+      images: [],
+      user_id:'',
+      account_id:''
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getdata()
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false, autoSync: false, },
+      { key: 'accountId', syncInBackground: false, autoSync: false, },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   }
   getdata() {
     axios({
-      url: `http://218.108.34.222:8080/remark?account_id=${2}`,
+      url: `http://218.108.34.222:8080/remark?account_id=` + this.state.account_id,
     }).then(res => {
       console.log(res)
       this.setState({
@@ -81,7 +96,7 @@ export default class Review extends Component {
       formData.append(nameArr[i], file);
     }
     formData.append("content", this.state.commentTxt);
-    formData.append("user_id", 2);
+    formData.append("user_id", this.state.user_id);
     axios({
       method: 'post',
       url:'http://218.108.34.222:8080/remark_do',

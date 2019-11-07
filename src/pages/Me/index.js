@@ -31,7 +31,8 @@ export default class index extends Component {
       uri: '',
       nickname: '',
       drawings: null,
-      modalVisible: false
+      modalVisible: false,
+      
     };
   }
 
@@ -98,7 +99,9 @@ export default class index extends Component {
             }}
           >
             <View style={{ width, height, }}>
-              <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => this.setState({ modalVisible: false })}>
+              <TouchableOpacity activeOpacity={1} 
+              style={styles.goBack} 
+              onPress={() => this.setState({ modalVisible: false })}>
                 <Image style={{ width: px(48), height: px(48) }} source={require('../../assets/images/nav_icon_back2.png')} />
               </TouchableOpacity>
               <Swiper
@@ -109,8 +112,8 @@ export default class index extends Component {
                 {
                   this.state.drawings.map((item, index) => {
                     return (
-                      <View key={index} style={{ backgroundColor: 'red',width, height, }} key={index}>
-                        <Image style={{ width, height,}} source={{ uri: 'file:///data/user/0/com.mingjia/files/375.jpg' }} ></Image>
+                      <View key={index} style={{ backgroundColor: 'red',width, height, }}>
+                        <Image style={{ width, height,}} source={{ uri: item }} ></Image>
                       </View>
                     )
                   })

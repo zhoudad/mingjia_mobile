@@ -4,16 +4,34 @@ import TipicTag from '../../../components/TipicTag'
 import px from '../../../utils/px'
 import Communications from 'react-native-communications';
 import Axios from 'axios';
+import { storage } from '../../../utils/storage'
 
 export default class DetailsInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:{}
+      data:{},
+      isAttention:false,
+      account_id:'',
+      user_id:''
     };
   }
 
   componentDidMount(){
+    this.setState({
+      isAttention:this.props.navigation.state.params.isAttention
+    })
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false, autoSync: false, },
+      { key: 'accountId', syncInBackground: false, autoSync: false, },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id
+      })
+    }).catch(err => {
+      console.log(err)
+    })
     this.getdata()
   }
   getdata(){
@@ -28,6 +46,37 @@ export default class DetailsInfo extends Component {
       console.log(res)
       this.setState({data:res.data.result['0']})
     })
+  }
+  addAttention() {
+    const id = this.props.navigation.state.params.id
+    this.setState({ isAttention: !this.state.isAttention }, () => {
+      if (this.state.isAttention) {
+        axios({
+          method: 'post',
+          url: `http://218.108.34.222:8080/attention`,
+          data: {
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
+            houses_id: id
+          }
+        }).then(res => {
+          console.log(res)
+        }).catch(err => {
+          this.setState({ isAttention: false })
+        })
+      } else {
+        axios({
+          method: 'post',
+          url: `http://218.108.34.222:8080/clear_attention`,
+          data: {
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
+            houses_id: id
+          }
+        })
+      }
+    })
+
   }
 
   render() {
@@ -103,7 +152,7 @@ export default class DetailsInfo extends Component {
         </ScrollView>
         <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
           <TouchableOpacity
-          onPress={() => this.setState({isAttention:!this.state.isAttention})}
+          onPress={() => this.addAttention()}
             activeOpacity={1}
             style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <Image

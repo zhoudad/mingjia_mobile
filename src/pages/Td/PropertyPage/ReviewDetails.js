@@ -3,6 +3,7 @@ import { View, Text, TouchableHighlight, TextInput, ScrollView, StyleSheet, Imag
 import px from '../../../utils/px'
 import IntervalTime from '../../../utils/IntervalTime'
 import Axios from 'axios';
+import { storage } from '../../../utils/storage'
 
 class DetailsItem extends Component {
   constructor(props) {
@@ -38,6 +39,17 @@ export default class ReviewDetails extends Component {
       text: '',
       nolike: false
     };
+  }
+
+  componentDidMount() {
+    let self = this
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+      })
+    })
   }
   PublishComment(){
     let { data } = this.props.navigation.state.params;
@@ -75,6 +87,31 @@ export default class ReviewDetails extends Component {
         </TouchableOpacity>
       </View>
     )
+  }
+  toLike() {
+    const { com_id, } = this.props.data
+    this.setState({ nolike: !this.state.nolike }, () => {
+      if (this.state.nolike) {
+        axios({
+          url: 'http://218.108.34.222:8080/remark_like',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/remark_nolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
   }
   render() {
     let { data } = this.props.navigation.state.params;

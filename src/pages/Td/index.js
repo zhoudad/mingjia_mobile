@@ -320,7 +320,7 @@ export default class Td extends Component {
         </View>
         {
           this.state.activityIndex == 0 ?
-            <View style={{ height: px(91), flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ height: px(90), flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity
                 onPress={() => this._openOrClosePanel(this.state.activityIndex)}
                 style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAFAFA', height: px(90) }}

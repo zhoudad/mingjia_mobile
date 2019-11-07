@@ -10,6 +10,7 @@ import Communications from 'react-native-communications';
 import ImagePicker from 'react-native-image-crop-picker';
 import { BoxShadow } from 'react-native-shadow'
 import Video from 'react-native-video';
+import {storage} from '../../../utils/storage'
 const { height, width } = Dimensions.get('window')
 
 export default class H_BasicInfo extends Component {
@@ -31,7 +32,7 @@ export default class H_BasicInfo extends Component {
       commentTxt: '',
       images: [],
       user_id: '',
-      acccount_id: ''
+      account_id: ''
     };
   }
   async componentDidMount() {
@@ -42,7 +43,7 @@ export default class H_BasicInfo extends Component {
     ]).then(results => {
       self.setState({
         user_id: results[0].user_id,
-        acccount_id: results[1].acccount_id
+        account_id: results[1].account_id
       })
     }).catch(err => {
       console.log(err)
@@ -50,16 +51,18 @@ export default class H_BasicInfo extends Component {
   }
   publicRev() {
     let { images } = this.state
+    let nameArr=['com_ffile','com_cfile','com_lfile']
     let formData = new FormData();
     for (var i = 0; i < images.length; i++) {
       let ary = images[i].path.split('/');
       let file = { uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1] };
-      formData.append("files", file);
+      formData.append(nameArr[i], file);
     }
-    formData.append("commentTxt", this.state.commentTxt);
+    formData.append("content", this.state.commentTxt);
+    formData.append("user_id", this.state.user_id);
     axios({
       method: 'post',
-      url: ``,
+      url: `http://218.108.34.222:8080/remark_do`,
       data: formData
     }).then(res => {
       console.log(res)
@@ -240,21 +243,25 @@ export default class H_BasicInfo extends Component {
           method: 'post',
           url: `http://218.108.34.222:8080/attention`,
           data: {
-            account_id: 2,
-            user_id: 2,
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
             houses_id: id
           }
         }).then(res => {
-          this.setState({
-            images: [],
-            commentTxt: ''
-          })
           console.log(res)
         }).catch(err => {
           this.setState({ isAttention: false })
         })
       } else {
-
+        axios({
+          method: 'post',
+          url: `http://218.108.34.222:8080/clear_attention`,
+          data: {
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
+            houses_id: id
+          }
+        })
       }
     })
 
@@ -278,20 +285,13 @@ export default class H_BasicInfo extends Component {
               onIndexChanged={(index) => this.setState({ headerIndex: index })}
               index={0}>
               <View style={[{ height: px(422), borderRadius: px(10) },]}>
-                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })}>
-                  {
-                    this.state.paused ?
-                      <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
-                        <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
-                      </TouchableOpacity>
-                      : null
-                  }
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })} style={{flex:1}}>
+                  
                   <Video
                     playInBackground={false}
                     ref={ref => this.player = ref}
-                    // poster={'https://baconmockup.com/300/200/'}
-                    // source={require('../../../assets/test.mp4')}
-                    source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
+                    poster={'http://p1.music.126.net/fffxmDCc9rzgZ4s0u3J2Xg==/109951163572705897.jpg'}
+                    source={{ uri: 'http://vodkgeyttp9c.vod.126.net/cloudmusic/28cfa0c0e8375cea94313c7b6d622225.mp4?wsSecret=189851eff933614a6ee97f696b695f58&wsTime=1573093985&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL25Ukfgz7QFlcb87BtrOtmKHrphmwPWJgZ5OWS5NkBH4LRykjGn2oecZoBUfKpIak7J0yHjO6TQSjKjFPNS8xe56UvUMU5poEEe%2BnczNHTY2WIP4icwL11EZZL%2FwbAWV6wO5EBQ6kwgZsIQMJuBloh9GR2f%2B7chGVw2kVZ6w5Gk9w%3D%3D' }} 
                     style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
                     rate={1}//播放速率
                     paused={this.state.paused}// true代表暂停，默认为false
@@ -307,6 +307,13 @@ export default class H_BasicInfo extends Component {
 
                     }}
                   />
+                  {
+                    this.state.paused ?
+                      <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
+                        <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
+                      </TouchableOpacity>
+                      : null
+                  }
                 </TouchableOpacity>
                 <View style={styles.controls}>
                   <Text>{this.formatMediaTime(this.state.currentTime)}</Text>

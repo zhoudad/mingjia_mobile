@@ -4,7 +4,7 @@ import { View, Text, TouchableHighlight, TextInput, ScrollView, StyleSheet, Imag
 import px from '../../../utils/px'
 import IntervalTime from '../../../utils/IntervalTime'
 import axios from 'axios'
-import {storage} from '../../../utils/storage'
+import { storage } from '../../../utils/storage'
 
 class DetailsItem extends Component {
   constructor(props) {
@@ -12,10 +12,11 @@ class DetailsItem extends Component {
     this.state = {
       awesome: false,
       nolike: false,
-      user_id:''
+      user_id: ''
     };
   }
-  componentDidMount(){
+  componentDidMount() {
+    let self = this
     storage.getBatchData([
       { key: 'userId', syncInBackground: false },
     ]).then(results => {
@@ -24,61 +25,66 @@ class DetailsItem extends Component {
       })
     })
   }
-  toLike(){
-    const { com_id, } = this.props.data
-    this.setState({ awesome: !this.state.awesome },() => {
-      if(this.state.awesome){
+  toLike() {
+    // const { repContent } = this.props
+    const { com_id, reply_id } = this.props.data
+    this.setState({ awesome: !this.state.awesome }, () => {
+      if (this.state.awesome) {
         axios({
-          url:'http://218.108.34.222:8080/com_like',
-          method:'post',
-          data:{
-            com_id:com_id,
-            user_id:this.state.user_id,
+          url: 'http://218.108.34.222:8080/reply_like',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+            reply_id: reply_id
           }
         })
-      }else{
+      } else {
         axios({
-          url:'http://218.108.34.222:8080/com_offlike',
-          method:'post',
-          data:{
-            com_id:com_id,
-            user_id:this.state.user_id,
+          url: 'http://218.108.34.222:8080/reply_offlike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+            reply_id: reply_id
           }
         })
       }
     })
-    
+
   }
-  noLike(){
-    const { com_id, } = this.props.data
-    this.setState({ nolike: !this.state.nolike },() => {
-      if(this.state.nolike){
+  noLike() {
+    const { com_id, reply_id } = this.props.data
+    this.setState({ nolike: !this.state.nolike }, () => {
+      if (this.state.nolike) {
         axios({
-          url:'http://218.108.34.222:8080/com_nolike',
-          method:'post',
-          data:{
-            com_id:com_id,
-            user_id:this.state.user_id,
+          url: 'http://218.108.34.222:8080/reply_nolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+            reply_id: reply_id
           }
         })
-      }else{
+      } else {
         axios({
-          url:'http://218.108.34.222:8080/com_offnolike',
-          method:'post',
-          data:{
-            com_id:com_id,
-            user_id:this.state.user_id,
+          url: 'http://218.108.34.222:8080/reply_offnolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+            reply_id: reply_id
           }
         })
       }
     })
-    
+
   }
 
   render() {
     const { repContent } = this.props
     const { com_id, time, reply_content, reply_like, reply_nolike } = this.props.data
-
+    console.log(this.props.data)
     return (
       <View style={styles.detItem}>
         <View style={{ height: px(60), alignItems: 'center', paddingBottom: px(10), flexDirection: 'row', marginTop: px(30) }}>
@@ -96,14 +102,19 @@ class DetailsItem extends Component {
             <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
           </TouchableOpacity> */}
           <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-            <TouchableOpacity activeOpacity={1} onPress={() => this.toLike()} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => this.toLike()}
+              style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
               <Image
                 style={{ width: px(40), height: px(40) }}
                 source={this.state.awesome ? require('../../../assets/images/comment_gle.png') : require('../../../assets/images/comment_gle_n.png')} />
               <Text style={{ marginStart: px(7) }}>{this.state.awesome ? reply_like + 1 : reply_like}</Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }} 
-            onPress={() => this.noLike()}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
+              onPress={() => this.noLike()}>
               <Image
                 style={{ width: px(40), height: px(40) }}
                 source={this.state.nolike ? require('../../../assets/images/comment_ugle.png') : require('../../../assets/images/comment_ugle_n.png')} />
@@ -125,8 +136,8 @@ export default class CommentDetails extends Component {
       awesome: false,
       nolike: false,
       com_content: '',
-      user_id:'',
-      account_id:''
+      user_id: '',
+      account_id: ''
     };
   }
   async componentDidMount() {
@@ -155,7 +166,7 @@ export default class CommentDetails extends Component {
       }
     }).then((res) => {
       this.refs.ComInput.clear();
-      this.setState({com_content:''})
+      this.setState({ com_content: '' })
     })
   }
   PublishCom = () => {
@@ -176,9 +187,69 @@ export default class CommentDetails extends Component {
       </View>
     )
   }
+  componentDidMount() {
+    let self = this
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+      })
+    })
+  }
+  toLike() {
+    const { com_id, } = this.props.data
+    this.setState({ awesome: !this.state.awesome }, () => {
+      if (this.state.awesome) {
+        axios({
+          url: 'http://218.108.34.222:8080/com_like',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/com_offlike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
+  }
+  noLike() {
+    const { com_id, } = this.props.data
+    this.setState({ nolike: !this.state.nolike }, () => {
+      if (this.state.nolike) {
+        axios({
+          url: 'http://218.108.34.222:8080/com_nolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/com_offnolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
+  }
   render() {
     let { data } = this.props.navigation.state.params;
-    const { user_id, com_content, com_like, com_nolike, son, time } = data
+    const { user_id, com_content, com_like, com_nolike, son, time, com_id } = data
     return (
       <View style={{ flex: 1, backgroundColor: '#F2F4F7', }}>
         <View style={{ marginTop: px(30), }}>
@@ -198,13 +269,19 @@ export default class CommentDetails extends Component {
                 <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ awesome: !this.state.awesome })} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => this.toLike()}
+                  style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
                   <Image
                     style={{ width: px(40), height: px(40) }}
                     source={this.state.awesome ? require('../../../assets/images/comment_gle.png') : require('../../../assets/images/comment_gle_n.png')} />
                   <Text style={{ marginStart: px(7) }}>{this.state.awesome ? com_like + 1 : com_like}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => this.setState({ nolike: !this.state.nolike })}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                  onPress={() => this.noLike()}>
                   <Image
                     style={{ width: px(40), height: px(40) }}
                     source={this.state.nolike ? require('../../../assets/images/comment_ugle.png') : require('../../../assets/images/comment_ugle_n.png')} />
@@ -222,7 +299,7 @@ export default class CommentDetails extends Component {
             {
               son ? son.map((item, index) => {
                 return (
-                  <DetailsItem data={item} key={index} repContent={(id) => this.repContent(id)} />
+                  <DetailsItem comId={com_id} data={item} key={index} repContent={(id) => this.repContent(id)} />
                 )
               }) : null
             }

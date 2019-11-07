@@ -43,6 +43,7 @@ export default class Login extends Component {
   sendVerification = async () => {
     let { CountdownNum } = this.state
     let myreg = /^1[3456789]\d{9}$/;
+    console.log(this.state.user_tel)
     if (!this.state.user_tel) {
       ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT);
     } else {
@@ -92,7 +93,7 @@ export default class Login extends Component {
     }).then((res) => {
       console.log(res)
       if (res.data.status == 101 || res.data.status == 0 || res.data.status == 102) {
-        saveToken({ access_token: res.data.token })
+        // saveToken({ access_token: res.data.token })
         storage.save({
           key: 'userId',
           data: { user_id: res.data.result.user_id },
@@ -117,38 +118,77 @@ export default class Login extends Component {
         sex: result.gender == '男' ? 1 : 2,
         unionid: result.unionid
       }
+      // console.log(data)
       if (code == 0) {
-        axios({
-          url: 'http://218.108.34.222:8080/wechat',
-          data: data,
-          method: 'post'
-        }).then(res => {
-          console.log(res)
-          switch (res.data.status) {
-            case '0':
-              this.props.navigation.navigate('Registered', { id: res.data.id })
-              break;
-            case '1':
-              ToastAndroid.show('登录失败', ToastAndroid.SHORT);
-              break;
-            case '2':
-              ToastAndroid.show('数据为空', ToastAndroid.SHORT);
-              break;
-            case '3':
-              storage.save({
-                key: 'userId',
-                data: { user_id: res.data.result.user_id },
-              });
-              this.props.navigation.navigate('Select')
-              break;
-            case '4':
-              this.props.navigation.navigate('Registered', { id: res.data.id })
-              break;
-          }
-        }).catch(err => {
-          console.log(err)
-        })
+        fetch('http://218.108.34.222:8080/wechat', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            console.log(responseJson)
+            switch (responseJson.status) {
+              case '0':
+                this.props.navigation.navigate('Registered', { id: responseJson.id })
+                break;
+              case '1':
+                ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+                break;
+              case '2':
+                ToastAndroid.show('数据为空', ToastAndroid.SHORT);
+                break;
+              case '3':
+                storage.save({
+                  key: 'userId',
+                  data: { user_id: responseJson.user_id },
+                });
+                this.props.navigation.navigate('Select')
+                break;
+              case '4':
+                this.props.navigation.navigate('Registered', { id: responseJson.id })
+                break;
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
+      // this.props.navigation.navigate('Registered')
+      // if (code == 0) {
+      //   axios({
+      //     url: 'http://218.108.34.222:8080/wechat',
+      //     data: data,
+      //     method: 'post'
+      //   }).then(res => {
+      //     console.log(res)
+      //     switch (res.data.status) {
+      //       case '0':
+      //         this.props.navigation.navigate('Registered', { id: res.data.id })
+      //         break;
+      //       case '1':
+      //         ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+      //         break;
+      //       case '2':
+      //         ToastAndroid.show('数据为空', ToastAndroid.SHORT);
+      //         break;
+      //       case '3':
+      //         storage.save({
+      //           key: 'userId',
+      //           data: { user_id: res.data.result.user_id },
+      //         });
+      //         this.props.navigation.navigate('Select')
+      //         break;
+      //       case '4':
+      //         this.props.navigation.navigate('Registered', { id: res.data.id })
+      //         break;
+      //     }
+      //   }).catch(err => {
+      //     console.log(err)
+      //   })
+      // }
     })
   }
 

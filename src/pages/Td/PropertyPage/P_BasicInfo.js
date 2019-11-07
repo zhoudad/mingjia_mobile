@@ -13,6 +13,8 @@ import Communications from 'react-native-communications';
 import { BoxShadow } from 'react-native-shadow'
 import Video from 'react-native-video';
 import axios from 'axios'
+import { storage } from '../../../utils/storage'
+import Slider from '@react-native-community/slider';
 const MyLocation = NativeModules.MyLocation
 
 const { height, width } = Dimensions.get('window')
@@ -37,11 +39,18 @@ export default class BasicInfo extends Component {
       isFullScreen: false,
       videoHeight: px(422),
       videoWidth: width,
+      account_id: '',
+      user_id: '',
+      ReviewArr: [],
+      duration: 0.0,
+      slideValue: 0.00,
+      currentTime: 0.00,
     };
   }
   async componentDidMount() {
-    this.getdata()
+    
     this.addFoot()
+    this.getRemark()
     let self = this
     await storage.getBatchData([
       { key: 'userId', syncInBackground: false, autoSync: false, },
@@ -49,7 +58,20 @@ export default class BasicInfo extends Component {
     ]).then(results => {
       self.setState({
         user_id: results[0].user_id,
-        acccount_id: results[1].acccount_id
+        account_id: results[1].account_id
+      },() => {
+        self.getdata()
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+  getRemark() {
+    axios({
+      url: `http://218.108.34.222:8080/remark?account_id=` + this.state.account_id,
+    }).then(res => {
+      this.setState({
+        ReviewArr: res.data.result
       })
     }).catch(err => {
       console.log(err)
@@ -58,48 +80,58 @@ export default class BasicInfo extends Component {
   addAttention() {
     const id = this.props.navigation.state.params.id
     this.setState({ isAttention: !this.state.isAttention }, () => {
-      if (this.state.isAttention){
+      if (this.state.isAttention) {
         axios({
           method: 'post',
           url: `http://218.108.34.222:8080/attention`,
           data: {
-            account_id: 2,
-            user_id: 2,
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
             houses_id: id
           }
         }).then(res => {
-          this.setState({
-            images: [],
-            commentTxt: ''
-          })
           console.log(res)
         }).catch(err => {
           this.setState({ isAttention: false })
         })
-      }else{
-        
+      } else {
+        axios({
+          method: 'post',
+          url: `http://218.108.34.222:8080/clear_attention`,
+          data: {
+            account_id: this.state.account_id,
+            user_id: this.state.user_id,
+            houses_id: id
+          }
+        }).then(res => {
+          console.log(res)
+        })
       }
     })
 
   }
   publicRev() {
+    // console.log('发布')
     let { images } = this.state
+    let nameArr = ['com_ffile', 'com_cfile', 'com_lfile']
     let formData = new FormData();
-    for (var i = 0; i < this.state.images.length; i++) {
+    for (var i = 0; i < images.length; i++) {
       let ary = images[i].path.split('/');
       let file = { uri: images[i].path, type: 'multipart/form-data', name: ary[ary.length - 1] };
-      formData.append("files", file);
+      formData.append(nameArr[i], file);
     }
-    formData.append("commentTxt", this.state.commentTxt);
+    formData.append("content", this.state.commentTxt);
+    formData.append("user_id", this.state.user_id);
     axios({
       method: 'post',
-      url: ``,
+      url: `http://218.108.34.222:8080/remark_do`,
       data: formData
     }).then(res => {
       this.refs.text.clear();
       this.setState({
         images: [],
-        commentTxt: ''
+        commentTxt: '',
+        ReviewVisible: false,
       })
       console.log(res)
     })
@@ -110,12 +142,12 @@ export default class BasicInfo extends Component {
       method: 'post',
       url: `http://218.108.34.222:8080/track`,
       data: {
-        account_id: 2,
-        user_id: 2,
+        account_id: this.state.account_id,
+        user_id: this.state.user_id,
         houses_id: id
       }
     }).then(res => {
-      console.log(res)
+      // console.log(res)
     })
   }
   getdata() {
@@ -124,10 +156,18 @@ export default class BasicInfo extends Component {
       method: 'post',
       url: `http://218.108.34.222:8080/visitor_once`,
       data: {
-        houses_id: id
+        houses_id: id,
+        user_id:this.state.user_id,
+        account_id:this.state.account_id,
       }
     }).then(res => {
-      this.setState({ data: res.data.result['0'] })
+      // console.log(res)
+      this.setState({ 
+        data: res.data.result['0'],
+        isAttention:res.data.result.attention == 0 ? false : true
+       })
+    }).catch(err => {
+      console.log(err)
     })
   }
   //格式化音乐播放的时间为0：00
@@ -200,9 +240,9 @@ export default class BasicInfo extends Component {
     )
   }
   location(ad) {
-    let lon = '';  // ---经度 121.248078
-    let lat = '';   // ---纬度 31.091769
-    let name = '天安门广场';//
+    let lon = '116.38';
+    let lat = '39.90';
+    let name = '天安门广场';
     let array = []
     MyLocation.findEvents(lon, lat, name, (events) => {
       events.map((index, item) => {
@@ -234,7 +274,7 @@ export default class BasicInfo extends Component {
             });
         }
       } else {//只适用于android平台
-        Alert.alert('没有可用的地图软件！');
+        ToastAndroid.show('没有可用的地图软件！', ToastAndroid.SHORT);
       }
     })
   }
@@ -252,10 +292,11 @@ export default class BasicInfo extends Component {
       </View>
     )
   }
-  _reviewItem() {
+  _reviewItem(data) {
     const { navigation } = this.props
+    // console.log(data)
     return (
-      <TouchableOpacity activeOpacity={1} style={styles.reviewItem} onPress={() => navigation.navigate('ReviewDetails')}>
+      <TouchableOpacity activeOpacity={1} style={styles.reviewItem} onPress={() => navigation.navigate('ReviewDetails', { data })}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: px(30) }}>
             <Image
@@ -263,23 +304,27 @@ export default class BasicInfo extends Component {
               style={{
                 width: px(69), height: px(60), borderRadius: px(30)
               }} />
-            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>房大师</Text>
+            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{data ? data.com_id : ''}</Text>
           </View>
-          <Text numberOfLines={2} style={{ color: '#303133', fontSize: px(24), }}>
-            各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
+          <Text numberOfLines={2} style={{ color: '#303133', fontSize: px(24), }}>{data ? data.com_content : ''}
           </Text>
         </View>
       </TouchableOpacity>
     )
   }
-  _randerModel() {
+  _randerModel(item, index) {
+    console.log()
     return (
-      <View style={styles.modelItem} onLayout={(event) => this.setState({ modelItemHeight: event.nativeEvent.layout.height })}>
+      <View
+        key={index}
+        style={[styles.modelItem, { width: (width - px(60)) / 3 }]}
+        onLayout={(event) => this.setState({ modelItemHeight: event.nativeEvent.layout.height })}>
         <ImageBackground
           imageStyle={{ borderRadius: px(10), }}
           style={styles.modelItemBg}
           source={require('../../../assets/images/panda.jpg')}>
           <TouchableOpacity
+            onPress={() => { this.props.navigation.navigate('H_tD') }}
             activeOpacity={1}
             style={styles.modelPlay}>
             <Image
@@ -361,20 +406,14 @@ export default class BasicInfo extends Component {
                 onIndexChanged={(index) => this.setState({ headerIndex: index })}
                 index={0}>
                 <View style={{ height: px(422), borderRadius: px(10) }}>
-                  <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })}>
-                    {
-                      this.state.paused ?
-                        <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
-                          <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
-                        </TouchableOpacity>
-                        : null
-                    }
+                  <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })} style={{ flex: 1 }}>
+
                     <Video
                       playInBackground={false}
                       ref={ref => this.player = ref}
-                      // poster={'https://baconmockup.com/300/200/'}
+                      poster={'http://p1.music.126.net/OOWMRLJNs-gZEJzJIUbddw==/109951163573262585.jpg'}
                       // source={require('../../../assets/test.mp4')}
-                      source={{ uri: 'http://vodkgeyttp9c.vod.126.net/vodkgeyttp8/cvTDRkxa_1752729779_shd.mp4?ts=1571901013&rid=47115DC667964F5C42BDE925D7219E80&rl=3&rs=ZXJpmcvkRpdCEMlzEoAKsvgyjbNKHcFV&sign=f2491b300a8e136c18522a714cbce0bd&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL1V5r37gpQOXOvgziBcPWoPZqh4EHhlnhkR0Eo%2B75YOUCKMFq73irE6qWuj0L7fbdQ7BeLMqBUcSyyoPcrbRdLnCX3DlV98nBRyVzeYDp01vzjz8yVK08TT5H27QzXanlJvUZ1qrj8Zfoq8zafTvY4f4a52Cad0Arhst2x%2BlokPog%3D%3D' }} //我用的是本地视频
+                      source={{ uri: 'http://vodkgeyttp9.vod.126.net/cloudmusic/e4b432c5fa70231f5cb07c3da6d19246.mp4?wsSecret=de8228b0a8eb71d52f3c17ad056166f6&wsTime=1573093441&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL0gDbTkq4MgoPfxBJAtir%2F5Ut9RoZlf%2BEXpu1qh9BESkSxyvJcldUCNK9YLkLg1o9gNf0r8zfyqBmltYZ3kQF0w3hklSjJch6Bc4VgUcYVzqwaw4A6x5q1sYi3M8mhwWrxA8Gn%2BXImxBRcepgZG8i2QELIrGSIYtJ%2FuPHUIBmfvQA%3D%3D' }}
                       style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
                       rate={1}//播放速率
                       paused={this.state.paused}// true代表暂停，默认为false
@@ -390,7 +429,31 @@ export default class BasicInfo extends Component {
 
                       }}
                     />
+                    {
+                      this.state.paused ?
+                        <TouchableOpacity activeOpacity={1} style={styles.play} onPress={() => this.setState({ paused: false })}>
+                          <Image style={{ width: px(80), height: px(80) }} source={require('../../../assets/images/video_play_1.png')} />
+                        </TouchableOpacity>
+                        : null
+                    }
                   </TouchableOpacity>
+                  <View style={styles.controls}>
+                    <Text>{this.formatMediaTime(this.state.currentTime)}</Text>
+                    <Slider
+                      style={styles.slider}
+                      minimumValue={0}
+                      thumbTintColor="#EA4C4C"
+                      value={this.state.slideValue}
+                      maximumValue={this.state.duration}
+                      minimumTrackTintColor="#EA4C4C"
+                      maximumTrackTintColor="#000000"
+                      onValueChange={value => this.setState({ currentTime: value, })}
+                    />
+                    <Text>{this.formatMediaTime(this.state.duration)}</Text>
+                    {/* <TouchableOpacity activeOpacity={1} onPress={() => this.player.presentFullscreenPlayer()}>
+                    <Image style={{ width: px(28), height: px(28), marginStart: px(15) }} source={require('../../../assets/images/full_screen.png')} />
+                  </TouchableOpacity> */}
+                  </View>
                 </View>
                 <View style={{ height: px(422), borderRadius: px(10) }}>
                   <ImageBackground
@@ -488,7 +551,9 @@ export default class BasicInfo extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{ height: px(68), justifyContent: 'center', alignItems: 'center', marginTop: px(76) }}>
-                <TouchableOpacity activeOpacity={1} style={styles.detailsBtn} onPress={() => navigation.navigate('P_DetailsInfo', { id })}>
+                <TouchableOpacity activeOpacity={1} 
+                style={styles.detailsBtn} 
+                onPress={() => navigation.navigate('P_DetailsInfo', { id,isAttention:this.state.isAttention })}>
                   <Text style={{ color: '#FFFFFF' }}>信息详情</Text>
                 </TouchableOpacity>
               </View>
@@ -497,15 +562,21 @@ export default class BasicInfo extends Component {
           <View style={styles.model}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
               <Text style={{ color: '#303133', fontSize: px(28) }}>户型模型三维</Text>
-              <Text style={{ color: '#A8ABB3', fontSize: px(24) }} onPress={() => this.setState({ modelEx: !this.state.modelEx })}>{this.state.modelEx ? '收回' : '展开'}</Text>
+              {
+                this.state.data.hou && this.state.data.hou.length > 3 ?
+                  <Text style={{ color: '#A8ABB3', fontSize: px(24) }}
+                    onPress={() => this.setState({ modelEx: !this.state.modelEx })}>
+                    {this.state.modelEx ? '收回' : '展开'}
+                  </Text>
+                  : null
+              }
             </View>
             <View style={this.state.modelEx ? [styles.modelList] : [styles.modelList, modelListSty]}>
-              {this._randerModel()}
-              {this._randerModel()}
-              {this._randerModel()}
-              {this._randerModel()}
-              {this._randerModel()}
-              {this._randerModel()}
+              {
+                this.state.data.hou ? this.state.data.hou.map((item, index) => {
+                  return this._randerModel(item, index)
+                }) : null
+              }
             </View>
           </View>
           <View style={styles.tD}>
@@ -514,7 +585,10 @@ export default class BasicInfo extends Component {
               imageStyle={{ borderRadius: px(10), }}
               style={{ height: px(387), marginTop: px(30), justifyContent: 'center', alignItems: 'center' }}
               source={require('../../../assets/images/panda.jpg')}>
-              <TouchableOpacity activeOpacity={1} style={{ width: px(102), height: px(102), }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('P_tD')}
+                activeOpacity={1}
+                style={{ width: px(102), height: px(102), }}>
                 <Image
                   style={{ width: px(102), height: px(102), borderRadius: px(51) }}
                   source={require('../../../assets/images/3d_play_s.png')} />
@@ -523,12 +597,12 @@ export default class BasicInfo extends Component {
           </View>
           <View style={styles.review}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-              <Text style={{ color: '#303133', fontSize: px(28) }}>用户点评（15）</Text>
+              <Text style={{ color: '#303133', fontSize: px(28) }}>用户点评（{this.state.ReviewArr.length}）</Text>
               <Text style={{ color: '#A8ABB3', fontSize: px(24) }} onPress={() => navigation.navigate('Review')}>查看更多</Text>
             </View>
             <View>
-              {this._reviewItem()}
-              {this._reviewItem()}
+              {this._reviewItem(this.state.ReviewArr[0])}
+              {this._reviewItem(this.state.ReviewArr[1])}
             </View>
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: px(50) }}>
@@ -654,6 +728,22 @@ const styles = StyleSheet.create({
   headerImg: {
     flex: 1,
   },
+  slider: {
+    height: px(5),
+    flex: 1
+  },
+  controls: {
+    paddingHorizontal: px(30),
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: px(60),
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    zIndex: 998,
+  },
   goBack: {
     position: 'absolute',
     top: px(30),
@@ -699,11 +789,11 @@ const styles = StyleSheet.create({
   },
   model: {
     paddingHorizontal: px(30),
-    marginTop: px(120)
+    marginTop: px(120),
   },
   modelItem: {
-    marginTop: px(30),
-    marginBottom: px(10)
+    paddingTop: px(30),
+    alignItems:'center'
   },
   modelItemBg: {
     width: px(218),
@@ -723,16 +813,15 @@ const styles = StyleSheet.create({
   modelList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-
+    // justifyContent: 'space-between',
   },
   sandTable: {
     paddingHorizontal: px(30),
     marginTop: px(50)
   },
   tD: {
+    paddingTop: px(30),
     paddingHorizontal: px(30),
-    marginTop: px(70),
     backgroundColor: '#FFF'
   },
   review: {

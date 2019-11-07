@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TextInput, Image, Dimensions } from 'react-native';
 import IntervalTime from '../../../utils/IntervalTime'
 import px from '../../../utils/px'
+import { storage } from '../../../utils/storage'
 import { withNavigation } from 'react-navigation';
 var screenWidth = Dimensions.get('window').width;
 
@@ -15,6 +16,17 @@ class CommentItem extends Component {
       awesome: false,
       nolike: false,
     };
+  }
+
+  componentDidMount() {
+    let self = this
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+      })
+    })
   }
 
   shouExpandCom = () => {
@@ -31,6 +43,57 @@ class CommentItem extends Component {
     } else {
       return (null)
     }
+  }
+
+  toLike() {
+    const { com_id, } = this.props.data
+    this.setState({ awesome: !this.state.awesome }, () => {
+      if (this.state.awesome) {
+        axios({
+          url: 'http://218.108.34.222:8080/com_like',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/com_offlike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
+  }
+  noLike() {
+    const { com_id, } = this.props.data
+    this.setState({ nolike: !this.state.nolike }, () => {
+      if (this.state.nolike) {
+        axios({
+          url: 'http://218.108.34.222:8080/com_nolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/com_offnolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
   }
 
   render() {
@@ -67,13 +130,16 @@ class CommentItem extends Component {
                 <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ awesome: !this.state.awesome })} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
+                <TouchableOpacity activeOpacity={1} onPress={() => this.toLike()} style={{ flexDirection: 'row', alignItems: 'center', marginEnd: px(30) }}>
                   <Image
                     style={{ width: px(40), height: px(40) }}
                     source={this.state.awesome ? require('../../../assets/images/comment_gle.png') : require('../../../assets/images/comment_gle_n.png')} />
                   <Text style={{ marginStart: px(7) }}>{this.state.awesome ? com_like + 1 : com_like}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => this.setState({ nolike: !this.state.nolike })}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                  onPress={() => this.noLike()}>
                   <Image
                     style={{ width: px(40), height: px(40) }}
                     source={this.state.nolike ? require('../../../assets/images/comment_ugle.png') : require('../../../assets/images/comment_ugle_n.png')} />

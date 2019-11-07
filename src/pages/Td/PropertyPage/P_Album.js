@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Modal, 
+  Dimensions
+} from 'react-native';
 import px from '../../../utils/px'
 import Swiper from 'react-native-swiper';
+const { height, width } = Dimensions.get('window');
 
 export default class Album extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgArr: []
+      imgArr: [],
+      modalVisible:false
     };
   }
 
@@ -15,12 +19,12 @@ export default class Album extends Component {
     return (
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => this.setState({})}
+        onPress={() => this.setState({modalVisible: true})}
         onLongPress={() => { console.log('长按') }}
         style={styles.imageItem}>
         <Image
           style={{ width: px(218), height: px(128), borderRadius: px(10), marginBottom: px(20) }}
-          source={require('../../../assets/images/panda.jpg')}
+          source={{uri:'http://photocdn.sohu.com/20120209/Img334155491.jpg'}}
         />
       </TouchableOpacity>
     )
@@ -34,29 +38,32 @@ export default class Album extends Component {
           transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            alert("Modal has been closed.");
+            this.setState({ modalVisible: false })
           }}
         >
           <View style={{ flex: 1 }}>
             {
-              this.state.slides == null ? <View style={{ flex: 1 }}></View> :
-                <Swiper
-                  style={{ height: px(296), paddingHorizontal: px(30), }}
-                  dot={<View style={{ backgroundColor: '#D8DCE6', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
-                  activeDot={<View style={{ backgroundColor: '#606266', width: px(14), height: px(4), borderRadius: px(2), marginLeft: px(4), marginRight: px(4), marginTop: px(4), marginBottom: px(4) }} />}
-                  loop={true}
-                  paginationStyle={{ bottom: px(25), }}
-                  index={0}>
-                  {
-                    this.state.slides.map((item, index) => {
-                      return (
-                        <View key={index} style={{ height: px(296), borderRadius: px(10) }} >
-                          <Image style={{ height: px(296), borderRadius: px(10) }} source={{ uri: `http://218.108.34.222:8080/uploads/` + item.slide_file }} ></Image>
-                        </View>
-                      )
-                    })
-                  }
-                </Swiper>
+              // this.state.slides == null ? <View style={{ flex: 1 }}></View> :
+              <View style={{ width, height, }}>
+              <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => this.setState({ modalVisible: false })}>
+                <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
+              </TouchableOpacity>
+              <Swiper
+                showsPagination={false}
+                loop={false}
+                style={{ flex: 1, }}
+                index={0}>
+                {
+                  // this.state.drawings.map((item, index) => {
+                  //   return (
+                      <View style={{ backgroundColor: 'red',width, height, }}>
+                        <Image style={{ width, height,}} source={{ uri: 'http://photocdn.sohu.com/20120209/Img334155491.jpg' }} ></Image>
+                      </View>
+                  //   )
+                  // })
+                }
+              </Swiper>
+            </View>
             }
           </View>
         </Modal>
@@ -131,5 +138,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  }
+  },
+  goBack: {
+    position: 'absolute',
+    top: px(30),
+    left: px(30),
+    width: px(48),
+    height: px(48),
+    zIndex: 999,
+  },
 })

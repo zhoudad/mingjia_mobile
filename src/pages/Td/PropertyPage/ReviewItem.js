@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Keyboard, TextInput, Image, }
 import IntervalTime from '../../../utils/IntervalTime'
 import px from '../../../utils/px'
 import { withNavigation } from 'react-navigation';
+import { storage } from '../../../utils/storage'
 
 class ReviewItem extends Component {
   constructor(props) {
@@ -15,6 +16,42 @@ class ReviewItem extends Component {
     };
   }
 
+  componentDidMount() {
+    let self = this
+    storage.getBatchData([
+      { key: 'userId', syncInBackground: false },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+      })
+    })
+  }
+
+  toLike() {
+    const { com_id, } = this.props.data
+    this.setState({ nolike: !this.state.nolike }, () => {
+      if (this.state.nolike) {
+        axios({
+          url: 'http://218.108.34.222:8080/remark_like',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      } else {
+        axios({
+          url: 'http://218.108.34.222:8080/remark_nolike',
+          method: 'post',
+          data: {
+            com_id: com_id,
+            user_id: this.state.user_id,
+          }
+        })
+      }
+    })
+
+  }
 
   shouExpandCom = () => {
     if (this.state.shouExpandBtn) {
@@ -57,10 +94,10 @@ class ReviewItem extends Component {
               <View style={{ marginTop: px(20), flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Image
                   style={{ width: px(120), height: px(120), borderRadius: px(10), marginEnd: px(20) }}
-                  source={{ uri: 'https://facebook.github.io/react-native/img/tiny_logo.png' }} />
+                  source={{ uri: 'http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1412/12/c7/577115_1418395060436_mthumb.jpg' }} />
                 <Image
                   style={{ width: px(120), height: px(120), borderRadius: px(10), marginEnd: px(20) }}
-                  source={{ uri: 'https://facebook.github.io/react-native/img/tiny_logo.png' }} />
+                  source={{ uri: 'http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1412/12/c7/577115_1418395060436_mthumb.jpg' }} />
 
               </View>
             </View>
@@ -73,7 +110,7 @@ class ReviewItem extends Component {
                   <Text style={{ marginStart: px(7) }}>{data.reply_num}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                 onPress={() => this.setState({ nolike: !this.state.nolike })}
+                 onPress={() => this.toLike()}
                 activeOpacity={1} 
                 style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image 
