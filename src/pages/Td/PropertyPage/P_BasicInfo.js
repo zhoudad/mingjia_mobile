@@ -45,6 +45,7 @@ export default class BasicInfo extends Component {
       duration: 0.0,
       slideValue: 0.00,
       currentTime: 0.00,
+      callInfo:[]
     };
   }
   async componentDidMount() {
@@ -64,12 +65,21 @@ export default class BasicInfo extends Component {
     }).catch(err => {
       console.log(err)
     })
+    await storage.load({
+      key: 'callInfo',
+    }).then(res => {
+      self.setState({
+        callInfo: res.callInfo,
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   }
   getRemark() {
     axios({
       url: `http://218.108.34.222:8080/remark?account_id=` + this.state.account_id,
     }).then(res => {
-      console.log(res)
+      // console.log(res)
       this.setState({
         ReviewArr: res.data.result
       })
@@ -90,7 +100,7 @@ export default class BasicInfo extends Component {
             houses_id: id
           }
         }).then(res => {
-          console.log(res)
+          // console.log(res)
         }).catch(err => {
           this.setState({ isAttention: false })
         })
@@ -104,7 +114,7 @@ export default class BasicInfo extends Component {
             houses_id: id
           }
         }).then(res => {
-          console.log(res)
+          // console.log(res)
         })
       }
     })
@@ -133,7 +143,7 @@ export default class BasicInfo extends Component {
         commentTxt: '',
         ReviewVisible: false,
       })
-      console.log(res)
+      // console.log(res)
     })
   }
   addFoot() {
@@ -161,7 +171,7 @@ export default class BasicInfo extends Component {
         account_id:this.state.account_id,
       }
     }).then(res => {
-      // console.log(res)
+      console.log(res)
       this.setState({ 
         data: res.data.result['0'],
         isAttention:res.data.result.attention == 0 ? false : true
@@ -188,7 +198,7 @@ export default class BasicInfo extends Component {
   }
   //设置总时长
   onLoad = (data) => {
-    console.log(data)
+    // console.log(data)
     this.setState({ duration: data.duration });
   }
   callProperty() {
@@ -201,7 +211,24 @@ export default class BasicInfo extends Component {
         )
       })
     } else {
-      Communications.phonecall(tel, true)
+      let newDate = new Date()
+      let {callInfo} = this.state
+      let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : (newDate.getMonth() + 1)
+      let day = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate()
+      let hours = newDate.getHours() < 10 ? '0' +newDate.getHours() : newDate.getHours()
+      let minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes()
+      callInfo.push({
+        date: month + '/' + day,
+        time: hours  + ':' + minutes,
+        tel: '10086',
+      })
+      storage.save({
+        key: 'callInfo', 
+        data: {
+          callInfo: callInfo,
+        },
+    });
+      Communications.phonecall(this.state.tel, true)
     }
   }
   Toast() {
@@ -537,8 +564,8 @@ export default class BasicInfo extends Component {
           </View>
           <View style={styles.info}>
             <View style={{ borderBottomWidth: px(2), borderBottomColor: '#E6E9F0' }}>
-              <Text style={{ marginTop: px(30), color: '#333333', fontSize: px(44) }}>{data.houses_name}</Text>
-              <Text style={{ marginTop: px(20), color: '#A8ABB3', fontSize: px(24) }}>别名：{data.houses_alias}</Text>
+              <Text style={{ marginTop: px(30), color: '#333333', fontSize: px(44) }}>{data.houses_name ? data.houses_name : ''}</Text>
+              <Text style={{ marginTop: px(20), color: '#A8ABB3', fontSize: px(24) }}>别名：{data.houses_alias ? data.houses_alias : ''}</Text>
               <View style={{ marginVertical: px(40), flexDirection: 'row' }}>
                 <TipicTag text={"新房"} />
                 <TipicTag text={"别墅"} />
@@ -548,15 +575,15 @@ export default class BasicInfo extends Component {
             </View>
             <View>
               <View style={{ flexDirection: 'row', marginVertical: px(50) }}>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>住宅： {data.houses_price}元/㎡</Text>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>开盘： {data.houses_new}</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>住宅： {data.houses_price ? data.houses_price : ''}元/㎡</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>开盘： {data.houses_new ? data.houses_new : ''}</Text>
               </View>
               <View style={{ flexDirection: 'row', marginBottom: px(50) }}>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>户型： {data.houses_type}</Text>
-                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>建面： {data.survey_area}㎡</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>户型： {data.houses_type ? data.houses_type : ''}</Text>
+                <Text style={{ color: '#303133', flex: 1, fontSize: px(24) }}>建面： {data.survey_area ? data.survey_area : ''}㎡</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                <Text style={{ color: '#303133', fontSize: px(24) }}>地址： {data.houses_sell}</Text>
+                <Text style={{ color: '#303133', fontSize: px(24) }}>地址： {data.houses_sell ? data.houses_sell : ''}</Text>
                 <TouchableOpacity activeOpacity={1} style={{ felx: 1 }} onPress={() => this.location()}>
                   <Image style={{ width: px(44), height: px(44), marginStart: px(24) }} source={require('../../../assets/images/loupan_ditu.png')} />
                 </TouchableOpacity>

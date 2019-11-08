@@ -10,7 +10,7 @@ import Communications from 'react-native-communications';
 import ImagePicker from 'react-native-image-crop-picker';
 import { BoxShadow } from 'react-native-shadow'
 import Video from 'react-native-video';
-import {storage} from '../../../utils/storage'
+import { storage } from '../../../utils/storage'
 import axios from 'axios'
 const { height, width } = Dimensions.get('window')
 
@@ -34,7 +34,8 @@ export default class H_BasicInfo extends Component {
       images: [],
       user_id: '',
       account_id: '',
-      ReviewArr:[]
+      ReviewArr: [],
+      callInfo: []
     };
   }
   async componentDidMount() {
@@ -42,7 +43,9 @@ export default class H_BasicInfo extends Component {
     await storage.getBatchData([
       { key: 'userId', syncInBackground: false, autoSync: false, },
       { key: 'accountId', syncInBackground: false, autoSync: false, },
+      // { key: 'callInfo', syncInBackground: false, autoSync: true, },
     ]).then(results => {
+      console.log(results)
       self.setState({
         user_id: results[0].user_id,
         account_id: results[1].account_id
@@ -50,6 +53,16 @@ export default class H_BasicInfo extends Component {
     }).catch(err => {
       console.log(err)
     })
+    await storage.load({
+      key: 'callInfo',
+    }).then(res => {
+      self.setState({
+        callInfo: res.callInfo,
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+
     this.getRemark()
   }
   getRemark() {
@@ -66,7 +79,7 @@ export default class H_BasicInfo extends Component {
   }
   publicRev() {
     let { images } = this.state
-    let nameArr=['com_ffile','com_cfile','com_lfile']
+    let nameArr = ['com_ffile', 'com_cfile', 'com_lfile']
     let formData = new FormData();
     for (var i = 0; i < images.length; i++) {
       let ary = images[i].path.split('/');
@@ -121,6 +134,24 @@ export default class H_BasicInfo extends Component {
         )
       })
     } else {
+      let newDate = new Date()
+      let { callInfo } = this.state
+      let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : (newDate.getMonth() + 1)
+      let day = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate()
+      let hours = newDate.getHours() < 10 ? '0' +newDate.getHours() : newDate.getHours()
+      let minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes()
+      callInfo.push({
+        date: month + '/' + day,
+        time: hours  + ':' + minutes,
+        tel: '10086',
+      })
+
+      storage.save({
+        key: 'callInfo',
+        data: {
+          callInfo: callInfo,
+        },
+      });
       Communications.phonecall(this.state.tel, true)
     }
   }
@@ -185,7 +216,7 @@ export default class H_BasicInfo extends Component {
             <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{data ? data.com_id : ''}</Text>
           </View>
           <Text numberOfLines={2} style={{ color: '#303133', fontSize: px(24), }}>
-          {data ? data.com_content : ''}
+            {data ? data.com_content : ''}
           </Text>
         </View>
       </TouchableOpacity>
@@ -285,6 +316,7 @@ export default class H_BasicInfo extends Component {
   render() {
     const { navigation } = this.props
     const { data, name } = this.props.navigation.state.params
+    console.log(data)
     const shadowOpt = {
       height: px(100),
       width: width,
@@ -294,7 +326,7 @@ export default class H_BasicInfo extends Component {
       opacity: 0.12,
       x: 0,
       y: 0,
-      style: {position: 'absolute', bottom: 0, left: 0,}
+      style: { position: 'absolute', bottom: 0, left: 0, }
     }
     return (
       <View style={{ flex: 1 }} onLayout={this._onLayout}>
@@ -310,13 +342,12 @@ export default class H_BasicInfo extends Component {
               onIndexChanged={(index) => this.setState({ headerIndex: index })}
               index={0}>
               <View style={[{ height: px(422), borderRadius: px(10) },]}>
-                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })} style={{flex:1}}>
-                  
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({ paused: true })} style={{ flex: 1 }}>
                   <Video
                     playInBackground={false}
                     ref={ref => this.player = ref}
                     poster={'http://p1.music.126.net/fffxmDCc9rzgZ4s0u3J2Xg==/109951163572705897.jpg'}
-                    source={{ uri: 'http://218.108.34.222:8080/video/ironMan.mp4' }} 
+                    source={{ uri: 'http://218.108.34.222:8080/video/ironMan.mp4' }}
                     style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
                     rate={1}//播放速率
                     paused={this.state.paused}// true代表暂停，默认为false
@@ -329,7 +360,6 @@ export default class H_BasicInfo extends Component {
                     }}//视频播放结束时的回调函数。
                     onError={() => {
                       ToastAndroid.show("加载视频失败", ToastAndroid.SHORT);
-
                     }}
                   />
                   {
@@ -427,23 +457,23 @@ export default class H_BasicInfo extends Component {
           </TouchableOpacity>
         </View>
         <ScrollView
-        style={{marginBottom:px(100) }}
-          contentContainerStyle={{ backgroundColor: '#F2F4F7',}}
+          style={{ marginBottom: px(100) }}
+          contentContainerStyle={{ backgroundColor: '#F2F4F7', }}
           showsVerticalScrollIndicator={false}>
           <View style={{ paddingHorizontal: px(30), backgroundColor: '#FFF', marginTop: px(15) }}>
             <Text style={styles.tit}>户型信息</Text>
             <Text style={{ color: '#303133', fontSize: px(24), lineHeight: px(50) }}>
-              <Text>{data.building_type}  </Text>
+              <Text>{data.building_type ? data.building_type : ''}  </Text>
               <Text>  27888元/㎡  </Text>
-              <Text>  {data.building_area}</Text>{'\n'}
-              <Text>物业类型：住宅  </Text><Text>朝向：{data.building_qi} </Text>{'\n'}
+              <Text>  {data.building_area ? data.building_area : ''}</Text>{'\n'}
+              <Text>物业类型：住宅  </Text><Text>朝向：{data.building_qi ? data.building_qi : ''} </Text>{'\n'}
               <Text>户型分布：{}</Text>{'\n'}
             </Text>
           </View>
           <View style={{ marginTop: px(2), height: px(100), justifyContent: 'space-between', paddingHorizontal: px(30), backgroundColor: '#FFF', flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: '#303133', fontSize: px(28) }} >所属楼盘</Text>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} activeOpacity={1}>
-              <Text style={{ color: '#303133', fontSize: px(28) }} onPress={() => navigation.navigate('P_BasicInfo')}>{name}</Text>
+              <Text style={{ color: '#303133', fontSize: px(28) }} onPress={() => navigation.navigate('P_BasicInfo')}>{name ? name : ''}</Text>
               <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/common_arrow.png')} />
             </TouchableOpacity>
           </View>

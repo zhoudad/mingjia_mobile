@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Dimensions, CameraRoll } from 'react-native';
+import { 
+  View, Text, StyleSheet, TouchableOpacity, Image, Modal, Dimensions, CameraRoll ,PermissionsAndroid
+} from 'react-native';
 import CustomTabBar from '../../../components/CustomTabBar'
 import RNFS from 'react-native-fs';
 import { BoxShadow } from 'react-native-shadow'
@@ -25,6 +27,20 @@ export default class Owner extends Component {
       drawings: []
     };
   }
+  async requestPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // console.log('现在你获得权限了');
+      } else {
+        // console.log('用户并不屌你');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
 
   async componentDidMount() {
     let self = this
@@ -40,7 +56,6 @@ export default class Owner extends Component {
     })
   }
   downloadFile() {
-    console.log(111)
     let self = this
     // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
 
@@ -90,9 +105,8 @@ export default class Owner extends Component {
     try {
       const ret = RNFS.downloadFile(options);
       ret.promise.then(res => {
-        this.changeToast('下载成功', '请在个人中心查看', frame_right)
-        this.setState({ progressNum: 1, beginDown: false })
-        // 例如保存图片
+        // 保存图片
+        self.requestPermission()
         CameraRoll.saveToCameraRoll('file://' + downloadDest)
           .then((res) => {
             let newDrawings = []
@@ -103,13 +117,16 @@ export default class Owner extends Component {
                 drawings: [...newDrawings, ...self.state.drawings]
               }
             })
-            console.log('图片已保存到相册')
-          }).catch(() => {
-            // console.log('图片保存失败')
+            this.changeToast('下载成功', '请在个人中心查看', frame_right)
+            this.setState({ progressNum: 1, beginDown: false })
+            console.log(newDrawings)
+          }).catch((err) => {
+            this.changeToast('下载失败', '请在请确认是否授权', frame_no)
+            this.setState({ progressNum: 0, beginDown: false })
           })
 
       }).catch(err => {
-        // console.log('err', err);
+        console.log('err', err);
       });
     }
     catch (e) {
@@ -164,7 +181,7 @@ export default class Owner extends Component {
         transparent={true}
         visible={this.state.visible}
         onRequestClose={() => {
-          // this.setState({ askVisible: false })
+          this.setState({ visible: false })
         }}
       >
         <View style={{ height: Dimensions.get('window').height, justifyContent: 'center', alignItems: 'center', }}>

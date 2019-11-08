@@ -24,7 +24,7 @@ const newStreets = streets.filter(item => {
 const data = [
   [["区域"], newAreas, newStreets],
   [["单价"], ["1万以下", "1-1.5万", "1.5-2万", "2-3万", "3-5万", "5万以上"]],
-  [["不限", "一室", "两室", "三室", "四室", "五室", "六室", "七室", "八室", "九室"]],
+  [["不限", "一室", "两室", "三室", "四室", "五室",]],
 ]
 export default class Td extends Component {
   static navigationOptions = {
@@ -106,6 +106,7 @@ export default class Td extends Component {
     })
     this.changeData()
   }
+  // 均价，开盘
   changeArr() {
     let { sortIndex } = this.state
     switch (sortIndex) {
@@ -152,6 +153,7 @@ export default class Td extends Component {
       }
     }
   }
+  // 修改区域
   changeData() {
     const newAreas = areas.filter(item => {
       return item.parent_code.includes(this.state.city)
@@ -168,6 +170,21 @@ export default class Td extends Component {
     })
   }
 
+  refreshData(){
+    let { titleArr,params} = this.state
+    axios({
+      url:'http://192.168.10.79:8080/area',
+      data:{
+        houses_ssite:params[1],
+        houses_csite:params[0],
+        houses_price:titleArr[1] == '单价' ? 0 : titleArr.findIndex(item=> item=== titleArr[1]),
+        houses_type:titleArr[2] == '户型' ? '' : titleArr[2]
+      },
+      method:'post',
+    }).then(res => {
+      console.log(res)
+    })
+  }
   split(data) {
     return data.length > 3 ? data.substring(0, 3) + '...' : data
   }
@@ -209,13 +226,6 @@ export default class Td extends Component {
     if (activityIndex > -1) {
       if (activityIndex == 0) {
         selectIndex[activityIndex][i] = index;
-        // if (i == 1) {
-        //   selectIndex[activityIndex][2] = 0
-        //   this.setState({
-        //     city: item.parent_code,
-        //     areas: item.code
-        //   }, () => this.changeData())
-        // }
         if(item.name && item.code.length > 6){
           if( selectIndex[activityIndex][1] == -1){
             selectIndex[activityIndex][1] = 0
@@ -241,14 +251,11 @@ export default class Td extends Component {
             self.setState({
               params:[this.state.data[0][2][0].name,item.name]
             },() => {
-              // console.log(self.state.data)
               console.log(self.state.params)
             })
           })
         }
         titleArr[activityIndex] = item.name ? item.code.length > 6 ? item.name : data[0][2][1].name : item
-        
-
       } else {
         selectIndex[activityIndex] = index;
         titleArr[activityIndex] = item.name ? item.name : item

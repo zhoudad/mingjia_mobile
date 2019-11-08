@@ -34,13 +34,17 @@ class PropertyPage extends Component {
               source={require('../../../assets/images/panda.jpg')} />
           </View>
           <View style={{ flex: 1, marginStart: px(30), height: px(200), }}>
-            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28), fontFamily: 'PingFang-SC-Bold', fontWeight: 'bold' }}>{data.item.houses_name}</Text>
-            <Text style={{ fontSize: px(24), color: '#B3B3B3', marginTop: px(9), fontFamily: 'PingFang-SC-Medium' }}>
-              <Text style={{ marginRight: px(35) }}>{data.item.houses_ssite}</Text>
-              <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.houses_csite}</Text>
-              <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.survey_area}㎡</Text>
+            <Text style={{ color: '#333333', fontWeight: "bold", fontSize: px(28), fontFamily: 'PingFang-SC-Bold', fontWeight: 'bold' }}>
+            {data.item.houses_name ? data.item.houses_name : ''}
             </Text>
-            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>{data.item.houses_price}<Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
+            <Text style={{ fontSize: px(24), color: '#B3B3B3', marginTop: px(9), fontFamily: 'PingFang-SC-Medium' }}>
+              <Text style={{ marginRight: px(35) }}>{data.item.houses_ssite ? data.item.houses_ssite : ''}</Text>
+              <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.houses_csite ? data.item.houses_csite : ''}</Text>
+              <Text style={{ paddingRight: px(35) }}>&emsp;{data.item.survey_area ? data.item.survey_area : ''}㎡</Text>
+            </Text>
+            <Text style={{ color: '#ea4c4c', fontSize: px(32), fontWeight: "bold", marginTop: px(24) }}>
+            {data.item.houses_price ? data.item.houses_price : ''}
+            <Text style={{ fontSize: px(24) }}>元/㎡</Text></Text>
             <View style={{ flexDirection: 'row', marginTop: px(8) }}>
               <TipicTag text={"在售"} isStress={true} />
               <TipicTag text={"住宅"} />

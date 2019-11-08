@@ -4,6 +4,7 @@ package com.mingjia;
 import androidx.multidex.MultiDexApplication;
 import android.content.Context;
 import android.os.Handler;
+import android.widget.Toast;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
@@ -19,6 +20,7 @@ import com.horcrux.svg.SvgPackage;
 // import com.theweflex.react.WeChatPackage;
 import com.mingjia.MyLocationPackage;
 import com.mingjia.DplusReactPackage;
+import com.mingjia.call.CallBridgePackage;
 
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -44,6 +46,7 @@ public class MainApplication extends MultiDexApplication  implements ReactApplic
           // packages.add(new RNFSPackage());
           packages.add(new MyLocationPackage());
           packages.add(new DplusReactPackage());
+          packages.add(new CallBridgePackage());
           return packages;
         }
 

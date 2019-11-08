@@ -4,6 +4,7 @@ import TipicTag from '../../../components/TipicTag'
 import { withNavigation } from 'react-navigation';
 import { View, Text, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import Axios from 'axios';
+import {storage} from '../../../utils/storage'
 
 class RenderItem extends Component {
   constructor(props) {
@@ -82,22 +83,38 @@ class HousetypePage extends Component {
     super(props);
     this.state = {
       data: [],
+      user_id:'',
+      account_id:''
     };
   }
 
-  componentDidMount() {
-    this.getdata()
+  async componentDidMount() {
+    let self = this
+    await storage.getBatchData([
+      { key: 'userId', syncInBackground: false, autoSync: false, },
+      { key: 'accountId', syncInBackground: false, autoSync: false, },
+    ]).then(results => {
+      self.setState({
+        user_id: results[0].user_id,
+        account_id: results[1].account_id
+      },() => {
+        self.getdata()
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+    
   }
 
   getdata() {
     Axios({
       url: `http://218.108.34.222:8080/visitor_type`,
       data: {
-        account_id: 2
+        account_id: this.state.account_id
       },
       method: 'post'
     }).then(res => {
-      // console.log(res)
+      console.log(res)
       this.setState({ data: res.data.result.building })
     })
   }

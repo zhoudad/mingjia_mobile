@@ -222,7 +222,6 @@ export default class Login extends Component {
                 placeholder={'请输入手机号'}
                 placeholderTextColor={'#A8ABB3'}
                 keyboardType={'number-pad'}
-                returnKeyType={'done'}
                 underlineColorAndroid='transparent'
                 onChangeText={(text) => this.setState({ user_tel: text })}
               ></TextInput>
@@ -236,7 +235,6 @@ export default class Login extends Component {
                   placeholderTextColor={'#A8ABB3'}
                   keyboardType={'number-pad'}
                   // password={true}
-                  returnKeyType={'done'}
                   underlineColorAndroid='transparent'
                   onChangeText={(text) => this.setState({ user_code: text })}
                 ></TextInput>

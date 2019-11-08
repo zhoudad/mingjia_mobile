@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Modal } from 'react-native';
 import TipicTag from '../../../components/TipicTag'
 import px from '../../../utils/px'
 import Communications from 'react-native-communications';
 import Axios from 'axios';
 import { storage } from '../../../utils/storage'
+import { BoxShadow } from 'react-native-shadow'
+const { height, width } = Dimensions.get('window')
 
 export default class DetailsInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data:{},
-      isAttention:false,
-      account_id:'',
-      user_id:''
+      data: {},
+      isAttention: false,
+      account_id: '',
+      user_id: '',
+      callInfo: [],
+      callVisible: false,
+      tel: '10086',
     };
   }
 
-  componentDidMount(){
-    this.setState({
-      isAttention:this.props.navigation.state.params.isAttention
-    })
+  componentDidMount() {
+    let self = this
+    // this.setState({
+    //   isAttention: this.props.navigation.state.params.isAttention
+    // })
     storage.getBatchData([
       { key: 'userId', syncInBackground: false, autoSync: false, },
       { key: 'accountId', syncInBackground: false, autoSync: false, },
@@ -33,18 +39,94 @@ export default class DetailsInfo extends Component {
       console.log(err)
     })
     this.getdata()
+    storage.load({
+      key: 'callInfo',
+    }).then(res => {
+      self.setState({
+        callInfo: res.callInfo,
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   }
-  getdata(){
+  callProperty() {
+    let thef = this
+    if (!this.state.tel) {
+      this.setState({ callVisible: true }, () => {
+        thef.timer = setTimeout(
+          () => { thef.setState({ callVisible: false }) },
+          1000
+        )
+      })
+    } else {
+      let newDate = new Date()
+      let { callInfo } = this.state
+      let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : (newDate.getMonth() + 1)
+      
+      let day = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate()
+
+      let hours = newDate.getHours() < 10 ? '0' +newDate.getHours() : newDate.getHours()
+      let minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes()
+      callInfo.push({
+        date: month + '/' + day,
+        time: hours  + ':' + minutes,
+        tel: '10086',
+      })
+      storage.save({
+        key: 'callInfo',
+        data: {
+          callInfo: callInfo,
+        },
+      });
+      Communications.phonecall(this.state.tel, true)
+    }
+  }
+  Toast() {
+    const frame_right = require('../../../assets/images/frame_right.png')
+    const shadowOpt = {
+      height: px(280),
+      width: px(280),
+      x: px(-12),
+      y: px(-1),
+      border: px(75),
+      radius: px(26),
+      opacity: 0.4,
+      color: "#EAEAEA",
+      // style:{}
+    }
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.callVisible}
+        onRequestClose={() => {
+          this.setState({ callVisible: false })
+        }}
+      >
+        <View style={{ height, justifyContent: 'center', alignItems: 'center', }}>
+          <BoxShadow setting={shadowOpt}>
+            <View style={{ height: px(280), width: px(280), backgroundColor: 'white', borderRadius: px(10) }}>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: px(333), paddingHorizontal: px(45), }}>
+                <Image style={{ width: px(96), height: px(96) }} source={frame_right} />
+                <Text style={{ color: '#999999', fontSize: px(24), lineHeight: px(36), textAlign: 'center' }}>暂无售楼电话号码 请等待</Text>
+              </View>
+            </View>
+          </BoxShadow>
+        </View>
+      </Modal>
+    )
+  }
+  getdata() {
     const id = this.props.navigation.state.params.id
     Axios({
-      method:'post',
-      url:`http://192.168.10.79:8080/visitor_once`,
-      data:{
-        houses_id:id
+      method: 'post',
+      url: `http://192.168.10.79:8080/visitor_once`,
+      data: {
+        houses_id: id
       }
     }).then(res => {
       console.log(res)
-      this.setState({data:res.data.result['0']})
+      this.setState({ data: res.data.result['0'] })
     })
   }
   addAttention() {
@@ -80,7 +162,18 @@ export default class DetailsInfo extends Component {
   }
 
   render() {
-    const {data} = this.state
+    const { data } = this.state
+    const shadowOpt = {
+      height: px(100),
+      width: width,
+      color: "#000000",
+      border: px(15),
+      radius: 0,
+      opacity: 0.12,
+      x: 0,
+      y: 0,
+      style: {position: 'absolute', bottom: 0, left: 0,}
+    }
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
@@ -150,26 +243,29 @@ export default class DetailsInfo extends Component {
             }
           </View>
         </ScrollView>
-        <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
-          <TouchableOpacity
-          onPress={() => this.addAttention()}
-            activeOpacity={1}
-            style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
-            <Text >关注</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => Communications.phonecall(data.houses_tel, true)}
-            activeOpacity={1}
-            style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={require('../../../assets/images/tabbar_phone.png')} />
-            <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
-          </TouchableOpacity>
-        </View>
+        <BoxShadow setting={shadowOpt}>
+          <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
+            <TouchableOpacity
+              onPress={() => this.addAttention()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={this.props.navigation.state.params.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
+              <Text >关注</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.callProperty()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={require('../../../assets/images/tabbar_phone.png')} />
+              <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
+            </TouchableOpacity>
+          </View>
+        </BoxShadow>
+        {this.Toast()}
       </View>
     );
   }

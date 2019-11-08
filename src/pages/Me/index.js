@@ -185,10 +185,11 @@ export default class index extends Component {
             <TouchableHighlight
               activeOpacity={1}
               onPress={() => navigation.navigate('Info')}
-              style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20) }}>
+              style={{ width: px(108), height: px(108), borderRadius: px(54), marginEnd: px(20),backgroundColor:'red' }}>
               <Image
-                style={{ width: px(108), height: px(108), }}
+                style={{ width: px(108), height: px(108),borderRadius:px(54)}}
                 source={{ uri: this.state.uri }} />
+                {/* <View></View> */}
             </TouchableHighlight>
             <View style={{ flex: 1, justifyContent: 'space-around' }}>
               <Text style={{ color: '#323232', fontSize: px(32) }}>{this.state.nickname}</Text>
