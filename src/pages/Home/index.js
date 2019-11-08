@@ -59,7 +59,6 @@ export default class Home extends Component {
           comments: comments.data.result.length > 2 ? comments.data.result.slice(0, 2) : comments.data.result,
           houses: houses.data.result.length > 6 ? houses.data.result.slice(0, 7) : houses.data.result,
         })
-        // console.log(comments)
       }))
   }
   getPositions = () => {

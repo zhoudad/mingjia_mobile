@@ -10,7 +10,7 @@ class RenderItem extends Component {
     super(props);
     this.state = {
       Expand: false,
-      itemHeight:0
+      itemHeight: 0
     };
   }
 
@@ -23,7 +23,7 @@ class RenderItem extends Component {
           // {marginRight:index+1 % 3 == 0 ? 0 : px(12) }
         ]}
         activeOpacity={1}
-        onPress={() => navigation.navigate('H_BasicInfo',{data,name:data.building_name})}>
+        onPress={() => navigation.navigate('H_BasicInfo', { data, name: data.building_name })}>
         <View style={styles.itemContent} onLayout={(e) => {
           this.setState({ itemHeight: e.nativeEvent.layout.height })
         }}>
@@ -45,24 +45,29 @@ class RenderItem extends Component {
   render() {
     const { data } = this.props
     return (
-      <View style={{ paddingTop: px(40), backgroundColor: '#FFF' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row',backgroundColor:'#FFF' }}>
+      <View style={{ paddingTop: px(40), }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', backgroundColor: '#FFF' }}>
           <Text style={styles.tit}>{data.item.building_name} </Text>
-          <TouchableOpacity
-            onPress={() => this.setState({ Expand: !this.state.Expand })}
-            activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>{this.state.Expand ? '收回全部' : '展开全部'}</Text>
-            <Image style={{ width: px(24), height: px(24) }}
-              source={this.state.Expand ? require('../../../assets/images/fangke_arrow_up.png') : require('../../../assets/images/fangke_arrow_down.png')} />
-          </TouchableOpacity>
+          {
+            data.item.type && data.item.type.length > 6 ?
+              <TouchableOpacity
+                onPress={() => this.setState({ Expand: !this.state.Expand })}
+                activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: '#A8ABB3', fontSize: px(24) }}>{this.state.Expand ? '收回全部' : '展开全部'}</Text>
+                <Image style={{ width: px(24), height: px(24) }}
+                  source={this.state.Expand ? require('../../../assets/images/fangke_arrow_up.png') : require('../../../assets/images/fangke_arrow_down.png')} />
+              </TouchableOpacity>
+              : null
+          }
+
         </View>
         <View
-          style={[{ flexDirection: 'row', flexWrap: 'wrap',justifyContent:'space-between' },
+          style={[{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', },
           this.state.Expand ? null : { height: this.state.itemHeight }]}>
           {
             data.item.type ? data.item.type.map((item, index) => {
               return (
-                this._renderItem_H(item, index,)
+                this._renderItem_H(item, index)
               )
             }) : null
           }
@@ -92,8 +97,8 @@ class HousetypePage extends Component {
       },
       method: 'post'
     }).then(res => {
-      console.log(res)
-      this.setState({ data: res.data.result })
+      // console.log(res)
+      this.setState({ data: res.data.result.building })
     })
   }
   _renderItem(data) {
@@ -125,12 +130,14 @@ const styles = StyleSheet.create({
   H_item: {
     // height: px(300),
     // width:px(218),
-    paddingTop: px(30),
+    // paddingTop: px(30),
     // paddingBottom: px(20),
     // backgroundColor:'red'
+    // marginTop:px(30)
   },
   itemContent: {
-    paddingBottom: px(30)
+    paddingBottom: px(30),
+    paddingTop: px(30),
   },
   Text: {
     color: '#fff'

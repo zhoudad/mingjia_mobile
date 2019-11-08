@@ -4,6 +4,7 @@ import IntervalTime from '../../../utils/IntervalTime'
 import px from '../../../utils/px'
 import { storage } from '../../../utils/storage'
 import { withNavigation } from 'react-navigation';
+import axios from 'axios'
 var screenWidth = Dimensions.get('window').width;
 
 class CommentItem extends Component {
@@ -98,7 +99,7 @@ class CommentItem extends Component {
 
   render() {
     const { navigation, getRepId, data, } = this.props
-    const { user_id, com_content, com_like, com_nolike, son, time, com_id } = data
+    const { user_id, com_content, com_like, com_nolike, son, time, com_id, inf } = data
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('CommentDetails', { data })}>
         <View style={styles.CommentItem}>
@@ -106,7 +107,7 @@ class CommentItem extends Component {
             <Image
               source={{ uri: 'http://img3.duitang.com/uploads/item/201507/23/20150723115018_ma428.thumb.700_0.jpeg' }}
               style={{ backgroundColor: '#EA4C4C', width: px(60), height: px(60), borderRadius: px(30) }} />
-            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{user_id}</Text>
+            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{inf.user_name}</Text>
             <Text style={{ color: '#A8ABB3', fontSize: px(20), flex: 1, textAlign: 'right' }}>
               {IntervalTime(time)}
             </Text>
@@ -126,7 +127,7 @@ class CommentItem extends Component {
               <View>{this.shouExpandCom()}</View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: px(30), marginBottom: px(40) }}>
-              <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={() => getRepId(com_id)}>
+              <TouchableOpacity activeOpacity={1} style={styles.replyBtn} onPress={() => getRepId(inf.user_name,com_id)}>
                 <Text style={{ color: '#A8ABB3', fontSize: px(20) }}>回复TA</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>

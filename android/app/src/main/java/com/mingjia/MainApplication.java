@@ -16,7 +16,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.horcrux.svg.SvgPackage;
-import com.theweflex.react.WeChatPackage;
+// import com.theweflex.react.WeChatPackage;
 import com.mingjia.MyLocationPackage;
 import com.mingjia.DplusReactPackage;
 
@@ -40,7 +40,7 @@ public class MainApplication extends MultiDexApplication  implements ReactApplic
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
-          packages.add(new WeChatPackage());
+          // packages.add(new WeChatPackage());
           // packages.add(new RNFSPackage());
           packages.add(new MyLocationPackage());
           packages.add(new DplusReactPackage());

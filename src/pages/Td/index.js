@@ -9,12 +9,11 @@ import CustomTabBar from '../../components/CustomTabBar'
 import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import PropertyPage from './PropertyPage'
 import HousetypePage from './HousetypePage'
-// import cities from '../../components/cities.json'
 import areas from '../../components/areas.json'
-// import pcas from '../../components/pcas.json'
 import streets from '../../components/streets.json'
-// import ActionBar from '../../components/ActionBar'
 import Couverture from '../../components/Couverture'
+import axios from 'axios'
+import { storage } from '../../utils/storage'
 const { width, height } = Dimensions.get('window');
 const newAreas = areas.filter(item => {
   return item.parent_code.includes('3301')
@@ -50,7 +49,7 @@ export default class Td extends Component {
     var selectIndex = new Array(data.length);
     for (var i = 0; i < data.length; i++) {
       if (i == 0) {
-        selectIndex[i] = [0, 0]
+        selectIndex[i] = [-1, -1]
       } else {
         selectIndex[i] = 0;
       }
@@ -79,18 +78,79 @@ export default class Td extends Component {
           data: ['未来一个月', '未来三个月', '未来半年', '过去一个月', '过去三个月']
         }
       ],
-      // dataArr: ['默认排序'],
+      dataArr: '默认排序',
       rotationAnim: new Animated.Value(0),
       DownArrowArr: data.map(() => new Animated.Value(0)),
       titleArr: ['区域', '单价', '户型'],
       city: '3301',
       areas: '330102',
       data: data,
+      account_id: '',
+      louData:[],
+      params:['','']
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let self = this
+    await storage.load({
+      key: 'accountId',
+    }).then(res => {
+      self.setState({
+        account_id: res.account_id,
+      },() => {
+        this.changeArr()
+      })
+    }).catch(err => {
+      console.log(err)
+    })
     this.changeData()
+  }
+  changeArr() {
+    let { sortIndex } = this.state
+    switch (sortIndex) {
+      case 0: {
+        axios({
+          url: 'http://192.168.10.79:8080/visitor_houses',
+          method: 'post',
+          data: {
+            account_id: this.state.account_id
+          }
+        }).then(res => {
+          console.log(res)
+          this.setState({louData:res.data.result})
+        })
+        break;
+      }
+      case 1: {
+        axios({
+          url: 'http://192.168.10.79:8080/average',
+          method: 'post',
+          data: {
+            sort: this.state.sortIndex_C + 1,
+            account_id: this.state.account_id
+          }
+        }).then(res => {
+          console.log(res)
+          this.setState({louData:res.data.result})
+        })
+        break;
+      }
+      case 2: {
+        axios({
+          url: 'http://192.168.10.79:8080/opening',
+          method: 'post',
+          data: {
+            xtime: this.state.sortIndex_C + 1,
+            account_id: this.state.account_id
+          }
+        }).then(res => {
+          console.log(res)
+          this.setState({louData:res.data.result})
+        })
+        break;
+      }
+    }
   }
   changeData() {
     const newAreas = areas.filter(item => {
@@ -144,19 +204,50 @@ export default class Td extends Component {
       />
     );
   }
-  _itemOnPress(item, index, i) {
-    var { selectIndex, titleArr, activityIndex } = this.state;
+  async _itemOnPress(item, index, i) {
+    var { selectIndex, titleArr, activityIndex ,data} = this.state;
     if (activityIndex > -1) {
       if (activityIndex == 0) {
         selectIndex[activityIndex][i] = index;
-        titleArr[activityIndex] = item.name ? item.name : item
-        if (i == 1) {
+        // if (i == 1) {
+        //   selectIndex[activityIndex][2] = 0
+        //   this.setState({
+        //     city: item.parent_code,
+        //     areas: item.code
+        //   }, () => this.changeData())
+        // }
+        if(item.name && item.code.length > 6){
+          if( selectIndex[activityIndex][1] == -1){
+            selectIndex[activityIndex][1] = 0
+            this.setState({
+              selectIndex
+            })
+          }
+          this.setState({
+            params:[item.name,data[0][1].filter((area) =>{
+              return area.code.includes(item.parent_code)
+            })[0].name]
+          },() => {
+            console.log(this.state.params)
+          })
+        }else{
+          let self = this
           selectIndex[activityIndex][2] = 0
           this.setState({
             city: item.parent_code,
-            areas: item.code
-          }, () => this.changeData())
+            areas: item.code,
+          },async () => {
+            await self.changeData()
+            self.setState({
+              params:[this.state.data[0][2][0].name,item.name]
+            },() => {
+              // console.log(self.state.data)
+              console.log(self.state.params)
+            })
+          })
         }
+        titleArr[activityIndex] = item.name ? item.code.length > 6 ? item.name : data[0][2][1].name : item
+        
 
       } else {
         selectIndex[activityIndex] = index;
@@ -167,6 +258,7 @@ export default class Td extends Component {
     if (activityIndex == 2) {
       this._openOrClosePanel(this.state.activityIndex);
     }
+    
   }
   _renderChcek(item, index, i) {
     let { activityIndex, selectIndex } = this.state;
@@ -297,7 +389,11 @@ export default class Td extends Component {
                       this.state.sortArr[this.state.sortIndex].data.map((item, index) => {
                         return (
                           <TouchableOpacity
-                            onPress={() => this.setState({ sortIndex_C: index, selectSortIndex: this.state.sortIndex })}
+                            onPress={() => {
+                              console.log(index)
+                              this.setState({ sortIndex_C: index, selectSortIndex: this.state.sortIndex, dataArr: item })
+                              this.changeArr()
+                            }}
                             key={index}
                             activeOpacity={1}
                             style={styles.Check} key={index}>
@@ -426,7 +522,7 @@ export default class Td extends Component {
               inactiveColor={"#A8ABB3"}
             />)}>
             <View tabLabel='楼盘' style={{ flex: 1, backgroundColor: '#fff' }}>
-              <PropertyPage />
+              <PropertyPage louData={this.state.louData}/>
             </View>
             <View tabLabel='户型' style={{ flex: 1, backgroundColor: '#fff' }}>
               <HousetypePage />

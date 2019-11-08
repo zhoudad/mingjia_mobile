@@ -1,33 +1,24 @@
 import React, { Component } from 'react';
 import px from '../../../utils/px'
 import TipicTag from '../../../components/TipicTag'
-import axios from 'axios'
 import { withNavigation } from 'react-navigation';
-import { View, Text, Image, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
+import { 
+  View, Text, Image, FlatList, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity ,
+} from 'react-native';
 
 class PropertyPage extends Component {
+  static defaultProps = {
+    louData: []
+  };
+  static PropTypes = {
+    louData: PropTypes.array,
+  };
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
-      data: []
     };
   }
-  componentDidMount() {
-    this.getdata()
-  }
-  getdata() {
-    axios({
-      method: 'post',
-      url: `http://218.108.34.222:8080/visitor_houses`,
-      data: {
-        account_id: 2
-      }
-    }).then(res => {
-      this.setState({ data: res.data.result })
-    })
-  }
-
 
   _renderItem(data) {
     const { navigation, } = this.props
@@ -66,7 +57,7 @@ class PropertyPage extends Component {
       <View style={styles.container}>
         <FlatList
           showsVerticalScrollIndicator={false}
-          data={this.state.data}
+          data={this.props.louData}
           renderItem={(data) => this._renderItem(data)}
         />
       </View>

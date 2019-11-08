@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Modal, 
+import {
+  View, Text, ScrollView, Image, StyleSheet, TouchableOpacity, Modal,
   Dimensions
 } from 'react-native';
 import px from '../../../utils/px'
@@ -10,8 +11,8 @@ export default class Album extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgArr: [],
-      modalVisible:false
+      imageArr:[],
+      modalVisible: false
     };
   }
 
@@ -19,12 +20,12 @@ export default class Album extends Component {
     return (
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => this.setState({modalVisible: true})}
+        onPress={() => this.setState({ modalVisible: true })}
         onLongPress={() => { console.log('长按') }}
         style={styles.imageItem}>
         <Image
           style={{ width: px(218), height: px(128), borderRadius: px(10), marginBottom: px(20) }}
-          source={{uri:'http://photocdn.sohu.com/20120209/Img334155491.jpg'}}
+          source={{ uri: 'http://photocdn.sohu.com/20120209/Img334155491.jpg' }}
         />
       </TouchableOpacity>
     )
@@ -42,9 +43,7 @@ export default class Album extends Component {
           }}
         >
           <View style={{ flex: 1 }}>
-            {
-              // this.state.slides == null ? <View style={{ flex: 1 }}></View> :
-              <View style={{ width, height, }}>
+            <View style={{ width, height, }}>
               <TouchableOpacity activeOpacity={1} style={styles.goBack} onPress={() => this.setState({ modalVisible: false })}>
                 <Image style={{ width: px(48), height: px(48) }} source={require('../../../assets/images/nav_icon_back2.png')} />
               </TouchableOpacity>
@@ -54,17 +53,16 @@ export default class Album extends Component {
                 style={{ flex: 1, }}
                 index={0}>
                 {
-                  // this.state.drawings.map((item, index) => {
+                  // this.state.imageArr.map((item, index) => {
                   //   return (
-                      <View style={{ backgroundColor: 'red',width, height, }}>
-                        <Image style={{ width, height,}} source={{ uri: 'http://photocdn.sohu.com/20120209/Img334155491.jpg' }} ></Image>
-                      </View>
+                  <View style={{ backgroundColor: 'red', width, height, }}>
+                    <Image style={{ width, height, }} source={{ uri: 'http://photocdn.sohu.com/20120209/Img334155491.jpg' }} ></Image>
+                  </View>
                   //   )
                   // })
                 }
               </Swiper>
             </View>
-            }
           </View>
         </Modal>
         <ScrollView contentContainerStyle={{ backgroundColor: '#F2F4F7' }}>

@@ -11,6 +11,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { BoxShadow } from 'react-native-shadow'
 import Video from 'react-native-video';
 import {storage} from '../../../utils/storage'
+import axios from 'axios'
 const { height, width } = Dimensions.get('window')
 
 export default class H_BasicInfo extends Component {
@@ -32,7 +33,8 @@ export default class H_BasicInfo extends Component {
       commentTxt: '',
       images: [],
       user_id: '',
-      account_id: ''
+      account_id: '',
+      ReviewArr:[]
     };
   }
   async componentDidMount() {
@@ -44,6 +46,19 @@ export default class H_BasicInfo extends Component {
       self.setState({
         user_id: results[0].user_id,
         account_id: results[1].account_id
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+    this.getRemark()
+  }
+  getRemark() {
+    axios({
+      url: `http://218.108.34.222:8080/remark?account_id=` + this.state.account_id,
+    }).then(res => {
+      console.log(res.data.result)
+      this.setState({
+        ReviewArr: res.data.result
       })
     }).catch(err => {
       console.log(err)
@@ -158,7 +173,7 @@ export default class H_BasicInfo extends Component {
       </View>
     )
   }
-  _reviewItem() {
+  _reviewItem(data) {
     const { navigation } = this.props
     return (
       <TouchableOpacity activeOpacity={1} style={styles.reviewItem} onPress={() => navigation.navigate('ReviewDetails')}>
@@ -167,10 +182,10 @@ export default class H_BasicInfo extends Component {
             <Image
               source={require('../../../assets/images/home_yezhu.png')}
               style={{ width: px(69), height: px(60), borderRadius: px(30) }} />
-            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>房大师</Text>
+            <Text style={{ color: '#303133', fontSize: px(28), marginStart: px(20) }}>{data ? data.com_id : ''}</Text>
           </View>
           <Text numberOfLines={2} style={{ color: '#303133', fontSize: px(24), }}>
-            各地经常会举办房地产交易会，在房地产交易会上通常会开辟二手房专区。可通过查看网络或多留意报刊杂志等渠道获得信息。
+          {data ? data.com_content : ''}
           </Text>
         </View>
       </TouchableOpacity>
@@ -180,8 +195,8 @@ export default class H_BasicInfo extends Component {
   _onLayout = (event) => {
     //获取根View的宽高
     let { width, height } = event.nativeEvent.layout;
-    console.log('通过onLayout得到的宽度：' + width);
-    console.log('通过onLayout得到的高度：' + height);
+    // console.log('通过onLayout得到的宽度：' + width);
+    // console.log('通过onLayout得到的高度：' + height);
 
     // 一般设备横屏下都是宽大于高，这里可以用这个来判断横竖屏
     let isLandscape = (width > height);
@@ -270,7 +285,17 @@ export default class H_BasicInfo extends Component {
   render() {
     const { navigation } = this.props
     const { data, name } = this.props.navigation.state.params
-    console.log(data)
+    const shadowOpt = {
+      height: px(100),
+      width: width,
+      color: "#000000",
+      border: px(15),
+      radius: 0,
+      opacity: 0.12,
+      x: 0,
+      y: 0,
+      style: {position: 'absolute', bottom: 0, left: 0,}
+    }
     return (
       <View style={{ flex: 1 }} onLayout={this._onLayout}>
         <View style={styles.headerImg}>
@@ -291,7 +316,7 @@ export default class H_BasicInfo extends Component {
                     playInBackground={false}
                     ref={ref => this.player = ref}
                     poster={'http://p1.music.126.net/fffxmDCc9rzgZ4s0u3J2Xg==/109951163572705897.jpg'}
-                    source={{ uri: 'http://vodkgeyttp9c.vod.126.net/cloudmusic/28cfa0c0e8375cea94313c7b6d622225.mp4?wsSecret=189851eff933614a6ee97f696b695f58&wsTime=1573093985&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL25Ukfgz7QFlcb87BtrOtmKHrphmwPWJgZ5OWS5NkBH4LRykjGn2oecZoBUfKpIak7J0yHjO6TQSjKjFPNS8xe56UvUMU5poEEe%2BnczNHTY2WIP4icwL11EZZL%2FwbAWV6wO5EBQ6kwgZsIQMJuBloh9GR2f%2B7chGVw2kVZ6w5Gk9w%3D%3D' }} 
+                    source={{ uri: 'http://218.108.34.222:8080/video/ironMan.mp4' }} 
                     style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
                     rate={1}//播放速率
                     paused={this.state.paused}// true代表暂停，默认为false
@@ -402,7 +427,8 @@ export default class H_BasicInfo extends Component {
           </TouchableOpacity>
         </View>
         <ScrollView
-          contentContainerStyle={{ backgroundColor: '#F2F4F7', }}
+        style={{marginBottom:px(100) }}
+          contentContainerStyle={{ backgroundColor: '#F2F4F7',}}
           showsVerticalScrollIndicator={false}>
           <View style={{ paddingHorizontal: px(30), backgroundColor: '#FFF', marginTop: px(15) }}>
             <Text style={styles.tit}>户型信息</Text>
@@ -424,12 +450,12 @@ export default class H_BasicInfo extends Component {
           <View style={{ backgroundColor: '#FFF', marginVertical: px(20), }}>
             <View style={styles.review}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                <Text style={{ color: '#303133', fontSize: px(28), fontWeight: 'bold' }}>用户点评（15）</Text>
+                <Text style={{ color: '#303133', fontSize: px(28), fontWeight: 'bold' }}>用户点评（{this.state.ReviewArr.length}）</Text>
                 <Text style={{ color: '#A8ABB3', fontSize: px(24) }} onPress={() => navigation.navigate('Review')}>查看更多</Text>
               </View>
               <View>
-                {this._reviewItem()}
-                {this._reviewItem()}
+                {this._reviewItem(this.state.ReviewArr[0])}
+                {this._reviewItem(this.state.ReviewArr[1])}
               </View>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: px(50) }}>
@@ -525,26 +551,28 @@ export default class H_BasicInfo extends Component {
             </View>
           </View>
         </ScrollView>
-        <View style={{ height: px(100), width: '100%', flexDirection: 'row', }}>
-          <TouchableOpacity
-            onPress={() => this.addAttention()}
-            activeOpacity={1}
-            style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
-            <Text >关注</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.callProperty()}
-            activeOpacity={1}
-            style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={require('../../../assets/images/tabbar_phone.png')} />
-            <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
-          </TouchableOpacity>
-        </View>
+        <BoxShadow setting={shadowOpt}>
+          <View style={{ height: px(100), width: '100%', flexDirection: 'row', }}>
+            <TouchableOpacity
+              onPress={() => this.addAttention()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
+              <Text >关注</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.callProperty()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={require('../../../assets/images/tabbar_phone.png')} />
+              <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
+            </TouchableOpacity>
+          </View>
+        </BoxShadow>
         {this.Toast()}
       </View>
     );

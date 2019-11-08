@@ -4,7 +4,6 @@ import {
   TextInput, Image, ToastAndroid, Dimensions, AsyncStorage,
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import * as WeChat from 'react-native-wechat';
 import DeviceInfo from 'react-native-device-info';
 import axios from 'axios'
 import px from '../utils/px'

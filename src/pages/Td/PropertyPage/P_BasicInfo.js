@@ -48,9 +48,6 @@ export default class BasicInfo extends Component {
     };
   }
   async componentDidMount() {
-    
-    this.addFoot()
-    this.getRemark()
     let self = this
     await storage.getBatchData([
       { key: 'userId', syncInBackground: false, autoSync: false, },
@@ -61,6 +58,8 @@ export default class BasicInfo extends Component {
         account_id: results[1].account_id
       },() => {
         self.getdata()
+        self.getRemark()
+        self.addFoot()
       })
     }).catch(err => {
       console.log(err)
@@ -70,6 +69,7 @@ export default class BasicInfo extends Component {
     axios({
       url: `http://218.108.34.222:8080/remark?account_id=` + this.state.account_id,
     }).then(res => {
+      console.log(res)
       this.setState({
         ReviewArr: res.data.result
       })
@@ -392,6 +392,17 @@ export default class BasicInfo extends Component {
     const { data } = this.state
     const modelListSty = {}
     modelListSty.height = this.state.modelItemHeight
+    const shadowOpt = {
+      height: px(100),
+      width: width,
+      color: "#000000",
+      border: px(15),
+      radius: 0,
+      opacity: 0.12,
+      x: 0,
+      y: 0,
+      style: {position: 'absolute', bottom: 0, left: 0,}
+    }
     return (
       <View>
         <ScrollView contentContainerStyle={{ marginBottom: px(30) }} showsVerticalScrollIndicator={false}>
@@ -413,7 +424,7 @@ export default class BasicInfo extends Component {
                       ref={ref => this.player = ref}
                       poster={'http://p1.music.126.net/OOWMRLJNs-gZEJzJIUbddw==/109951163573262585.jpg'}
                       // source={require('../../../assets/test.mp4')}
-                      source={{ uri: 'http://vodkgeyttp9.vod.126.net/cloudmusic/e4b432c5fa70231f5cb07c3da6d19246.mp4?wsSecret=de8228b0a8eb71d52f3c17ad056166f6&wsTime=1573093441&ext=NnR5gMvHcZNcbCz592mDGUGuDOFN18isir07K1EOfL0gDbTkq4MgoPfxBJAtir%2F5Ut9RoZlf%2BEXpu1qh9BESkSxyvJcldUCNK9YLkLg1o9gNf0r8zfyqBmltYZ3kQF0w3hklSjJch6Bc4VgUcYVzqwaw4A6x5q1sYi3M8mhwWrxA8Gn%2BXImxBRcepgZG8i2QELIrGSIYtJ%2FuPHUIBmfvQA%3D%3D' }}
+                      source={{ uri: 'http://218.108.34.222:8080/video/mv.mp4' }}
                       style={{ height: this.state.videoHeight, width: this.state.videoWidth }}
                       rate={1}//播放速率
                       paused={this.state.paused}// true代表暂停，默认为false
@@ -698,26 +709,28 @@ export default class BasicInfo extends Component {
             }
           </View>
         </ScrollView>
-        <View style={{ height: px(100), width: '100%', flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, }}>
-          <TouchableOpacity
-            onPress={() => this.addAttention()}
-            activeOpacity={1}
-            style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
-            <Text >关注</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.callProperty()}
-            activeOpacity={1}
-            style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              style={{ width: px(44), height: px(44), marginEnd: px(12) }}
-              source={require('../../../assets/images/tabbar_phone.png')} />
-            <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
-          </TouchableOpacity>
-        </View>
+        <BoxShadow setting={shadowOpt}>
+          <View style={{ height: px(100), width: '100%', flexDirection: 'row', }}>
+            <TouchableOpacity
+              onPress={() => this.addAttention()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#FFFFFF', flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={this.state.isAttention ? require('../../../assets/images/tabbar_focus_s.png') : require('../../../assets/images/tabbar_focus_n.png')} />
+              <Text >关注</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.callProperty()}
+              activeOpacity={1}
+              style={{ backgroundColor: '#EA4C4C', width: px(488), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                style={{ width: px(44), height: px(44), marginEnd: px(12) }}
+                source={require('../../../assets/images/tabbar_phone.png')} />
+              <Text style={{ fontSize: px(32), color: '#FFFFFF' }}>电话资讯</Text>
+            </TouchableOpacity>
+          </View>
+        </BoxShadow>
         {this.Toast()}
       </View>
     );

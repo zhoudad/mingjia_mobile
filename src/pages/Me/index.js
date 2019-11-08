@@ -86,13 +86,12 @@ export default class index extends Component {
 
   _renderDown() {
     let { drawings } = this.state
-    if (this.state.drawings.length) {
+    if (drawings != null && drawings.length) {
       return (
         <View style={{ height: px(313), marginVertical: px(40) }}>
           <Modal
             animationType="fade"
             // transparent={true}
-
             visible={this.state.modalVisible}
             onRequestClose={() => {
               this.setState({ modalVisible: false })
